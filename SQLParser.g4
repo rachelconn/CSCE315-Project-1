@@ -1,5 +1,5 @@
 // Define a grammar called Hello
-grammar commands;
+grammar SQLParser;
 
 program: (query | command)+;
 
@@ -9,13 +9,13 @@ attributeName: IDENTIFIER;
 
 expr:
     atomicExpr
-    | 'select ' condition expr //selection
-    | 'project ' attributeList expr //projection
-    | 'rename ' attributeList expr //renaming
-    | expr ' + ' expr //union
-    | expr ' - ' expr //difference
-    | expr ' * ' expr //product
-    | expr ' & ' expr; //naturaljoin
+    | 'select (' condition ')' atomicExpr //selection
+    | 'project (' attributeList ')' atomicExpr //projection
+    | 'rename (' attributeList ')' atomicExpr //renaming
+    | atomicExpr '+' atomicExpr //union
+    | atomicExpr '-' atomicExpr //difference
+    | atomicExpr '*' atomicExpr //product
+    | atomicExpr '&' atomicExpr; //naturaljoin
 condition: conjunction ('||' conjunction)*;
 conjunction: comparison ('&&' comparison)*;
 comparison: operand OP operand | '(' condition ')';
