@@ -1,33 +1,26 @@
 grammar SQLParser;
 program: {query | command};
 query: relationname ' <- ' expr;
-relationname: IDENTIFIER;
+relationname: identifier;
 expr:
-    relationname
-    | 'select ' condition expr //selection
-    | 'project ' attributelist expr //projection
-    | 'rename ' attributelist expr//renaming
-    | expr ' + ' expr //union
-    | expr ' - ' expr //difference
-    | expr ' * ' expr //product
-    | expr ' & ' expr; //naturaljoin
-//selection: 'select ' condition expr;
+    atomicexpr | selection | projection | renaming | union | difference | product | naturaljoin;
+selection: 'SELECT ' '(' condition ') ' atomicexpr;
+projection: 'PROJECT (' attributelist ') ' atomicexpr;
+renaming: 'RENAME (' attributelist ') ' atomicexpr;
+union: atomicexpr ' + ' atomicexpr;
+difference: atomicexpr ' - ' atomicexpr;
+product: atomicexpr ' * ' atomicexpr;
+naturaljoin: atomicexpr ' & ' atomicexpr;
+atomicexpr: (relationname | ('(' expr ')'));
 condition: conjunction (' || ' conjunction)*;
 conjunction: comparison (' && ' comparison)*;
-comparison: operand (op operand)?;
-op: ('==' | '!=' | '<' | '>' | '<=' | '>=');
-operand: attributename;// | literal;
-attributename: IDENTIFIER;
-//literal: who knows finish this
-//projection: 'project' (attributelist) expr;
+comparison: operand op operand | '(' condition ')';
+op: (' == ' | ' != ' | ' < ' | ' > ' | ' <= ' | ' >= ');
+operand: attributename | literal;
+identifier: ALPHA (ALPHA | DIGIT)*;
+literal: '"'(ALPHA | DIGIT)*'"';
+attributename: identifier;
 attributelist: attributename (', ' attributelist)*;
-/*renaming: 'rename ' (attributelist) expr;
-union: expr ' + ' expr;
-difference: expr ' - ' expr;
-product: expr ' * ' expr;
-naturaljoin: expr ' & ' expr;
-*/
 
-IDENTIFIER: ALPHA (ALPHA | DIGIT)*;
 ALPHA: [a-zA-Z];
 DIGIT: [0-9];
