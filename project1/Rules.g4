@@ -1,7 +1,7 @@
 // Define a grammar called Hello
 grammar Rules;
 
-program: (query | command)+;
+program: (query ';'| command ';')+;
 
 query: relationName '<-' expr;
 relationName: IDENTIFIER;
@@ -12,32 +12,32 @@ command  : ( openCmd | closeCmd | writeCmd | exitCmd | showCmd | createCmd | upd
 
 //expressions
 atomicExpr: relationName | '(' expr ')' ;
-selection: 'SELECT ' '(' condition ') ' atomicExpr;
-projection: 'PROJECT (' attributeList ') ' atomicExpr;
-renaming: 'RENAME (' attributeList ') ' atomicExpr;
-union: atomicExpr ' + ' atomicExpr;
-difference: atomicExpr ' - ' atomicExpr;
-product: atomicExpr ' * ' atomicExpr;
-naturalJoin: atomicExpr ' & ' atomicExpr;
+selection: 'select' '(' condition ')' atomicExpr;
+projection: 'project' '(' attributeList ')' atomicExpr;
+renaming: 'rename' '(' attributeList ')' atomicExpr;
+union: atomicExpr '+' atomicExpr;
+difference: atomicExpr '-' atomicExpr;
+product: atomicExpr '*' atomicExpr;
+naturalJoin: atomicExpr '&' atomicExpr;
 
 condition: conjunction ('||' conjunction)*;
 conjunction: comparison ('&&' comparison)*;
 comparison: operand OP operand | '(' condition ')';
 operand: attributeName | literal;
-attributeList: attributeName (', ' attributeName)*;
+attributeList: attributeName (',' attributeName)*;
 
 //commands
-openCmd  : 'OPEN ' relationName;
-closeCmd : 'CLOSE ' relationName;
-writeCmd : 'WRITE ' relationName;
+openCmd  : 'OPEN' relationName;
+closeCmd : 'CLOSE' relationName;
+writeCmd : 'WRITE' relationName;
 exitCmd : 'EXIT';
-showCmd : 'SHOW ' atomicExpr;
-createCmd: 'CREATE TABLE ' relationName ' (' typedAttributeList ') PRIMARY KEY (' attributeList ')';
-updateCmd: 'UPDATE ' relationName ' SET ' attributeName '=' literal (',' attributeName '=' literal)* ' WHERE' condition;
-insertCmd: 'INSERT INTO ' relationName ' VALUES FROM ' ('(' literal (',' literal)*')' | 'RELATION ' expr);
-deleteCmd: 'DELETE FROM ' relationName ' WHERE ' condition;
+showCmd : 'SHOW' atomicExpr;
+createCmd: 'CREATE' 'TABLE' relationName '(' typedAttributeList ')' 'PRIMARY' 'KEY' '(' attributeList ')';
+updateCmd: 'UPDATE' relationName 'SET' attributeName '=' literal (',' attributeName '=' literal)* 'WHERE' condition;
+insertCmd: 'INSERT' 'INTO' relationName 'VALUES' 'FROM' ('(' literal (',' literal)*')' | 'RELATION' expr);
+deleteCmd: 'DELETE' 'FROM' relationName 'WHERE' condition;
 typedAttributeList:  attributeName type (',' attributeName type)*;
-type: 'VARCHAR(' INTEGER ')' | 'INTEGER';
+type: 'VARCHAR' '(' INTEGER ')' | 'INTEGER';
 literal: STRING_LITERAL | INTEGER;
 
 //tokenizers
