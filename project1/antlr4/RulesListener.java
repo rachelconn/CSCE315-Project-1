@@ -1,4 +1,4 @@
-// Generated from C:/Users/asus/IdeaProjects/SQLParser/src/project1\Rules.g4 by ANTLR 4.7.2
+// Generated from C:/Users/asus/IdeaProjects/Project 1/src/project1\Rules.g4 by ANTLR 4.7.2
 package project1.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -58,6 +58,96 @@ public interface RulesListener extends ParseTreeListener {
 	 */
 	void exitExpr(RulesParser.ExprContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link RulesParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void enterCommand(RulesParser.CommandContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RulesParser#command}.
+	 * @param ctx the parse tree
+	 */
+	void exitCommand(RulesParser.CommandContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RulesParser#atomicExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtomicExpr(RulesParser.AtomicExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RulesParser#atomicExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtomicExpr(RulesParser.AtomicExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RulesParser#selection}.
+	 * @param ctx the parse tree
+	 */
+	void enterSelection(RulesParser.SelectionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RulesParser#selection}.
+	 * @param ctx the parse tree
+	 */
+	void exitSelection(RulesParser.SelectionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RulesParser#projection}.
+	 * @param ctx the parse tree
+	 */
+	void enterProjection(RulesParser.ProjectionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RulesParser#projection}.
+	 * @param ctx the parse tree
+	 */
+	void exitProjection(RulesParser.ProjectionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RulesParser#renaming}.
+	 * @param ctx the parse tree
+	 */
+	void enterRenaming(RulesParser.RenamingContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RulesParser#renaming}.
+	 * @param ctx the parse tree
+	 */
+	void exitRenaming(RulesParser.RenamingContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RulesParser#union}.
+	 * @param ctx the parse tree
+	 */
+	void enterUnion(RulesParser.UnionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RulesParser#union}.
+	 * @param ctx the parse tree
+	 */
+	void exitUnion(RulesParser.UnionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RulesParser#difference}.
+	 * @param ctx the parse tree
+	 */
+	void enterDifference(RulesParser.DifferenceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RulesParser#difference}.
+	 * @param ctx the parse tree
+	 */
+	void exitDifference(RulesParser.DifferenceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RulesParser#product}.
+	 * @param ctx the parse tree
+	 */
+	void enterProduct(RulesParser.ProductContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RulesParser#product}.
+	 * @param ctx the parse tree
+	 */
+	void exitProduct(RulesParser.ProductContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link RulesParser#naturalJoin}.
+	 * @param ctx the parse tree
+	 */
+	void enterNaturalJoin(RulesParser.NaturalJoinContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link RulesParser#naturalJoin}.
+	 * @param ctx the parse tree
+	 */
+	void exitNaturalJoin(RulesParser.NaturalJoinContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link RulesParser#condition}.
 	 * @param ctx the parse tree
 	 */
@@ -107,26 +197,6 @@ public interface RulesListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAttributeList(RulesParser.AttributeListContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link RulesParser#atomicExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterAtomicExpr(RulesParser.AtomicExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RulesParser#atomicExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitAtomicExpr(RulesParser.AtomicExprContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link RulesParser#command}.
-	 * @param ctx the parse tree
-	 */
-	void enterCommand(RulesParser.CommandContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link RulesParser#command}.
-	 * @param ctx the parse tree
-	 */
-	void exitCommand(RulesParser.CommandContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link RulesParser#openCmd}.
 	 * @param ctx the parse tree

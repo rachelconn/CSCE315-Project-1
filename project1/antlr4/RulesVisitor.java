@@ -1,4 +1,4 @@
-// Generated from C:/Users/asus/IdeaProjects/SQLParser/src/project1\Rules.g4 by ANTLR 4.7.2
+// Generated from C:/Users/asus/IdeaProjects/Project 1/src/project1\Rules.g4 by ANTLR 4.7.2
 package project1.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -41,6 +41,60 @@ public interface RulesVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpr(RulesParser.ExprContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link RulesParser#command}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCommand(RulesParser.CommandContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RulesParser#atomicExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAtomicExpr(RulesParser.AtomicExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RulesParser#selection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelection(RulesParser.SelectionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RulesParser#projection}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProjection(RulesParser.ProjectionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RulesParser#renaming}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRenaming(RulesParser.RenamingContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RulesParser#union}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUnion(RulesParser.UnionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RulesParser#difference}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDifference(RulesParser.DifferenceContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RulesParser#product}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProduct(RulesParser.ProductContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RulesParser#naturalJoin}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNaturalJoin(RulesParser.NaturalJoinContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link RulesParser#condition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -70,18 +124,6 @@ public interface RulesVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAttributeList(RulesParser.AttributeListContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link RulesParser#atomicExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAtomicExpr(RulesParser.AtomicExprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link RulesParser#command}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCommand(RulesParser.CommandContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RulesParser#openCmd}.
 	 * @param ctx the parse tree
