@@ -9,18 +9,16 @@ public class Table {
     private ArrayList<String> attributeNames;
     private ArrayList<String> attributeTypes;
     private ArrayList<Integer> pKeyIndices;
-    private HashMap<ArrayList<String>,ArrayList<String>> entries; //key is the list of primary keys, value is the other attributes
+    private HashMap<ArrayList<String>,ArrayList<String>> entries; //key is the list of primary keys, value is a list of all the attributes
 
     public Table(String name, ArrayList<String> attributeNames, ArrayList<String> attributeTypes, ArrayList<Integer> pKeyIndices) {
         this.name = name;
         this.attributeNames = attributeNames;
+        this.attributeTypes = attributeTypes;
         this.pKeyIndices = pKeyIndices;
         this.entries = new HashMap<>();
     }
 
-    /*
-    Constructor created for convenience, using Columns instead
-     */
     public Table(String name, ArrayList<Column> cols, ArrayList<Column> pKeys)
     {
         this.name = name;
@@ -36,23 +34,20 @@ public class Table {
         }
     }
 
-    public void addEntry(ArrayList<String> row){
-
-    }
-
-    // vanity method
-    public void addEntry(ArrayList<String> row, ArrayList<Column> columnOrder) {
-
+    public void addEntry(ArrayList<String> attributes){
+        ArrayList<String> pKeys = new ArrayList<>();
+        for(int i = 0 ; i < pKeyIndices.size() ; i++){
+            int keyIndex = pKeyIndices.get(i);
+            String pKey = attributes.get(keyIndex);
+            pKeys.add(pKey);
+        }
+        entries.put(pKeys, attributes);
     }
 
     public void deleteEntry(){
 
     }
 
-    /*
-    Returns an ArrayList of Columns (structure containing column name and type)
-    containing all primary keys
-     */
     public ArrayList<Column> getPrimaryKeys() {
         ArrayList<Column> pKeys = new ArrayList<>();
         for (Integer i : pKeyIndices)
@@ -62,10 +57,6 @@ public class Table {
         return pKeys;
     }
 
-    /*
-    Returns an ArrayList of Columns (structure containing column name and type)
-    containing all keys
-     */
     public ArrayList<Column> getAllColumns() {
         ArrayList<Column> cols = new ArrayList<>();
         for (int i = 0; i < attributeNames.size(); ++i)
@@ -75,11 +66,6 @@ public class Table {
         return cols;
     }
 
-    /*
-    Basically an implementation of O(n) search from DBMS.SelectQry
-    implemented in Table since that's where the data is
-    no need to copy stuff around this way
-     */
     public Table getAllKeysThatSatisfyConditions(ArrayList<Conditional> conds) throws IncompatibleTypesException {
         Table results = new Table("temp", this.getAllColumns(), this.getPrimaryKeys());
         for (Entry<ArrayList<String>,ArrayList<String>> entry : entries.entrySet())
