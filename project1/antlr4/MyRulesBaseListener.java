@@ -65,6 +65,9 @@ public class MyRulesBaseListener extends RulesBaseListener {
         }
     }
 
+    public void printTables() {
+        myDBMS.printTables();
+    }
 }
 
 

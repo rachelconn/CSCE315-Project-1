@@ -2,6 +2,7 @@ package project1;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import java.lang.System.*;
 import project1.conditional.*;
 
 public class DBMS {
@@ -98,6 +99,13 @@ public class DBMS {
     public Table naturalJoinQry(){ return null; }
 
     //helper functions
+    public void printTables() {
+        System.out.println("DB contains " + tables.size() + " tables");
+        for (Map.Entry<String, Table> entry : tables.entrySet()) {
+            entry.getValue().showTable();
+        }
+    }
+
     private boolean __allPrimaryKeysAndOnlyPrimaryKeysChecked(ArrayList<Conditional> conds, ArrayList<Column> cols)
     {
         if (conds.size() != cols.size())

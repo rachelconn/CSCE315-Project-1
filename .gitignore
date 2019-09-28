@@ -2,5 +2,5 @@ gen/
 .antlr/
 .idea/CSCE315-Project-1.iml
 .idea/workspace.xml
+.idea/misc.xml
 out/
-/.idea/misc.xml
