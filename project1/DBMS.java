@@ -88,10 +88,21 @@ public class DBMS {
     public Table projectQry(Table table, ArrayList<String> attributeNames, ArrayList<String> attributeTypes, ArrayList<Integer> pKeyIndices) {
         HashMap<ArrayList<String>, ArrayList<String>> tableMap = table.asHashMap();
         Table projection = new Table("temp", attributeNames, attributeTypes, new ArrayList<Integer>());
+        ArrayList<Integer> wantedIndices = new ArrayList<>();
+        ArrayList<String> tableAttributes = table.getAttributeNames();
+        for (int i = 0; i < tableAttributes.size(); i++) {
+            if (attributeNames.contains(tableAttributes.get(i))) {
+                wantedIndices.add(i);
+            }
+        }
         for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : tableMap.entrySet()) {
-            ArrayList<String> values = entry.getValue();
-            if (!projection.contains(values)) {
-                projection.addEntry(entry.getValue());
+            ArrayList<String> toAdd = new ArrayList<>();
+            //create entry to add containing each desired attribute
+            for (int i : wantedIndices) {
+                toAdd.add(entry.getValue().get(i));
+            }
+            if (!projection.contains(toAdd)) {
+                projection.addEntry(toAdd);
             }
         }
         return projection;
