@@ -18,7 +18,7 @@ public class Table {
         this.pKeyIndices = pKeyIndices;
         this.entries = new HashMap<>();
     }
-  
+
     public Table(String name, ArrayList<Column> cols, ArrayList<Column> pKeys)
     {
         this.name = name;
@@ -34,6 +34,10 @@ public class Table {
         }
     }
 
+    public HashMap<ArrayList<String>, ArrayList<String>> asHashMap() {
+        return entries;
+    }
+
     public void addEntry(ArrayList<String> attributes){
         ArrayList<String> pKeys = new ArrayList<>();
         for(int i = 0 ; i < pKeyIndices.size() ; i++){
@@ -44,8 +48,8 @@ public class Table {
         entries.put(pKeys, attributes);
     }
 
-    public void deleteEntry(){
-
+    public void deleteEntry(ArrayList<String> key){
+        entries.remove(key);
     }
 
     public ArrayList<Column> getPrimaryKeys() {
