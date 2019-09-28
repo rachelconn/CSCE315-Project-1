@@ -6,7 +6,7 @@ Used for helping select entries.
 Eg. >, < , >=, <=, ==, !=
  */
 
-package project1;
+package project1.conditional;
 
 
 public abstract class Conditional

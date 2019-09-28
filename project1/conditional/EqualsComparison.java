@@ -10,7 +10,7 @@ blah = incoming_val (because it will be compared to values entering SelectsEntry
 "lul" = condVal (because it is stored in the GreaterThanComparison when the command is loaded)
 */
 
-package project1;
+package project1.conditional;
 
 public class EqualsComparison extends Conditional
 {

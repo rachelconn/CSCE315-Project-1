@@ -9,22 +9,21 @@ SELECT * FROM tabl WHERE (blah < 5)
 blah = incoming_val (because it will be compared to values entering SelectsEntry from the table)
 5 = condVal (because it is stored in the GreaterThanComparison when the command is loaded)
 */
+package project1.conditional;
 
-package project1;
-
-public class LessThanEqualsComparison extends Conditional
+public class LessThanComparison extends Conditional
 {
-    public LessThanEqualsComparison(String condType, String condValue, String fieldName) {
+    public LessThanComparison(String condType, String condValue, String fieldName) {
         super(condType, condValue, fieldName);
     }
 
     @Override
     boolean SelectsEntry(String type, String value) throws IncompatibleTypesException {
-        ThrowExceptionIfNotIntegersOnly(type, value, "<=");
+        ThrowExceptionIfNotIntegersOnly(type, value, "<");
 
         int int_incomingVal = Integer.parseInt(value);
         int int_condVal = Integer.parseInt(this.condValue);
 
-        return int_incomingVal <= int_condVal;
+        return int_incomingVal < int_condVal;
     }
 }
