@@ -4,28 +4,20 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class DBMS {
-
+    //CLASS VALUES
     private HashMap<String,Table> tables = new HashMap<>();
 
-    public void openCmd(){
 
-    }
+    //CLASS FUNCTIONS
+    public void openCmd(){}
 
-    public void closeCmd(){
+    public void closeCmd(){}
 
-    }
+    public void writeCmd(){}
 
-    public void writeCmd(){
+    public void exitCmd(){}
 
-    }
-
-    public void exitCmd(){
-
-    }
-
-    public void showCmd(){
-
-    }
+    public void showCmd(){}
 
     public void createCmd(String tableName, LinkedHashMap<String,String> attributes, ArrayList<String> primaryKeys){
         ArrayList<Integer> pKeyIndices = new ArrayList<>();
@@ -47,41 +39,38 @@ public class DBMS {
 
     }
 
-    public void insertCmd(){}
+    public void insertCmd(String tableName, ArrayList<String> attributes){
+        Table t = tables.get(tableName);
+        t.addEntry(attributes);
+    }
+
+    public void insertCmd(String tableName, Table tbl){} //alternative insert command that accounts for relational insertion
 
     public void deleteCmd(){}
 
     public Table selectQry(String tableName, ArrayList<Conditional> conditions) throws NotImplementedException, IncompatibleTypesException {
-        // 1. if conditions are favorable, perform O(C) search
-        boolean allHashable = true;
-        for (Conditional cnd : conditions)
-        {
-            allHashable = allHashable && cnd.HashableOperation();
-        }
-        // 1b) We also need to check that ALL primary keys are used. Only the use of all
-        // primary keys can guarantee unique identification of an entry (for O(C) fast
-        // retrieval)
-        Table tableRef = tables.get(tableName)
-        ArrayList<Column> primaryKeys = tableRef.getPrimaryKeys();
-        ArrayList<Column> keys = tableRef.getAllColumns();
-        if (allHashable && __allPrimaryKeysAndOnlyPrimaryKeysChecked(conditions, primaryKeys))
-        {
-            // TODO: implement O(C) search
-            throw new NotImplementedException();
-        }
-
-        // 2. if conditions are not favorable, perform O(n) search
-        return tableRef.getAllKeysThatSatisfyConditions(conditions);
+    // 1. if conditions are favorable, perform O(C) search
+    boolean allHashable = true;
+    for (Conditional cnd : conditions)
+    {
+        allHashable = allHashable && cnd.HashableOperation();
+    }
+    // 1b) We also need to check that ALL primary keys are used. Only the use of all
+    // primary keys can guarantee unique identification of an entry (for O(C) fast
+    // retrieval)
+    Table tableRef = tables.get(tableName);
+    ArrayList<Column> primaryKeys = tableRef.getPrimaryKeys();
+    ArrayList<Column> keys = tableRef.getAllColumns();
+    if (allHashable && __allPrimaryKeysAndOnlyPrimaryKeysChecked(conditions, primaryKeys))
+    {
+        // TODO: implement O(C) search
+        throw new NotImplementedException();
     }
 
-    // TODO: unit test
-    /*
-    Returns true if all Conditionals in conds refer only to primary keys and that all
-    (primary) keys listed in cols are in conds.
-    Returns false otherwise.
+    // 2. if conditions are not favorable, perform O(n) search
+    return tableRef.getAllKeysThatSatisfyConditions(conditions);
+    }
 
-    Refactored into separate method to improve readability of method selectQry
-     */
     private boolean __allPrimaryKeysAndOnlyPrimaryKeysChecked(ArrayList<Conditional> conds, ArrayList<Column> cols)
     {
         if (conds.size() != cols.size())
@@ -119,21 +108,16 @@ public class DBMS {
         return keys1.equals(keys2);
     }
 
-    public Table projectQry(){}
+    public Table projectQry(){ return null; }
 
-    public Table renameQry(){}
+    public Table renameQry(){ return null; }
 
-    public Table unionQry(){}
+    public Table unionQry(){ return null; }
 
-    public Table differenceQry(){}
+    public Table differenceQry(){ return null; }
 
-    public Table productQry(){}
+    public Table productQry(){ return null; }
 
-    public Table naturalJoinQry(){}
-
-
-
-
-
+    public Table naturalJoinQry(){ return null; }
 
 }
