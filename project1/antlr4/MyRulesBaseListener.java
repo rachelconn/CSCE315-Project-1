@@ -1,7 +1,7 @@
 package project1.antlr4;
 import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.*;
-import DBMS;
+import project1.DBMS;
 
 public class MyRulesBaseListener extends RulesBaseListener {
 

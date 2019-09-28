@@ -19,7 +19,7 @@ public class EqualsComparison extends Conditional
     }
 
     @Override
-    boolean SelectsEntry(String type, String value) throws IncompatibleTypesException {
+    public boolean SelectsEntry(String type, String value) throws IncompatibleTypesException {
         ThrowExceptionIfNotSameType(type, value, "==");
 
         return value.equals(this.condValue);
