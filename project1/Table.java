@@ -18,7 +18,7 @@ public class Table {
         this.pKeyIndices = pKeyIndices;
         this.entries = new HashMap<>();
     }
-
+  
     public Table(String name, ArrayList<Column> cols, ArrayList<Column> pKeys)
     {
         this.name = name;

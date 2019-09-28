@@ -7,7 +7,6 @@ public class DBMS {
     //CLASS VALUES
     private HashMap<String,Table> tables = new HashMap<>();
 
-
     //CLASS FUNCTIONS
     public void openCmd(){}
 
