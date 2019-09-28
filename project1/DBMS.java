@@ -101,7 +101,7 @@ public class DBMS {
     public void printTables() {
         System.out.println("DB contains " + tables.size() + " tables");
         for (Map.Entry<String, Table> entry : tables.entrySet()) {
-            entry.getValue().showTable();
+            System.out.println(entry.getValue().showTable());
         }
     }
 
