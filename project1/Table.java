@@ -109,6 +109,10 @@ public class Table {
         return results;
     }
 
+    public ArrayList<String> getAttributeNames() {
+        return attributeNames;
+    }
+
     public String showTable() {
         String toShow = this.name + ":\n";
         for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : this.entries.entrySet()){
