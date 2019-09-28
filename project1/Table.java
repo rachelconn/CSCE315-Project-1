@@ -54,6 +54,18 @@ public class Table {
         return entries;
     }
 
+    public Table(Table a) {
+        this.name = a.name;
+        this.attributeTypes = a.attributeTypes;
+        this.attributeNames = a.attributeNames;
+        this.pKeyIndices = a.pKeyIndices;
+        this.entries = a.entries;
+    }
+
+    public ArrayList<String> getAttributeTypes() {
+        return attributeTypes;
+    }
+
     public void addEntry(ArrayList<String> attributes){
         ArrayList<String> pKeys = new ArrayList<>();
         for(int i = 0 ; i < pKeyIndices.size() ; i++){
@@ -126,5 +138,9 @@ public class Table {
             toShow = toShow + "\n";
         }
         return toShow;
+    }
+
+    public void setAttributeNames(ArrayList<String> newNames){
+        this.attributeNames = newNames;
     }
 }
