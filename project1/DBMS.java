@@ -4,28 +4,20 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class DBMS {
-
+    //CLASS VALUES
     private HashMap<String,Table> tables = new HashMap<>();
 
-    public void openCmd(){
 
-    }
+    //CLASS FUNCTIONS
+    public void openCmd(){}
 
-    public void closeCmd(){
+    public void closeCmd(){}
 
-    }
+    public void writeCmd(){}
 
-    public void writeCmd(){
+    public void exitCmd(){}
 
-    }
-
-    public void exitCmd(){
-
-    }
-
-    public void showCmd(){
-
-    }
+    public void showCmd(){}
 
     public void createCmd(String tableName, LinkedHashMap<String,String> attributes, ArrayList<String> primaryKeys){
         ArrayList<Integer> pKeyIndices = new ArrayList<>();
@@ -47,27 +39,27 @@ public class DBMS {
 
     }
 
-    public void insertCmd(){}
+    public void insertCmd(String tableName, ArrayList<String> attributes){
+        Table t = tables.get(tableName);
+        t.addEntry(attributes);
+    }
+
+    public void insertCmd(String tableName, Table tbl){} //alternative insert command that accounts for relational insertion
 
     public void deleteCmd(){}
 
-    public Table selectQry(){}
+    public Table selectQry(){ return null; }
 
-    public Table projectQry(){}
+    public Table projectQry(){ return null; }
 
-    public Table renameQry(){}
+    public Table renameQry(){ return null; }
 
-    public Table unionQry(){}
+    public Table unionQry(){ return null; }
 
-    public Table differenceQry(){}
+    public Table differenceQry(){ return null; }
 
-    public Table productQry(){}
+    public Table productQry(){ return null; }
 
-    public Table naturalJoinQry(){}
-
-
-
-
-
+    public Table naturalJoinQry(){ return null; }
 
 }
