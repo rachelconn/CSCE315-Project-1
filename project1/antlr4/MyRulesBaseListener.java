@@ -10,6 +10,11 @@ public class MyRulesBaseListener extends RulesBaseListener {
     public MyRulesBaseListener() {
     }
 
+    @Override
+    public void exitSelection(RulesParser.SelectionContext ctx) {
+        super.exitSelection(ctx);
+    }
+
     @Override public void exitShowCmd(RulesParser.ShowCmdContext ctx) {
         //System.out.println("SHOW");
     }
