@@ -46,6 +46,10 @@ public class Table {
         }
     }
 
+    public boolean contains(ArrayList<String> attributes) {
+        return entries.containsValue(attributes);
+    }
+
     public HashMap<ArrayList<String>, ArrayList<String>> asHashMap() {
         return entries;
     }
