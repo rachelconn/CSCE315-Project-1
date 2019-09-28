@@ -18,6 +18,12 @@ public class Table {
         this.attributeTypes = attributeTypes;
         this.pKeyIndices = pKeyIndices;
         this.entries = new HashMap<>();
+        this.pKeyIndices.sort(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1 - o2;
+            }
+        });
     }
 
     public Table(String name, ArrayList<Column> cols, ArrayList<Column> pKeys)
@@ -32,6 +38,10 @@ public class Table {
         {
             attributeNames.add(cols.get(i).colName);
             attributeTypes.add(cols.get(i).colType);
+            if (pKeys.contains(cols.get(i)))
+            {
+                this.pKeyIndices.add(i);
+            }
         }
     }
 
