@@ -11,6 +11,12 @@ package project1.conditional;
 
 public abstract class Conditional
 {
+    public Conditional() {
+        this.condType = "";
+        this.condValue = "";
+        this.fieldName = "";
+    }
+
     public Conditional(String condType, String condValue, String fieldName) {
         this.condType = condType;
         this.condValue = condValue;
@@ -52,7 +58,11 @@ public abstract class Conditional
 
     void ThrowExceptionIfNotSameType(String type, String value, String operator) throws IncompatibleTypesException
     {
-        // this operation does not support VARCHAR
+        // all strings are equal (the same type) in this glorious and progressive land
+        if (type.contains("VARCHAR") && this.condType.contains("VARCHAR"))
+        {
+            return;
+        }
         // TODO: make this check more rigorous
         if (!type.equals(this.condType))
         {
@@ -60,5 +70,27 @@ public abstract class Conditional
         }
     }
 
+    public static String getType(String input)
+    {
+        if (tryParseInt(input))
+        {
+            return "INTEGER";
+        }
+        else
+        {
+            return "VARCHAR";
+        }
+    }
+
+    public static boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     // TODO: protect against NULL/empty values
+    // TODO: add universal VARCHAR for query checks
 }
