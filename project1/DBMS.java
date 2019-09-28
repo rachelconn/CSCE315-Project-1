@@ -7,6 +7,7 @@ public class DBMS {
     //CLASS VALUES
     private HashMap<String,Table> tables = new HashMap<>();
 
+
     //CLASS FUNCTIONS
     public void openCmd(){}
 
@@ -45,31 +46,58 @@ public class DBMS {
 
     public void insertCmd(String tableName, Table tbl){} //alternative insert command that accounts for relational insertion
 
-    public void deleteCmd(){}
+    public void deleteCmd(String tableName, ArrayList<Conditional> conditions) throws NotImplementedException, IncompatibleTypesException {
+        boolean allHashable = true;
+        for (Conditional cnd : conditions)
+        {
+            allHashable = allHashable && cnd.HashableOperation();
+        }
+        // 1b) We also need to check that ALL primary keys are used. Only the use of all
+        // primary keys can guarantee unique identification of an entry (for O(C) fast
+        // retrieval)
+        // 2. if conditions are not favorable, perform O(n) search
+        Table toRemove = selectQry(tableName, conditions);
+        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.asHashMap().entrySet()) {
+            tables.get("tableName").asHashMap().remove(entry.getKey());
+        }
+    }
 
     public Table selectQry(String tableName, ArrayList<Conditional> conditions) throws NotImplementedException, IncompatibleTypesException {
-    // 1. if conditions are favorable, perform O(C) search
-    boolean allHashable = true;
-    for (Conditional cnd : conditions)
-    {
-        allHashable = allHashable && cnd.HashableOperation();
-    }
-    // 1b) We also need to check that ALL primary keys are used. Only the use of all
-    // primary keys can guarantee unique identification of an entry (for O(C) fast
-    // retrieval)
-    Table tableRef = tables.get(tableName);
-    ArrayList<Column> primaryKeys = tableRef.getPrimaryKeys();
-    ArrayList<Column> keys = tableRef.getAllColumns();
-    if (allHashable && __allPrimaryKeysAndOnlyPrimaryKeysChecked(conditions, primaryKeys))
-    {
-        // TODO: implement O(C) search
-        throw new NotImplementedException();
+        // 1. if conditions are favorable, perform O(C) search
+        boolean allHashable = true;
+        for (Conditional cnd : conditions)
+        {
+            allHashable = allHashable && cnd.HashableOperation();
+        }
+        // 1b) We also need to check that ALL primary keys are used. Only the use of all
+        // primary keys can guarantee unique identification of an entry (for O(C) fast
+        // retrieval)
+        Table tableRef = tables.get(tableName);
+        ArrayList<Column> primaryKeys = tableRef.getPrimaryKeys();
+        ArrayList<Column> keys = tableRef.getAllColumns();
+        if (allHashable && __allPrimaryKeysAndOnlyPrimaryKeysChecked(conditions, primaryKeys))
+        {
+            // TODO: implement O(C) search
+            throw new NotImplementedException();
+        }
+
+        // 2. if conditions are not favorable, perform O(n) search
+        return tableRef.getAllKeysThatSatisfyConditions(conditions);
     }
 
-    // 2. if conditions are not favorable, perform O(n) search
-    return tableRef.getAllKeysThatSatisfyConditions(conditions);
-    }
+    public Table projectQry(){ return null; }
 
+    public Table renameQry(){ return null; }
+
+    public Table unionQry(){ return null; }
+
+    public Table differenceQry(){ return null; }
+
+    public Table productQry(){ return null; }
+
+    public Table naturalJoinQry(){ return null; }
+
+    //helper functions
     private boolean __allPrimaryKeysAndOnlyPrimaryKeysChecked(ArrayList<Conditional> conds, ArrayList<Column> cols)
     {
         if (conds.size() != cols.size())
@@ -106,17 +134,4 @@ public class DBMS {
         keys2.sort(strCmp);
         return keys1.equals(keys2);
     }
-
-    public Table projectQry(){ return null; }
-
-    public Table renameQry(){ return null; }
-
-    public Table unionQry(){ return null; }
-
-    public Table differenceQry(){ return null; }
-
-    public Table productQry(){ return null; }
-
-    public Table naturalJoinQry(){ return null; }
-
 }
