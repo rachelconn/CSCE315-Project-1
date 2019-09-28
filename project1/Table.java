@@ -119,4 +119,8 @@ public class Table {
         }
         return toShow;
     }
+
+    public void setAttributeNames(ArrayList<String> newNames){
+        this.attributeNames = newNames;
+    }
 }

@@ -87,7 +87,11 @@ public class DBMS {
 
     public Table projectQry(){ return null; }
 
-    public Table renameQry(){ return null; }
+    public Table renameQry(String tableName, ArrayList<String> newNames){
+        Table myTable = tables.get(tableName);
+        myTable.setAttributeNames(newNames);
+        return myTable;
+    }
 
     public Table unionQry(){ return null; }
 
