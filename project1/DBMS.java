@@ -85,8 +85,28 @@ public class DBMS {
         return tableRef.getAllKeysThatSatisfyConditions(conditions);
     }
 
-    public Table projectQry(){ return null; }
-
+    public Table projectQry(Table table, ArrayList<String> attributeNames, ArrayList<String> attributeTypes, ArrayList<Integer> pKeyIndices) {
+        HashMap<ArrayList<String>, ArrayList<String>> tableMap = table.asHashMap();
+        Table projection = new Table("temp", attributeNames, attributeTypes, new ArrayList<Integer>());
+        ArrayList<Integer> wantedIndices = new ArrayList<>();
+        ArrayList<String> tableAttributes = table.getAttributeNames();
+        for (int i = 0; i < tableAttributes.size(); i++) {
+            if (attributeNames.contains(tableAttributes.get(i))) {
+                wantedIndices.add(i);
+            }
+        }
+        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : tableMap.entrySet()) {
+            ArrayList<String> toAdd = new ArrayList<>();
+            //create entry to add containing each desired attribute
+            for (int i : wantedIndices) {
+                toAdd.add(entry.getValue().get(i));
+            }
+            if (!projection.contains(toAdd)) {
+                projection.addEntry(toAdd);
+            }
+        }
+        return projection;
+    }
     public Table renameQry(String tableName, ArrayList<String> newNames){
         Table myTable = tables.get(tableName);
         myTable.setAttributeNames(newNames);
@@ -109,7 +129,7 @@ public class DBMS {
             return null;
         }
     }
-
+  
     public Table differenceQry(){ return null; }
 
     public Table productQry(){ return null; }

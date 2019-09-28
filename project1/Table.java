@@ -46,6 +46,14 @@ public class Table {
         }
     }
 
+    public boolean contains(ArrayList<String> attributes) {
+        return entries.containsValue(attributes);
+    }
+
+    public HashMap<ArrayList<String>, ArrayList<String>> asHashMap() {
+        return entries;
+    }
+
     public Table(Table a) {
         this.name = a.name;
         this.attributeTypes = a.attributeTypes;
@@ -56,10 +64,6 @@ public class Table {
 
     public ArrayList<String> getAttributeTypes() {
         return attributeTypes;
-    }
-
-    public ArrayList<String> getAttributeNames(){
-        return this.attributeNames;
     }
 
     public void addEntry(ArrayList<String> attributes){
@@ -74,10 +78,6 @@ public class Table {
 
     public void deleteEntry(ArrayList<String> key){
         entries.remove(key);
-    }
-
-    public HashMap<ArrayList<String>, ArrayList<String>> asHashMap() {
-        return entries;
     }
 
     public ArrayList<Column> getPrimaryKeys() {
@@ -123,6 +123,10 @@ public class Table {
             }
         }
         return results;
+    }
+
+    public ArrayList<String> getAttributeNames() {
+        return attributeNames;
     }
 
     public String showTable() {
