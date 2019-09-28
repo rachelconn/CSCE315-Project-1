@@ -81,7 +81,6 @@ public class DBMS {
             // TODO: implement O(C) search
             throw new NotImplementedException();
         }
-
         // 2. if conditions are not favorable, perform O(n) search
         return tableRef.getAllKeysThatSatisfyConditions(conditions);
     }
