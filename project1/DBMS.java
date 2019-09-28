@@ -89,7 +89,22 @@ public class DBMS {
 
     public Table renameQry(){ return null; }
 
-    public Table unionQry(){ return null; }
+    public Table unionQry(Table a, Table b){
+        if(a.getAttributeNames() == b.getAttributeNames() && a.getAttributeTypes() == b.getAttributeTypes()){
+            Table c = new Table(a);
+            HashMap<ArrayList<String>, ArrayList<String>> aEntries = a.asHashMap();
+            HashMap<ArrayList<String>, ArrayList<String>> bEntries = b.asHashMap();
+            for(Map.Entry<ArrayList<String>, ArrayList<String>> bEntry : bEntries.entrySet()){
+                if(aEntries.get(bEntry.getKey()) == null){ // if entry from b is not in a
+                    c.addEntry(bEntry.getValue()); //add it
+                }
+            }
+            return c;
+        } else {
+            System.out.println("Table types must be union-compatible.");
+            return null;
+        }
+    }
 
     public Table differenceQry(){ return null; }
 

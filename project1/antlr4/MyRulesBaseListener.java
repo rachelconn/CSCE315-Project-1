@@ -48,7 +48,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
         String tableName = children.get(2).getText();
         ArrayList<String> attributes = new ArrayList<>();
 
-        if(children.get(5).getText() == "RELATION"){
+        if(children.get(5).getText().equals("RELATION")){
             //TODO: parse expr here
         } else {
             //6 is the first index that a literal shows up
@@ -63,6 +63,10 @@ public class MyRulesBaseListener extends RulesBaseListener {
 
             myDBMS.insertCmd(tableName, attributes);
         }
+    }
+
+    @Override public void exitUnion(RulesParser.UnionContext ctx) {
+
     }
 
     public void printTables() {

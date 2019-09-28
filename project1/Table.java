@@ -46,8 +46,20 @@ public class Table {
         }
     }
 
-    public HashMap<ArrayList<String>, ArrayList<String>> asHashMap() {
-        return entries;
+    public Table(Table a) {
+        this.name = a.name;
+        this.attributeTypes = a.attributeTypes;
+        this.attributeNames = a.attributeNames;
+        this.pKeyIndices = a.pKeyIndices;
+        this.entries = a.entries;
+    }
+
+    public ArrayList<String> getAttributeTypes() {
+        return attributeTypes;
+    }
+
+    public ArrayList<String> getAttributeNames(){
+        return this.attributeNames;
     }
 
     public void addEntry(ArrayList<String> attributes){
@@ -62,6 +74,10 @@ public class Table {
 
     public void deleteEntry(ArrayList<String> key){
         entries.remove(key);
+    }
+
+    public HashMap<ArrayList<String>, ArrayList<String>> asHashMap() {
+        return entries;
     }
 
     public ArrayList<Column> getPrimaryKeys() {
