@@ -2,3 +2,4 @@ gen/
 .antlr/
 .idea/CSCE315-Project-1.iml
 .idea/workspace.xml
+out/
