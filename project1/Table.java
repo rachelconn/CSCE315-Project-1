@@ -96,4 +96,15 @@ public class Table {
         }
         return results;
     }
+
+    public String showTable() {
+        String toShow = this.name + ":\n";
+        for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : this.entries.entrySet()){
+            for(int j = 0; j < entry.getValue().size(); j++){
+                toShow = toShow + entry.getValue().get(j) + " ";
+            }
+            toShow = toShow + "\n";
+        }
+        return toShow;
+    }
 }
