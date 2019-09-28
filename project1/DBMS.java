@@ -7,7 +7,6 @@ public class DBMS {
     //CLASS VALUES
     private HashMap<String,Table> tables = new HashMap<>();
 
-
     //CLASS FUNCTIONS
     public void openCmd(){}
 
@@ -58,7 +57,7 @@ public class DBMS {
         // 2. if conditions are not favorable, perform O(n) search
         Table toRemove = selectQry(tableName, conditions);
         for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.asHashMap().entrySet()) {
-            tables.get("tableName").asHashMap().remove(entry.getKey());
+            tables.get("tableName").deleteEntry(entry.getKey());
         }
     }
 
