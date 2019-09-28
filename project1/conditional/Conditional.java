@@ -6,7 +6,7 @@ Used for helping select entries.
 Eg. >, < , >=, <=, ==, !=
  */
 
-package project1;
+package project1.conditional;
 
 
 public abstract class Conditional
@@ -29,11 +29,11 @@ public abstract class Conditional
         return fieldName;
     }
 
-    // no modifier = package PROTECTED
-    String condType; // what we will compare the given value's types to
-    String condValue; // what we will compare the given values to
-    String fieldName; // the name of the column of value we extract
-    abstract boolean SelectsEntry(String type, String value) throws IncompatibleTypesException;
+    // Changed modifier to public so DBMS and Table can read values
+    public String condType; // what we will compare the given value's types to
+    public String condValue; // what we will compare the given values to
+    public String fieldName; // the name of the column of value we extract
+    public abstract boolean SelectsEntry(String type, String value) throws IncompatibleTypesException;
 
     public boolean HashableOperation()
     {

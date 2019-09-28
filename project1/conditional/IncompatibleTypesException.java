@@ -4,7 +4,8 @@ SELECT helper class
 triggered if a VARCHAR(20) is compared with a VARCHAR(8) or INTEGER
  */
 
-package project1;
+package project1.conditional;
+
 public class IncompatibleTypesException extends Exception
 {
     public IncompatibleTypesException(String baseType,
