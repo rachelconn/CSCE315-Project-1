@@ -19,7 +19,7 @@ public class GreaterThanEqualsComparison extends Conditional
     }
 
     @Override
-    boolean SelectsEntry(String type, String value) throws IncompatibleTypesException {
+    public boolean SelectsEntry(String type, String value) throws IncompatibleTypesException {
         ThrowExceptionIfNotIntegersOnly(type, value, ">=");
 
         int int_incomingVal = Integer.parseInt(value);
