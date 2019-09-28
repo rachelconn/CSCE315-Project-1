@@ -85,7 +85,17 @@ public class DBMS {
         return tableRef.getAllKeysThatSatisfyConditions(conditions);
     }
 
-    public Table projectQry(){ return null; }
+    public Table projectQry(Table table, ArrayList<String> attributeNames, ArrayList<String> attributeTypes, ArrayList<Integer> pKeyIndices) {
+        HashMap<ArrayList<String>, ArrayList<String>> tableMap = table.asHashMap();
+        Table projection = new Table("temp", attributeNames, attributeTypes, new ArrayList<Integer>());
+        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : tableMap.entrySet()) {
+            ArrayList<String> values = entry.getValue();
+            if (!projection.contains(values)) {
+                projection.addEntry(entry.getValue());
+            }
+        }
+        return projection;
+    }
 
     public Table renameQry(){ return null; }
 
