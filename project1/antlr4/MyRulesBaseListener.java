@@ -2,6 +2,7 @@ package project1.antlr4;
 import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.*;
 import project1.DBMS;
+import project1.Table;
 import project1.conditional.*;
 
 public class MyRulesBaseListener extends RulesBaseListener {
@@ -115,13 +116,43 @@ public class MyRulesBaseListener extends RulesBaseListener {
         throw new Exception("What happened? --Hillary Clinton");
     }
 
+    public Table parseAtomicExpr(ParseTree t){
+        if(t.getChild(0).getText().equals("(")) {
+            return parseExpr(t.getChild(1));
+        } else {
+            return myDBMS.getTable(t.getChild(0).getText());
+        }
+    }
+
+
+    public Table parseExpr(ParseTree t){
+        // c is the rule that the expression parser found directly beneath the expr rule
+        String c = t.getChild(0).getClass().toString();
+        c = c.substring(34,c.length()-7);
+        switch(c){
+            case "AtomicExpr" : break;
+            case "Selection" : break;
+            case "Projection" : break;
+            case "Renaming" : break;
+            case "Union" : break;
+            case "Difference" : break;
+            case "Product" : break;
+            case "NaturalJoin" : break;
+        }
+        return null;
+    }
+
+    @Override public void exitQuery(RulesParser.QueryContext ctx) {    }
+
     @Override
     public void exitSelection(RulesParser.SelectionContext ctx) {
         super.exitSelection(ctx);
     }
 
     @Override public void exitShowCmd(RulesParser.ShowCmdContext ctx) {
-        //System.out.println("SHOW");
+        //child(0) : "SHOW" ; child(1) : atomicExpr
+        Table t = parseAtomicExpr(ctx.children.get(1));
+        myDBMS.showCmd(t);
     }
 
     @Override public void exitCreateCmd(RulesParser.CreateCmdContext ctx) {
@@ -154,7 +185,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
         ArrayList<String> attributes = new ArrayList<>();
 
         if(children.get(5).getText().equals("RELATION")){
-            //TODO: parse expr here
+            myDBMS.insertCmd(tableName, parseExpr(children.get(6)));
         } else {
             //6 is the first index that a literal shows up
             for(int i = 6 ; i < ctx.getChildCount() ; i += 2){

@@ -50,7 +50,7 @@ public class Table {
         return entries.containsValue(attributes);
     }
 
-    public HashMap<ArrayList<String>, ArrayList<String>> asHashMap() {
+    public HashMap<ArrayList<String>, ArrayList<String>> getEntries() {
         return entries;
     }
 

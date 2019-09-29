@@ -3,6 +3,8 @@ package project1;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.lang.System.*;
+
+import org.antlr.v4.runtime.tree.ParseTree;
 import project1.conditional.*;
 
 public class DBMS {
@@ -10,6 +12,8 @@ public class DBMS {
     private HashMap<String,Table> tables = new HashMap<>();
 
     //CLASS FUNCTIONS
+
+
     public void openCmd(){}
 
     public void closeCmd(){}
@@ -18,7 +22,9 @@ public class DBMS {
 
     public void exitCmd(){}
 
-    public void showCmd(){}
+    public void showCmd(Table t){
+        System.out.println(t.showTable());
+    }
 
     public void createCmd(String tableName, LinkedHashMap<String,String> attributes, ArrayList<String> primaryKeys){
         ArrayList<Integer> pKeyIndices = new ArrayList<>();
@@ -45,7 +51,13 @@ public class DBMS {
         t.addEntry(attributes);
     }
 
-    public void insertCmd(String tableName, Table tbl){} //alternative insert command that accounts for relational insertion
+    public void insertCmd(String tableName, Table tbl) { //alternative insert command that accounts for relational insertion
+        HashMap<ArrayList<String>,ArrayList<String>> entries = tbl.getEntries();
+        Table t = tables.get(tableName);
+        for(Map.Entry<ArrayList<String>,ArrayList<String>> e : entries.entrySet()){
+            t.addEntry(e.getValue());
+        }
+    }
 
     public void deleteCmd(String tableName, ArrayList<Conditional> conditions) throws NotImplementedException, IncompatibleTypesException {
         boolean allHashable = true;
@@ -58,7 +70,7 @@ public class DBMS {
         // retrieval)
         // 2. if conditions are not favorable, perform O(n) search
         Table toRemove = selectQry(tableName, conditions);
-        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.asHashMap().entrySet()) {
+        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.getEntries().entrySet()) {
             tables.get("tableName").deleteEntry(entry.getKey());
         }
     }
@@ -86,7 +98,7 @@ public class DBMS {
     }
 
     public Table projectQry(Table table, ArrayList<String> attributeNames, ArrayList<String> attributeTypes, ArrayList<Integer> pKeyIndices) {
-        HashMap<ArrayList<String>, ArrayList<String>> tableMap = table.asHashMap();
+        HashMap<ArrayList<String>, ArrayList<String>> tableMap = table.getEntries();
         Table projection = new Table("temp", attributeNames, attributeTypes, new ArrayList<Integer>());
         ArrayList<Integer> wantedIndices = new ArrayList<>();
         ArrayList<String> tableAttributes = table.getAttributeNames();
@@ -116,8 +128,8 @@ public class DBMS {
     public Table unionQry(Table a, Table b){
         if(a.getAttributeNames() == b.getAttributeNames() && a.getAttributeTypes() == b.getAttributeTypes()){
             Table c = new Table(a);
-            HashMap<ArrayList<String>, ArrayList<String>> aEntries = a.asHashMap();
-            HashMap<ArrayList<String>, ArrayList<String>> bEntries = b.asHashMap();
+            HashMap<ArrayList<String>, ArrayList<String>> aEntries = a.getEntries();
+            HashMap<ArrayList<String>, ArrayList<String>> bEntries = b.getEntries();
             for(Map.Entry<ArrayList<String>, ArrayList<String>> bEntry : bEntries.entrySet()){
                 if(aEntries.get(bEntry.getKey()) == null){ // if entry from b is not in a
                     c.addEntry(bEntry.getValue()); //add it
@@ -137,6 +149,8 @@ public class DBMS {
     public Table naturalJoinQry(){ return null; }
 
     //helper functions
+    public Table getTable(String tableName){ return tables.get(tableName); }
+
     public void printTables() {
         System.out.println("DB contains " + tables.size() + " tables");
         for (Map.Entry<String, Table> entry : tables.entrySet()) {
