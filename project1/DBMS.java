@@ -217,7 +217,19 @@ public class DBMS {
         }
     }
   
-    public Table differenceQry(Table a, Table b){ return null; }
+    public Table differenceQry(Table a, Table b){
+        if (a.getAttributeNames() == b.getAttributeNames() && a.getAttributeTypes() == b.getAttributeTypes()){
+            System.out.println("Table types must be union-compatible.");
+            return null;
+        }
+        Table c = new Table(a.getName(), a.getAttributeNames(), a.getAttributeTypes(), a.getpKeyIndices());
+        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : a.getEntries().entrySet()) {
+            if (!b.contains(entry.getValue())) {
+                c.addEntry(entry.getValue());
+            }
+        }
+        return c;
+    }
 
     public Table productQry(Table a, Table b){
 
