@@ -147,6 +147,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
         try {
             return myDBMS.selectQry(selectTable, c);
         } catch(Exception e) {
+            System.out.println(e);
             return null;
         }
     }
