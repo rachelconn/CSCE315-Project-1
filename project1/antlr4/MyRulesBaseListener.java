@@ -144,7 +144,14 @@ public class MyRulesBaseListener extends RulesBaseListener {
         Table selectTable = parseAtomicExpr(atomicExprTree);
         ParseTree conditionTree = t.getChild(2);
         Conditional c = parseComparison(conditionTree);
-        return myDBMS.selectQry(selectTable, c);
+        try {
+            return myDBMS.selectQry(selectTable, c);
+        }
+        catch (IncompatibleTypesException ex) {
+            System.out.println("Unsupported operation in: " + t.getText());
+            System.out.println("Additional Information: " + ex.toString());
+            return new Table("temp", selectTable.getAllColumns(), selectTable.getPrimaryKeys());
+        }
     }
 
     public Table parseProjection(ParseTree t) {
