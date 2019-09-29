@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class Table {
+
     private String name;
     private ArrayList<String> attributeNames;
     private ArrayList<String> attributeTypes;
@@ -52,6 +53,14 @@ public class Table {
         this.attributeNames = a.attributeNames;
         this.pKeyIndices = a.pKeyIndices;
         this.entries = a.entries;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public HashMap<ArrayList<String>, ArrayList<String>> getEntries() {

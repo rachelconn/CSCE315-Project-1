@@ -152,20 +152,21 @@ public class MyRulesBaseListener extends RulesBaseListener {
         // c is the rule that the expression parser found directly beneath the expr rule
         String c = t.getChild(0).getClass().toString();
         c = c.substring(34,c.length()-7);
+        ParseTree ruleContext = t.getChild(0);
         switch(c){
             case "AtomicExpr" :
-                return parseAtomicExpr(t.getChild(0));
+                return parseAtomicExpr(ruleContext.getChild(0));
             case "Selection" : break;
             case "Projection" :
-                ParseTree atomicExprTree = t.getChild(4);
+                ParseTree atomicExprTree = ruleContext.getChild(4);
                 Table projectTable = parseAtomicExpr(atomicExprTree);
-                ParseTree attributeTree = t.getChild(2);
+                ParseTree attributeTree = ruleContext.getChild(2);
                 ArrayList<String> attributeNames = parseAttributeList(attributeTree);
                 return myDBMS.projectQry(projectTable, attributeNames);
             case "Renaming" :
-                ParseTree exprTree = t.getChild(4);
+                ParseTree exprTree = ruleContext.getChild(4);
                 Table renameTable = parseExpr(exprTree);
-                ArrayList<String> newAttNames = parseAttributeList(t.getChild(2));
+                ArrayList<String> newAttNames = parseAttributeList(ruleContext.getChild(2));
                 return myDBMS.renameQry(renameTable, newAttNames);
             case "Union" : break;
             case "Difference" : break;
@@ -175,7 +176,13 @@ public class MyRulesBaseListener extends RulesBaseListener {
         return null;
     }
 
-    @Override public void exitQuery(RulesParser.QueryContext ctx) {    }
+    @Override public void exitQuery(RulesParser.QueryContext ctx) {
+        List<ParseTree> children = ctx.children;
+        String tableName = children.get(0).getText();
+        Table t = parseExpr(children.get(2));
+        t.setName(tableName);
+        myDBMS.addTable(t);
+    }
 
     @Override
     public void exitSelection(RulesParser.SelectionContext ctx) {

@@ -13,6 +13,9 @@ public class DBMS {
 
     //CLASS FUNCTIONS
 
+    public void addTable(Table t){
+        tables.put(t.getName(), t);
+    }
 
     public void openCmd(){}
 
