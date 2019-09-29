@@ -19,7 +19,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 public class SelectTest {
     public static void main(String[] args) throws FileNotFoundException {
         List<String> lines = new ArrayList<>();
-        lines.add("cats_or_dogs <- dogs + (select (kind == \"cat\" || ((kind == \"dog\" && name == \"snoop\"))) animals);");
+        lines.add("t1 <- select (kind == \"dog\") tabl;");
         Column c1 = new Column("kind", "VARCHAR(20)");
         Column c2 = new Column("name", "VARCHAR(32)");
         ArrayList<Column> cols = new ArrayList<>();
@@ -39,9 +39,9 @@ public class SelectTest {
         t.addEntry(e1);
         t.addEntry(e2);
         t.addEntry(e3);
-        db.insertCmd("tabl", t);
+        db.insertCmd(t);
 
-        MyRulesBaseListener listener = new MyRulesBaseListener();
+        MyRulesBaseListener listener = new MyRulesBaseListener(db);
         for (String line : lines) {
             CharStream charStream = CharStreams.fromString(line);
             RulesLexer lexer = new RulesLexer(charStream);
