@@ -22,7 +22,7 @@ public abstract class Conditional
     public Conditional(String condType, String condValue, String fieldName) {
         this.condType = condType;
         this.condValue = condValue;
-        this.fieldName = fieldName;
+        this.fieldName = sanitizeFieldName(fieldName);
     }
 
     public String getCondType() {
@@ -88,6 +88,11 @@ public abstract class Conditional
         {
             return "VARCHAR";
         }
+    }
+
+    public static String sanitizeFieldName(String input)
+    {
+        return input.replace("\"", "");
     }
 
     public static boolean tryParseInt(String value) {
