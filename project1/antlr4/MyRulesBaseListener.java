@@ -124,6 +124,29 @@ public class MyRulesBaseListener extends RulesBaseListener {
         }
     }
 
+    public Table parseSelection(ParseTree t) {
+        ParseTree atomicExprTree = t.getChild(4);
+        Table selectTable = parseAtomicExpr(atomicExprTree);
+        ParseTree conditionTree = t.getChild(2);
+        Conditional c = parseComparison(conditionTree);
+        return myDBMS.selectQry(selectTable, c);
+    }
+
+    public Table parseProjection(ParseTree t) {
+        ParseTree atomicExprTree = t.getChild(4);
+        Table projectTable = parseAtomicExpr(atomicExprTree);
+        ParseTree attributeTree = t.getChild(2);
+        ArrayList<String> attributeNames = parseAttributeList(attributeTree);
+        return myDBMS.projectQry(projectTable, attributeNames);
+    }
+
+    public Table parseRenaming(ParseTree t) {
+        ParseTree exprTree = t.getChild(4);
+        Table renameTable = parseExpr(exprTree);
+        ArrayList<String> newAttNames = parseAttributeList(t.getChild(2));
+        return myDBMS.renameQry(renameTable, newAttNames);
+    }
+
     public Table parseUnion(ParseTree t) {
         String tableAName = t.getChild(0).getText();
         String tableBName = t.getChild(2).getText();
@@ -155,23 +178,21 @@ public class MyRulesBaseListener extends RulesBaseListener {
         ParseTree ruleContext = t.getChild(0);
         switch(c){
             case "AtomicExpr" :
-                return parseAtomicExpr(ruleContext.getChild(0));
-            case "Selection" : break;
+                return parseAtomicExpr(ruleContext);
+            case "Selection" :
+                return parseSelection(ruleContext);
             case "Projection" :
-                ParseTree atomicExprTree = ruleContext.getChild(4);
-                Table projectTable = parseAtomicExpr(atomicExprTree);
-                ParseTree attributeTree = ruleContext.getChild(2);
-                ArrayList<String> attributeNames = parseAttributeList(attributeTree);
-                return myDBMS.projectQry(projectTable, attributeNames);
+                return parseProjection(ruleContext);
             case "Renaming" :
-                ParseTree exprTree = ruleContext.getChild(4);
-                Table renameTable = parseExpr(exprTree);
-                ArrayList<String> newAttNames = parseAttributeList(ruleContext.getChild(2));
-                return myDBMS.renameQry(renameTable, newAttNames);
-            case "Union" : return parseUnion(t.getChild(0));
-            case "Difference" : return parseDifference(t.getChild(0));
-            case "Product" : return parseProduct(t.getChild(0));
-            case "NaturalJoin" : return parseNaturalJoin(t.getChild(0));
+                return parseRenaming(ruleContext);
+            case "Union" :
+                return parseUnion(ruleContext);
+            case "Difference" :
+                return parseDifference(ruleContext);
+            case "Product" :
+                return parseProduct(ruleContext);
+            case "NaturalJoin" :
+                return parseNaturalJoin(ruleContext);
         }
         return null;
     }
