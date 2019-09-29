@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import project1.Column;
@@ -17,7 +18,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 public class SelectTest {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws Exception {
         List<String> lines = new ArrayList<>();
         lines.add("t1 <- select (kind == \"dog\") tabl;");
         Column c1 = new Column("kind", "VARCHAR(20)");
@@ -52,5 +53,10 @@ public class SelectTest {
             walker.walk(listener, programContext);
         }
         listener.printTables();
+
+        db.serializeTables("tables");
+
+        HashMapdb.deserializeTables("tables");
+        db.printTables();
     }
 }

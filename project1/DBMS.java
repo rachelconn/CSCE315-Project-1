@@ -1,9 +1,13 @@
 package project1;
 
+import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.lang.System.*;
 import project1.conditional.*;
+
+import java.beans.XMLDecoder;
+import java.beans.XMLEncoder;
 
 public class DBMS {
     //CLASS VALUES
@@ -17,6 +21,46 @@ public class DBMS {
     public void writeCmd(){}
 
     public void exitCmd(){}
+
+    // TODO: modify access to private after testing
+    public void serializeTables(String filename) throws FileNotFoundException {
+        if (!filename.substring(filename.length() - 4).equals(".xml"))
+        {
+            filename = filename + ".xml";
+        }
+        XMLEncoder e = new XMLEncoder(
+                new BufferedOutputStream(
+                        new FileOutputStream(filename)));
+        e.writeObject(tables);
+        e.close();
+    }
+
+    private void serializeTables() throws FileNotFoundException {
+        serializeTables("tables.xml");
+    }
+
+    // TODO: modify access to private after testing
+    public HashMap<String,Table> deserializeTables(String filename) throws Exception, FileNotFoundException {
+        if (!filename.substring(filename.length() - 4).equals(".xml"))
+        {
+            filename = filename + ".xml";
+        }
+        XMLDecoder d = new XMLDecoder(
+                new BufferedInputStream(
+                        new FileInputStream(filename)));
+        Object result = d.readObject();
+        HashMap<String,Table> h_result;
+        if (result instanceof HashMap)
+        {
+            h_result = (HashMap<String,Table>) result;
+        }
+        else
+        {
+            throw new Exception("Unknown thing read in");
+        }
+        d.close();
+        return h_result;
+    }
 
     public void showCmd(){}
 
@@ -60,14 +104,13 @@ public class DBMS {
         }
     }
 
-    public Table selectQry(String tableName, Conditional conditionTree) throws NotImplementedException, IncompatibleTypesException {
+    public Table selectQry(Table tableRef, Conditional conditionTree) throws NotImplementedException, IncompatibleTypesException {
         // 1. if conditions are favorable, perform O(C) search
         boolean allHashable = true;
         allHashable = conditionTree.HashableOperation();
         // 1b) We also need to check that ALL primary keys are used. Only the use of all
         // primary keys can guarantee unique identification of an entry (for O(C) fast
         // retrieval)
-        Table tableRef = tables.get(tableName);
         ArrayList<Column> primaryKeys = tableRef.getPrimaryKeys();
         ArrayList<Column> keys = tableRef.getAllColumns();
         if (allHashable && __allPrimaryKeysAndOnlyPrimaryKeysChecked(conditionTree, primaryKeys))
