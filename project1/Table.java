@@ -7,6 +7,10 @@ import java.util.*;
 import java.util.Map.Entry;
 
 public class Table {
+    public String getName() {
+        return name;
+    }
+
     private String name;
     private ArrayList<String> attributeNames;
     private ArrayList<String> attributeTypes;

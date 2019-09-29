@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import project1.Column;
+import project1.DBMS;
 import project1.Table;
 
 import project1.antlr4.MyRulesBaseListener;
@@ -25,7 +26,7 @@ public class SelectTest {
         cols.add(c1);
         cols.add(c2);
         Table t = new Table("tabl", cols, cols);
-        DBMS.
+        DBMS db = new DBMS();
         ArrayList<String> e1 = new ArrayList<>();
         e1.add("dog");
         e1.add("snoop");
@@ -38,7 +39,7 @@ public class SelectTest {
         t.addEntry(e1);
         t.addEntry(e2);
         t.addEntry(e3);
-
+        db.insertCmd("tabl", t);
 
         MyRulesBaseListener listener = new MyRulesBaseListener();
         for (String line : lines) {
