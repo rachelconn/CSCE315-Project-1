@@ -1,8 +1,7 @@
 package project1;
 
-import java.lang.reflect.Array;
 import java.util.*;
-import java.lang.System.*;
+
 import project1.conditional.*;
 
 public class DBMS {
@@ -58,7 +57,7 @@ public class DBMS {
         // retrieval)
         // 2. if conditions are not favorable, perform O(n) search
         Table toRemove = selectQry(tableName, conditions);
-        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.asHashMap().entrySet()) {
+        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.getEntries().entrySet()) {
             tables.get("tableName").deleteEntry(entry.getKey());
         }
     }
@@ -97,7 +96,28 @@ public class DBMS {
 
     public Table differenceQry(){ return null; }
 
-    public Table productQry(){ return null; }
+    public Table productQry(Table a, Table b){
+
+        ArrayList<String> attributeNames = a.getAttributeNames();
+        attributeNames.addAll(b.getAttributeNames());
+        ArrayList<String> attributeTypes = a.getAttributeTypes();
+        attributeTypes.addAll(b.getAttributeTypes());
+        ArrayList<Integer> pKeyIndices = a.getpKeyIndices();
+        ArrayList<Integer> bPKeyIndices = b.getpKeyIndices();
+        for(int i = 0; i<bPKeyIndices.size();i++){
+            bPKeyIndices.set(i, bPKeyIndices.get(i)+attributeNames.size());
+        }
+        pKeyIndices.addAll(bPKeyIndices);
+        Table myTable = new Table("temp",attributeNames,attributeTypes,pKeyIndices);
+        for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : a.getEntries().entrySet()){
+            for(HashMap.Entry<ArrayList<String>,ArrayList<String>> bEntry : b.getEntries().entrySet()){
+                ArrayList<String> entryToAdd = entry.getValue();
+                entryToAdd.addAll(bEntry.getValue());
+                myTable.addEntry(entryToAdd);
+            }
+        }
+        return myTable;
+    }
 
     public Table naturalJoinQry(){ return null; }
 

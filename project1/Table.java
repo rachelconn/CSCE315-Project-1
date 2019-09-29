@@ -46,7 +46,7 @@ public class Table {
         }
     }
 
-    public HashMap<ArrayList<String>, ArrayList<String>> asHashMap() {
+    public HashMap<ArrayList<String>, ArrayList<String>> getEntries() {
         return entries;
     }
 
@@ -122,5 +122,17 @@ public class Table {
 
     public void setAttributeNames(ArrayList<String> newNames){
         this.attributeNames = newNames;
+    }
+
+    public ArrayList<String> getAttributeNames(){
+        return this.attributeNames;
+    }
+
+    public ArrayList<String> getAttributeTypes(){
+        return this.attributeTypes;
+    }
+
+    public ArrayList<Integer> getpKeyIndices(){
+        return this.pKeyIndices;
     }
 }
