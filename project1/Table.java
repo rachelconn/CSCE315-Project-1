@@ -10,12 +10,14 @@ import java.util.Map.Entry;
 
 public class Table implements Serializable {
 
+    //CLASS FIELDS
     private String name;
     private ArrayList<String> attributeNames;
     private ArrayList<String> attributeTypes;
     private ArrayList<Integer> pKeyIndices;
     private HashMap<ArrayList<String>,ArrayList<String>> entries; //key is the list of primary keys, value is a list of all the attributes
 
+    //CLASS CONSTRUCTORS
     public Table(String name, ArrayList<String> attributeNames, ArrayList<String> attributeTypes, ArrayList<Integer> pKeyIndices) {
         this.name = name;
         this.attributeNames = attributeNames;
@@ -57,20 +59,27 @@ public class Table implements Serializable {
         this.entries = a.entries;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    //GETTERS AND SETTERS
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public HashMap<ArrayList<String>, ArrayList<String>> getEntries() {
         return entries;
     }
 
+    public void setEntries(HashMap<ArrayList<String>, ArrayList<String>> entries) { this.entries = entries; }
+
     public ArrayList<String> getAttributeTypes() {
         return attributeTypes;
+    }
+
+    public void setAttributeTypes(ArrayList<String> attributeTypes) {
+        this.attributeTypes = attributeTypes;
     }
 
     public ArrayList<String> getAttributeNames() { return attributeNames; }
@@ -78,6 +87,8 @@ public class Table implements Serializable {
     public void setAttributeNames(ArrayList<String> newNames){ this.attributeNames = newNames; }
 
     public ArrayList<Integer> getpKeyIndices() { return pKeyIndices; }
+
+    public void setpKeyIndices(ArrayList<Integer> pKeyIndices) { this.pKeyIndices = pKeyIndices; }
 
     public ArrayList<String> getpKeyNames() {
         ArrayList<String> pKeyNames = new ArrayList<>();
@@ -88,8 +99,7 @@ public class Table implements Serializable {
         return pKeyNames;
     }
 
-
-
+    //CLASS FUNCTIONS
     public void addEntry(ArrayList<String> attributes){
         ArrayList<String> pKeys = new ArrayList<>();
         for(int i = 0 ; i < pKeyIndices.size() ; i++){
@@ -150,8 +160,6 @@ public class Table implements Serializable {
         return results;
     }
 
-
-
     public String showTable() {
         String toShow = this.name + ":\n";
         for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : this.entries.entrySet()){
@@ -161,18 +169,5 @@ public class Table implements Serializable {
             toShow = toShow + "\n";
         }
         return toShow;
-    }
-
-    // for serialization only
-    public void setAttributeTypes(ArrayList<String> attributeTypes) {
-        this.attributeTypes = attributeTypes;
-    }
-
-    public void setpKeyIndices(ArrayList<Integer> pKeyIndices) {
-        this.pKeyIndices = pKeyIndices;
-    }
-
-    public void setEntries(HashMap<ArrayList<String>, ArrayList<String>> entries) {
-        this.entries = entries;
     }
 }
