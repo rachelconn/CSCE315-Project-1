@@ -7,6 +7,7 @@ import java.lang.System;
 import java.util.*;
 import java.util.Map.Entry;
 
+
 public class Table implements Serializable {
     public Table() {
     }
@@ -54,14 +55,6 @@ public class Table implements Serializable {
         }
     }
 
-    public boolean contains(ArrayList<String> attributes) {
-        return entries.containsValue(attributes);
-    }
-
-    public HashMap<ArrayList<String>, ArrayList<String>> asHashMap() {
-        return entries;
-    }
-
     public Table(Table a) {
         this.name = a.name;
         this.attributeTypes = a.attributeTypes;
@@ -70,9 +63,36 @@ public class Table implements Serializable {
         this.entries = a.entries;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public HashMap<ArrayList<String>, ArrayList<String>> getEntries() {
+        return entries;
+    }
+
     public ArrayList<String> getAttributeTypes() {
         return attributeTypes;
     }
+
+    public ArrayList<String> getAttributeNames() { return attributeNames; }
+
+    public ArrayList<Integer> getpKeyIndices() { return pKeyIndices; }
+
+    public ArrayList<String> getpKeyNames() {
+        ArrayList<String> pKeyNames = new ArrayList<>();
+        for(Integer i : pKeyIndices){
+            String pKeyName = attributeNames.get(i);
+            pKeyNames.add(pKeyName);
+        }
+        return pKeyNames;
+    }
+
+    public void setAttributeNames(ArrayList<String> newNames){ this.attributeNames = newNames; }
 
     public void addEntry(ArrayList<String> attributes){
         ArrayList<String> pKeys = new ArrayList<>();
@@ -106,6 +126,10 @@ public class Table implements Serializable {
         return cols;
     }
 
+    public boolean contains(ArrayList<String> attributes) {
+        return entries.containsValue(attributes);
+    }
+
     public Table getAllKeysThatSatisfyConditions(Conditional cond) throws IncompatibleTypesException {
         Table results = new Table("temp", this.getAllColumns(), this.getPrimaryKeys());
         for (Entry<ArrayList<String>,ArrayList<String>> entry : entries.entrySet())
@@ -130,9 +154,7 @@ public class Table implements Serializable {
         return results;
     }
 
-    public ArrayList<String> getAttributeNames() {
-        return attributeNames;
-    }
+
 
     public String showTable() {
         String toShow = this.name + ":\n";
@@ -148,7 +170,6 @@ public class Table implements Serializable {
     public void setAttributeNames(ArrayList<String> newNames){
         this.attributeNames = newNames;
     }
-
 
     // for serialization only
     public void setName(String name) {
