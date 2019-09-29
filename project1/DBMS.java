@@ -16,7 +16,6 @@ public class DBMS {
     private HashMap<String,Table> tables = new HashMap<>();
 
     //CLASS FUNCTIONS
-
     public void addTable(Table t){
         tables.put(t.getName(), t);
     }
@@ -117,7 +116,7 @@ public class DBMS {
 
     public void deleteCmd(String tableName, Conditional conditionTree) throws NotImplementedException, IncompatibleTypesException {
         Table toRemove = selectQry(tableName, conditionTree);
-        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.asHashMap().entrySet()) {
+        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.getEntries().entrySet()) {
             tables.get("tableName").deleteEntry(entry.getKey());
         }
     }
