@@ -186,5 +186,16 @@ public class Table implements Serializable {
 
     public void setEntries(HashMap<ArrayList<String>, ArrayList<String>> entries) {
         this.entries = entries;
+
+    public ArrayList<String> getAttributeNames(){
+        return this.attributeNames;
+    }
+
+    public ArrayList<String> getAttributeTypes(){
+        return this.attributeTypes;
+    }
+
+    public ArrayList<Integer> getpKeyIndices(){
+        return this.pKeyIndices;
     }
 }

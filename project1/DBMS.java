@@ -220,7 +220,28 @@ public class DBMS {
   
     public Table differenceQry(Table a, Table b){ return null; }
 
-    public Table productQry(Table a, Table b){ return null; }
+    public Table productQry(Table a, Table b){
+
+        ArrayList<String> attributeNames = a.getAttributeNames();
+        attributeNames.addAll(b.getAttributeNames());
+        ArrayList<String> attributeTypes = a.getAttributeTypes();
+        attributeTypes.addAll(b.getAttributeTypes());
+        ArrayList<Integer> pKeyIndices = a.getpKeyIndices();
+        ArrayList<Integer> bPKeyIndices = b.getpKeyIndices();
+        for(int i = 0; i<bPKeyIndices.size();i++){
+            bPKeyIndices.set(i, bPKeyIndices.get(i)+attributeNames.size());
+        }
+        pKeyIndices.addAll(bPKeyIndices);
+        Table myTable = new Table("temp",attributeNames,attributeTypes,pKeyIndices);
+        for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : a.getEntries().entrySet()){
+            for(HashMap.Entry<ArrayList<String>,ArrayList<String>> bEntry : b.getEntries().entrySet()){
+                ArrayList<String> entryToAdd = entry.getValue();
+                entryToAdd.addAll(bEntry.getValue());
+                myTable.addEntry(entryToAdd);
+            }
+        }
+        return myTable;
+    }
 
     public Table naturalJoinQry(Table a, Table b){ return null; }
 
