@@ -144,7 +144,11 @@ public class MyRulesBaseListener extends RulesBaseListener {
         Table selectTable = parseAtomicExpr(atomicExprTree);
         ParseTree conditionTree = t.getChild(2);
         Conditional c = parseComparison(conditionTree);
-        return myDBMS.selectQry(selectTable, c);
+        try {
+            return myDBMS.selectQry(selectTable, c);
+        } catch(Exception e) {
+            return null;
+        }
     }
 
     public Table parseProjection(ParseTree t) {
