@@ -1,12 +1,16 @@
 package project1;
 
+import java.io.Serializable;
 import java.sql.Array;
 import project1.conditional.*;
 import java.lang.System;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class Table {
+public class Table implements Serializable {
+    public Table() {
+    }
+
     public String getName() {
         return name;
     }
@@ -143,5 +147,23 @@ public class Table {
 
     public void setAttributeNames(ArrayList<String> newNames){
         this.attributeNames = newNames;
+    }
+
+
+    // for serialization only
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAttributeTypes(ArrayList<String> attributeTypes) {
+        this.attributeTypes = attributeTypes;
+    }
+
+    public void setpKeyIndices(ArrayList<Integer> pKeyIndices) {
+        this.pKeyIndices = pKeyIndices;
+    }
+
+    public void setEntries(HashMap<ArrayList<String>, ArrayList<String>> entries) {
+        this.entries = entries;
     }
 }
