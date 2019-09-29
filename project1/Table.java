@@ -46,14 +46,6 @@ public class Table {
         }
     }
 
-    public boolean contains(ArrayList<String> attributes) {
-        return entries.containsValue(attributes);
-    }
-
-    public HashMap<ArrayList<String>, ArrayList<String>> getEntries() {
-        return entries;
-    }
-
     public Table(Table a) {
         this.name = a.name;
         this.attributeTypes = a.attributeTypes;
@@ -62,9 +54,28 @@ public class Table {
         this.entries = a.entries;
     }
 
+    public HashMap<ArrayList<String>, ArrayList<String>> getEntries() {
+        return entries;
+    }
+
     public ArrayList<String> getAttributeTypes() {
         return attributeTypes;
     }
+
+    public ArrayList<String> getAttributeNames() { return attributeNames; }
+
+    public ArrayList<Integer> getpKeyIndices() { return pKeyIndices; }
+
+    public ArrayList<String> getpKeyNames() {
+        ArrayList<String> pKeyNames = new ArrayList<>();
+        for(Integer i : pKeyIndices){
+            String pKeyName = attributeNames.get(i);
+            pKeyNames.add(pKeyName);
+        }
+        return pKeyNames;
+    }
+
+    public void setAttributeNames(ArrayList<String> newNames){ this.attributeNames = newNames; }
 
     public void addEntry(ArrayList<String> attributes){
         ArrayList<String> pKeys = new ArrayList<>();
@@ -98,6 +109,10 @@ public class Table {
         return cols;
     }
 
+    public boolean contains(ArrayList<String> attributes) {
+        return entries.containsValue(attributes);
+    }
+
     public Table getAllKeysThatSatisfyConditions(ArrayList<Conditional> conds) throws IncompatibleTypesException {
         Table results = new Table("temp", this.getAllColumns(), this.getPrimaryKeys());
         for (Entry<ArrayList<String>,ArrayList<String>> entry : entries.entrySet())
@@ -125,9 +140,7 @@ public class Table {
         return results;
     }
 
-    public ArrayList<String> getAttributeNames() {
-        return attributeNames;
-    }
+
 
     public String showTable() {
         String toShow = this.name + ":\n";
@@ -140,7 +153,4 @@ public class Table {
         return toShow;
     }
 
-    public void setAttributeNames(ArrayList<String> newNames){
-        this.attributeNames = newNames;
-    }
 }

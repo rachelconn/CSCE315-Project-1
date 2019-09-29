@@ -97,9 +97,8 @@ public class DBMS {
         return tableRef.getAllKeysThatSatisfyConditions(conditions);
     }
 
-    public Table projectQry(Table table, ArrayList<String> attributeNames, ArrayList<String> attributeTypes, ArrayList<Integer> pKeyIndices) {
+    public Table projectQry(Table table, ArrayList<String> attributeNames) {
         HashMap<ArrayList<String>, ArrayList<String>> tableMap = table.getEntries();
-        Table projection = new Table("temp", attributeNames, attributeTypes, new ArrayList<Integer>());
         ArrayList<Integer> wantedIndices = new ArrayList<>();
         ArrayList<String> tableAttributes = table.getAttributeNames();
         for (int i = 0; i < tableAttributes.size(); i++) {
@@ -107,6 +106,22 @@ public class DBMS {
                 wantedIndices.add(i);
             }
         }
+
+        ArrayList<Integer> pKeyIndices = table.getpKeyIndices();
+        for(Integer i : pKeyIndices){
+            if(!wantedIndices.contains(i)){
+                pKeyIndices.remove(i);
+            }
+        }
+
+        ArrayList<String> oldAttTypes = table.getAttributeTypes();
+        ArrayList<String> attributeTypes = new ArrayList<>();
+        for(Integer i : wantedIndices) {
+            String newAttType = oldAttTypes.get(i);
+            attributeTypes.add(newAttType);
+        }
+
+        Table projection = new Table("temp", attributeNames, attributeTypes, new ArrayList<Integer>());
         for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : tableMap.entrySet()) {
             ArrayList<String> toAdd = new ArrayList<>();
             //create entry to add containing each desired attribute
@@ -119,10 +134,9 @@ public class DBMS {
         }
         return projection;
     }
-    public Table renameQry(String tableName, ArrayList<String> newNames){
-        Table myTable = tables.get(tableName);
-        myTable.setAttributeNames(newNames);
-        return myTable;
+    public Table renameQry(Table t, ArrayList<String> newNames){
+        t.setAttributeNames(newNames);
+        return t;
     }
 
     public Table unionQry(Table a, Table b){

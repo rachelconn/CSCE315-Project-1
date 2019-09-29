@@ -130,10 +130,20 @@ public class MyRulesBaseListener extends RulesBaseListener {
         String c = t.getChild(0).getClass().toString();
         c = c.substring(34,c.length()-7);
         switch(c){
-            case "AtomicExpr" : break;
+            case "AtomicExpr" :
+                return parseAtomicExpr(t.getChild(0));
             case "Selection" : break;
-            case "Projection" : break;
-            case "Renaming" : break;
+            case "Projection" :
+                ParseTree atomicExprTree = t.getChild(4);
+                Table projectTable = parseAtomicExpr(atomicExprTree);
+                ParseTree attributeTree = t.getChild(2);
+                ArrayList<String> attributeNames = parseAttributeList(attributeTree);
+                return myDBMS.projectQry(projectTable, attributeNames);
+            case "Renaming" :
+                ParseTree exprTree = t.getChild(4);
+                Table renameTable = parseExpr(exprTree);
+                ArrayList<String> newAttNames = parseAttributeList(t.getChild(2));
+                return myDBMS.renameQry(renameTable, newAttNames);
             case "Union" : break;
             case "Difference" : break;
             case "Product" : break;
@@ -207,6 +217,14 @@ public class MyRulesBaseListener extends RulesBaseListener {
 
     public void printTables() {
         myDBMS.printTables();
+    }
+
+    public ArrayList<String> parseAttributeList(ParseTree t){
+        ArrayList<String> attList = new ArrayList<>();
+        for(int i = 0 ; i < t.getChildCount() ; i += 2){
+            attList.add(t.getChild(i).getText());
+        }
+        return attList;
     }
 }
 
