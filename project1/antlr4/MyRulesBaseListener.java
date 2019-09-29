@@ -168,10 +168,10 @@ public class MyRulesBaseListener extends RulesBaseListener {
                 Table renameTable = parseExpr(exprTree);
                 ArrayList<String> newAttNames = parseAttributeList(ruleContext.getChild(2));
                 return myDBMS.renameQry(renameTable, newAttNames);
-            case "Union" : break;
-            case "Difference" : break;
-            case "Product" : break;
-            case "NaturalJoin" : break;
+            case "Union" : return parseUnion(t.getChild(0));
+            case "Difference" : return parseDifference(t.getChild(0));
+            case "Product" : return parseProduct(t.getChild(0));
+            case "NaturalJoin" : return parseNaturalJoin(t.getChild(0));
         }
         return null;
     }
