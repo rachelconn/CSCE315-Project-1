@@ -114,14 +114,14 @@ public class DBMS {
         tables.put(tbl.getName(), tbl);
     }
 
-    public void deleteCmd(String tableName, Conditional conditionTree) throws NotImplementedException, IncompatibleTypesException {
+    public void deleteCmd(String tableName, Conditional conditionTree) throws IncompatibleTypesException {
         Table toRemove = selectQry(tableName, conditionTree);
         for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.getEntries().entrySet()) {
             tables.get("tableName").deleteEntry(entry.getKey());
         }
     }
     
-    public Table selectQry(String tableName, Conditional conditionTree) throws NotImplementedException, IncompatibleTypesException {
+    public Table selectQry(String tableName, Conditional conditionTree) throws IncompatibleTypesException {
         // 1. if conditions are favorable, perform O(C) search
         boolean allHashable = true;
         allHashable = conditionTree.HashableOperation();
@@ -141,7 +141,7 @@ public class DBMS {
         return tableRef.getAllKeysThatSatisfyConditions(conditionTree);
     }
 
-    public Table selectQry(Table tableRef, Conditional conditionTree) throws NotImplementedException, IncompatibleTypesException {
+    public Table selectQry(Table tableRef, Conditional conditionTree) throws IncompatibleTypesException {
         // 1. if conditions are favorable, perform O(C) search
         boolean allHashable = true;
         allHashable = conditionTree.HashableOperation();
