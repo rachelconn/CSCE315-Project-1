@@ -131,11 +131,12 @@ public class DBMS {
         Table tableRef = tables.get(tableName);
         ArrayList<Column> primaryKeys = tableRef.getPrimaryKeys();
         ArrayList<Column> keys = tableRef.getAllColumns();
+        /*
         if (allHashable && __allPrimaryKeysAndOnlyPrimaryKeysChecked(conditionTree, primaryKeys))
         {
             // TODO: implement O(C) search
             throw new NotImplementedException();
-        }
+        }*/
         // 2. if conditions are not favorable, perform O(n) search
         return tableRef.getAllKeysThatSatisfyConditions(conditionTree);
     }
