@@ -56,7 +56,7 @@ public class SelectTest {
 
         db.serializeTables("tables");
 
-        HashMapdb.deserializeTables("tables");
+        HashMap<String,Table> tables = db.deserializeTables("tables");
         db.printTables();
     }
 }
