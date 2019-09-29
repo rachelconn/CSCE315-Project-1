@@ -20,6 +20,10 @@ public class DBMS {
 
     public void showCmd(){}
 
+    public void createTable(String tableName, Table table) {
+        tables.put(tableName, table);
+    }
+
     public void createCmd(String tableName, LinkedHashMap<String,String> attributes, ArrayList<String> primaryKeys){
         ArrayList<Integer> pKeyIndices = new ArrayList<>();
         ArrayList<String> attributeNames = new ArrayList<>();
