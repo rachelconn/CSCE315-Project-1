@@ -61,6 +61,28 @@ public class DBMS {
     }
 
     public Table selectQry(String tableName, Conditional conditionTree) throws NotImplementedException, IncompatibleTypesException {
+<<<<<<< Updated upstream
+=======
+        // 1. if conditions are favorable, perform O(C) search
+        boolean allHashable = true;
+        allHashable = conditionTree.HashableOperation();
+        // 1b) We also need to check that ALL primary keys are used. Only the use of all
+        // primary keys can guarantee unique identification of an entry (for O(C) fast
+        // retrieval)
+        Table tableRef = tables.get(tableName);
+        ArrayList<Column> primaryKeys = tableRef.getPrimaryKeys();
+        ArrayList<Column> keys = tableRef.getAllColumns();
+        if (allHashable && __allPrimaryKeysAndOnlyPrimaryKeysChecked(conditionTree, primaryKeys))
+        {
+            // TODO: implement O(C) search
+            throw new NotImplementedException();
+        }
+        // 2. if conditions are not favorable, perform O(n) search
+        return tableRef.getAllKeysThatSatisfyConditions(conditionTree);
+    }
+
+    public Table selectQry(Table tableRef, Conditional conditionTree) throws NotImplementedException, IncompatibleTypesException {
+>>>>>>> Stashed changes
         // 1. if conditions are favorable, perform O(C) search
         boolean allHashable = true;
         allHashable = conditionTree.HashableOperation();
