@@ -124,6 +124,29 @@ public class MyRulesBaseListener extends RulesBaseListener {
         }
     }
 
+    public Table parseUnion(ParseTree t) {
+        String tableAName = t.getChild(0).getText();
+        String tableBName = t.getChild(2).getText();
+        return myDBMS.unionQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+    }
+
+    public Table parseDifference(ParseTree t) {
+        String tableAName = t.getChild(0).getText();
+        String tableBName = t.getChild(2).getText();
+        return myDBMS.differenceQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+    }
+
+    public Table parseProduct(ParseTree t) {
+        String tableAName = t.getChild(0).getText();
+        String tableBName = t.getChild(2).getText();
+        return myDBMS.productQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+    }
+
+    public Table parseNaturalJoin(ParseTree t) {
+        String tableAName = t.getChild(0).getText();
+        String tableBName = t.getChild(2).getText();
+        return myDBMS.naturalJoinQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+    }
 
     public Table parseExpr(ParseTree t){
         // c is the rule that the expression parser found directly beneath the expr rule
