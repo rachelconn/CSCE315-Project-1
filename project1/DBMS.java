@@ -48,15 +48,6 @@ public class DBMS {
     public void insertCmd(String tableName, Table tbl){} //alternative insert command that accounts for relational insertion
 
     public void deleteCmd(String tableName, ArrayList<Conditional> conditions) throws NotImplementedException, IncompatibleTypesException {
-        boolean allHashable = true;
-        for (Conditional cnd : conditions)
-        {
-            allHashable = allHashable && cnd.HashableOperation();
-        }
-        // 1b) We also need to check that ALL primary keys are used. Only the use of all
-        // primary keys can guarantee unique identification of an entry (for O(C) fast
-        // retrieval)
-        // 2. if conditions are not favorable, perform O(n) search
         Table toRemove = selectQry(tableName, conditions);
         for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.asHashMap().entrySet()) {
             tables.get("tableName").deleteEntry(entry.getKey());
