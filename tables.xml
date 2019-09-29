@@ -4,6 +4,16 @@
   <void method="put">
    <string>tabl</string>
    <object class="project1.Table">
+    <void property="PKeyIndices">
+     <object class="java.util.ArrayList">
+      <void method="add">
+       <int>0</int>
+      </void>
+      <void method="add">
+       <int>1</int>
+      </void>
+     </object>
+    </void>
     <void property="attributeNames">
      <object class="java.util.ArrayList">
       <void method="add">
@@ -21,6 +31,64 @@
       </void>
       <void method="add">
        <string>VARCHAR(32)</string>
+      </void>
+     </object>
+    </void>
+    <void property="entries">
+     <object class="java.util.HashMap">
+      <void method="put">
+       <object class="java.util.ArrayList">
+        <void method="add">
+         <string>fish</string>
+        </void>
+        <void method="add">
+         <string>ryan</string>
+        </void>
+       </object>
+       <object class="java.util.ArrayList">
+        <void method="add">
+         <string>fish</string>
+        </void>
+        <void method="add">
+         <string>ryan</string>
+        </void>
+       </object>
+      </void>
+      <void method="put">
+       <object class="java.util.ArrayList">
+        <void method="add">
+         <string>dog</string>
+        </void>
+        <void method="add">
+         <string>snoop</string>
+        </void>
+       </object>
+       <object class="java.util.ArrayList">
+        <void method="add">
+         <string>dog</string>
+        </void>
+        <void method="add">
+         <string>snoop</string>
+        </void>
+       </object>
+      </void>
+      <void method="put">
+       <object class="java.util.ArrayList">
+        <void method="add">
+         <string>cat</string>
+        </void>
+        <void method="add">
+         <string>eli</string>
+        </void>
+       </object>
+       <object class="java.util.ArrayList">
+        <void method="add">
+         <string>cat</string>
+        </void>
+        <void method="add">
+         <string>eli</string>
+        </void>
+       </object>
       </void>
      </object>
     </void>

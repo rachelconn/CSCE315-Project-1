@@ -14,9 +14,23 @@ public class Table implements Serializable {
     private String name;
     private ArrayList<String> attributeNames;
     private ArrayList<String> attributeTypes;
+
+    public ArrayList<Integer> getPKeyIndices() {
+        return pKeyIndices;
+    }
+
+    public void setPKeyIndices(ArrayList<Integer> pKeyIndices) {
+        this.pKeyIndices = pKeyIndices;
+    }
+
     private ArrayList<Integer> pKeyIndices;
     private HashMap<ArrayList<String>,ArrayList<String>> entries; //key is the list of primary keys, value is a list of all the attributes
 
+    public int getSize()
+    {
+        return entries.size();
+    }
+  
     //CLASS CONSTRUCTORS
     public Table(String name, ArrayList<String> attributeNames, ArrayList<String> attributeTypes, ArrayList<Integer> pKeyIndices) {
         this.name = name;
@@ -169,5 +183,27 @@ public class Table implements Serializable {
             toShow = toShow + "\n";
         }
         return toShow;
+    }
+
+    public void setAttributeNames(ArrayList<String> newNames){
+        this.attributeNames = newNames;
+    }
+
+
+    // for serialization only
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAttributeTypes(ArrayList<String> attributeTypes) {
+        this.attributeTypes = attributeTypes;
+    }
+
+    public void setEntries(HashMap<ArrayList<String>, ArrayList<String>> entries) {
+        this.entries = entries;
+    }
+
+    public HashMap<ArrayList<String>, ArrayList<String>> getEntries() {
+        return entries;
     }
 }

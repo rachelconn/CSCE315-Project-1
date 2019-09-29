@@ -3,6 +3,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import project1.Column;
 import project1.DBMS;
@@ -57,6 +58,9 @@ public class SelectTest {
         db.serializeTables("tables");
 
         HashMap<String,Table> tables = db.deserializeTables("tables");
-        db.printTables();
+        System.out.println("Read " + Integer.toString(tables.size()) + " table from xml file");
+        for (Map.Entry<String, Table> entry : tables.entrySet()) {
+            System.out.println("Table " + entry.getKey() + " has " + Integer.toString(entry.getValue().getSize()) + " entries");
+        }
     }
 }
