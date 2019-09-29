@@ -294,7 +294,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
     @Override
     public void exitComparison(RulesParser.ComparisonContext ctx) {
         // comparison debugging
-        if (true) {
+        if (false) {
             try {
                 Conditional cond = parseComparison(ctx);
                 System.out.println(ctx.getText() + " -> SUCCESS");
