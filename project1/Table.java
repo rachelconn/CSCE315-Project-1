@@ -9,12 +9,6 @@ import java.util.Map.Entry;
 
 
 public class Table implements Serializable {
-    public Table() {
-    }
-
-    public String getName() {
-        return name;
-    }
 
     private String name;
     private ArrayList<String> attributeNames;
@@ -81,6 +75,8 @@ public class Table implements Serializable {
 
     public ArrayList<String> getAttributeNames() { return attributeNames; }
 
+    public void setAttributeNames(ArrayList<String> newNames){ this.attributeNames = newNames; }
+
     public ArrayList<Integer> getpKeyIndices() { return pKeyIndices; }
 
     public ArrayList<String> getpKeyNames() {
@@ -92,7 +88,7 @@ public class Table implements Serializable {
         return pKeyNames;
     }
 
-    public void setAttributeNames(ArrayList<String> newNames){ this.attributeNames = newNames; }
+
 
     public void addEntry(ArrayList<String> attributes){
         ArrayList<String> pKeys = new ArrayList<>();
@@ -167,15 +163,7 @@ public class Table implements Serializable {
         return toShow;
     }
 
-    public void setAttributeNames(ArrayList<String> newNames){
-        this.attributeNames = newNames;
-    }
-
     // for serialization only
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setAttributeTypes(ArrayList<String> attributeTypes) {
         this.attributeTypes = attributeTypes;
     }
