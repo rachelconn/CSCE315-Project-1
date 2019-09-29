@@ -156,11 +156,11 @@ public class DBMS {
         }
     }
   
-    public Table differenceQry(){ return null; }
+    public Table differenceQry(Table a, Table b){ return null; }
 
-    public Table productQry(){ return null; }
+    public Table productQry(Table a, Table b){ return null; }
 
-    public Table naturalJoinQry(){ return null; }
+    public Table naturalJoinQry(Table a, Table b){ return null; }
 
     //helper functions
     public Table getTable(String tableName){ return tables.get(tableName); }
