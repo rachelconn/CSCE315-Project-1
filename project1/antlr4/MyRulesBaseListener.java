@@ -7,77 +7,88 @@ import project1.conditional.*;
 
 public class MyRulesBaseListener extends RulesBaseListener {
 
-    private DBMS myDBMS = new DBMS();
+    private DBMS myDBMS;
 
     public MyRulesBaseListener() {
+        myDBMS = new DBMS();
+    }
+
+    public MyRulesBaseListener(DBMS db)
+    {
+        myDBMS = db;
     }
 
     /*
     Use this to parse a comparison tree into a conditional evalutator.
     Uses base Exception type since if the exception occurs, a fundamental problem occurred.
      */
-    public Conditional parseComparison(org.antlr.v4.runtime.ParserRuleContext ctx) throws Exception {
+    public Conditional parseComparison(org.antlr.v4.runtime.tree.ParseTree ctx) throws Exception {
         // check to ensure we are evaluating valid condition tree
         if (!(ctx instanceof RulesParser.ConditionContext) &&
                 !(ctx instanceof RulesParser.ConjunctionContext) &&
                 !(ctx instanceof RulesParser.ComparisonContext))
         {
-            throw new Exception("FATAL (MyRulesBaseListener.parseComparison): invalid node recursed on");
+            throw new Exception(
+                    "FATAL (MyRulesBaseListener.parseComparison): invalid node recursed on: " +
+                            ctx.getClass().getSimpleName() +
+                            "\nwith text: " +
+                            ctx.getText()
+            );
         }
 
-        if (ctx.getChildCount() != 1 || ctx.getChildCount() != 3)
+        if (ctx.getChildCount() != 1 && ctx.getChildCount() != 3)
         {
             throw new Exception("FATAL (MyRulesBaseListener.parseComparison): unforeseen case occurred");
         }
 
         if (ctx.getChildCount() == 1)
         {
-            return parseComparison((org.antlr.v4.runtime.ParserRuleContext) ctx.children.get(0));
+            return parseComparison(ctx.getChild(0));
         }
 
         if (ctx.getChildCount() == 3)
         {
             // case ["("] [some stuff] [")"]
-            if (ctx.children.get(0).getText() == "(")
+            if (ctx.getChild(0).getText().equals("("))
             {
-                return parseComparison((org.antlr.v4.runtime.ParserRuleContext) ctx.children.get(0));
+                return parseComparison(ctx.getChild(1));
             }
 
             // case [left tree] ["||"] [right tree]
-            if (ctx.children.get(1).getText() == "||")
+            if (ctx.getChild(1).getText().equals("||"))
             {
                 return new ConditionBranch(
                         ConditionType.OR,
-                        parseComparison((org.antlr.v4.runtime.ParserRuleContext) ctx.children.get(0)),
-                        parseComparison((org.antlr.v4.runtime.ParserRuleContext) ctx.children.get(2))
+                        parseComparison(ctx.getChild(0)),
+                        parseComparison(ctx.getChild(2))
                 );
             }
 
             // case [left tree] ["&&"] [right tree]
-            if (ctx.children.get(1).getText() == "&&")
+            if (ctx.getChild(1).getText().equals("&&"))
             {
                 return new ConditionBranch(
                         ConditionType.AND,
-                        parseComparison((org.antlr.v4.runtime.ParserRuleContext) ctx.children.get(0)),
-                        parseComparison((org.antlr.v4.runtime.ParserRuleContext) ctx.children.get(2))
+                        parseComparison(ctx.getChild(0)),
+                        parseComparison(ctx.getChild(2))
                 );
             }
 
             // case [operand] [operator] [AttributeName] or
             // case [AttributeName] [operator] [operand]
-            if (Arrays.asList(">", "<", ">=", "<=", "==").contains(ctx.children.get(1).getText())) {
+            if (Arrays.asList(">", "<", ">=", "<=", "==", "!=").contains(ctx.getChild(1).getText())) {
                 String fieldName = "";
                 String attributeValue = "";
 
-                if (ctx.children.get(0) instanceof RulesParser.AttributeNameContext) {
-                    fieldName = ctx.children.get(0).getText();
-                    attributeValue = ctx.children.get(2).getText();
+                if (ctx.getChild(0) instanceof RulesParser.AttributeNameContext) {
+                    fieldName = ctx.getChild(0).getText();
+                    attributeValue = ctx.getChild(2).getText();
                 } else {
-                    fieldName = ctx.children.get(2).getText();
-                    attributeValue = ctx.children.get(0).getText();
+                    fieldName = ctx.getChild(2).getText();
+                    attributeValue = ctx.getChild(0).getText();
                 }
 
-                switch (ctx.children.get(1).getText()) {
+                switch (ctx.getChild(1).getText()) {
                     case ">":
                         return new GreaterThanComparison(
                                 Conditional.getType(attributeValue),
@@ -108,8 +119,14 @@ public class MyRulesBaseListener extends RulesBaseListener {
                                 attributeValue,
                                 fieldName
                         );
+                    case "!=":
+                        return new NotEqualsComparison(
+                                Conditional.getType(attributeValue),
+                                attributeValue,
+                                fieldName
+                        );
                     default:
-                        throw new Exception("Unsupported operation: " + ctx.children.get(1).getText());
+                        throw new Exception("Unsupported operation: " + ctx.getChild(1).getText());
                 }
             }
         }
@@ -264,6 +281,24 @@ public class MyRulesBaseListener extends RulesBaseListener {
 
     @Override public void exitUnion(RulesParser.UnionContext ctx) {
 
+    }
+
+    /*
+    A testing method for our glorious super anti parsing thing no dijkstra's crap 100% legit
+     */
+    @Override
+    public void exitComparison(RulesParser.ComparisonContext ctx) {
+        // comparison debugging
+        if (true) {
+            try {
+                Conditional cond = parseComparison(ctx);
+                System.out.println(ctx.getText() + " -> SUCCESS");
+            }
+            catch (Exception ex) {
+                System.out.println(ex);
+                System.out.println(ctx.getText() + " -> FAIL");
+            }
+        }
     }
 
     public void printTables() {

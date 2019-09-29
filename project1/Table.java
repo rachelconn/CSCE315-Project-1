@@ -1,12 +1,20 @@
 package project1;
 
+import java.io.Serializable;
 import java.sql.Array;
 import project1.conditional.*;
 import java.lang.System;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class Table {
+
+public class Table implements Serializable {
+    public Table() {
+    }
+
+    public String getName() {
+        return name;
+    }
 
     private String name;
     private ArrayList<String> attributeNames;
@@ -122,25 +130,22 @@ public class Table {
         return entries.containsValue(attributes);
     }
 
-    public Table getAllKeysThatSatisfyConditions(ArrayList<Conditional> conds) throws IncompatibleTypesException {
+    public Table getAllKeysThatSatisfyConditions(Conditional cond) throws IncompatibleTypesException {
         Table results = new Table("temp", this.getAllColumns(), this.getPrimaryKeys());
         for (Entry<ArrayList<String>,ArrayList<String>> entry : entries.entrySet())
         {
             boolean satisfiesConditions = true;
             ArrayList<String> row = entry.getValue();
-            for (Conditional cond : conds)
-            {
-                // SelectsEntry checks to make sure the entry passes the conditions
-                // Eg. SELECT * FROM tabl WHERE dog == 1
-                // if field dog really is 1 (and the types match), it returns true
-                int fieldIndex = attributeNames.indexOf(cond.fieldName);
-                satisfiesConditions = satisfiesConditions &&
-                        cond.SelectsEntry(
-                                row.get(fieldIndex),
-                                attributeTypes.get(fieldIndex)
-                        );
-                if (!satisfiesConditions) {break;}
-            }
+            // SelectsEntry checks to make sure the entry passes the conditions
+            // Eg. SELECT * FROM tabl WHERE dog == 1
+            // if field dog really is 1 (and the types match), it returns true
+            int fieldIndex = attributeNames.indexOf(cond.fieldName);
+            satisfiesConditions = satisfiesConditions &&
+                    cond.SelectsEntry(
+                            row.get(fieldIndex),
+                            attributeTypes.get(fieldIndex)
+                    );
+            if (!satisfiesConditions) {break;}
             if (satisfiesConditions)
             {
                 results.addEntry(row);
@@ -162,4 +167,24 @@ public class Table {
         return toShow;
     }
 
+    public void setAttributeNames(ArrayList<String> newNames){
+        this.attributeNames = newNames;
+    }
+
+    // for serialization only
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAttributeTypes(ArrayList<String> attributeTypes) {
+        this.attributeTypes = attributeTypes;
+    }
+
+    public void setpKeyIndices(ArrayList<Integer> pKeyIndices) {
+        this.pKeyIndices = pKeyIndices;
+    }
+
+    public void setEntries(HashMap<ArrayList<String>, ArrayList<String>> entries) {
+        this.entries = entries;
+    }
 }
