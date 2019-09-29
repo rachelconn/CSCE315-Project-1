@@ -49,7 +49,9 @@ public class DBMS {
         t.addEntry(attributes);
     }
 
-    public void insertCmd(String tableName, Table tbl){} //alternative insert command that accounts for relational insertion
+    public void insertCmd(Table tbl){
+        tables.put(tbl.getName(), tbl);
+    } //alternative insert command that accounts for relational insertion
 
     public void deleteCmd(String tableName, ArrayList<Conditional> conditions) throws NotImplementedException, IncompatibleTypesException {
         Table toRemove = selectQry(tableName, conditions);
