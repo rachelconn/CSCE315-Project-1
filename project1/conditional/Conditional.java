@@ -8,6 +8,8 @@ Eg. >, < , >=, <=, ==, !=
 
 package project1.conditional;
 
+import java.util.*;
+
 
 public abstract class Conditional
 {
@@ -33,6 +35,12 @@ public abstract class Conditional
 
     public String getFieldName() {
         return fieldName;
+    }
+
+    public ArrayList<String> getFieldsChecked() {
+        ArrayList<String> output = new ArrayList<>();
+        output.add(fieldName);
+        return output;
     }
 
     // Changed modifier to public so DBMS and Table can read values
