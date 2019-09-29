@@ -35,6 +35,6 @@ public class Main {
             ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(listener, programContext);
         }
-        listener.printTables();
+        //listener.printTables();
     }
 }

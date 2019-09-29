@@ -2,6 +2,7 @@ package project1.antlr4;
 import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.*;
 import project1.DBMS;
+import project1.Table;
 import project1.conditional.*;
 
 public class MyRulesBaseListener extends RulesBaseListener {
@@ -132,13 +133,104 @@ public class MyRulesBaseListener extends RulesBaseListener {
         throw new Exception("What happened? --Hillary Clinton");
     }
 
+    public Table parseAtomicExpr(ParseTree t){
+        if(t.getChild(0).getText().equals("(")) {
+            return parseExpr(t.getChild(1));
+        } else {
+            return myDBMS.getTable(t.getChild(0).getText());
+        }
+    }
+
+    public Table parseSelection(ParseTree t) {
+        ParseTree atomicExprTree = t.getChild(4);
+        Table selectTable = parseAtomicExpr(atomicExprTree);
+        ParseTree conditionTree = t.getChild(2);
+        Conditional c = parseComparison(conditionTree);
+        return myDBMS.selectQry(selectTable, c);
+    }
+
+    public Table parseProjection(ParseTree t) {
+        ParseTree atomicExprTree = t.getChild(4);
+        Table projectTable = parseAtomicExpr(atomicExprTree);
+        ParseTree attributeTree = t.getChild(2);
+        ArrayList<String> attributeNames = parseAttributeList(attributeTree);
+        return myDBMS.projectQry(projectTable, attributeNames);
+    }
+
+    public Table parseRenaming(ParseTree t) {
+        ParseTree exprTree = t.getChild(4);
+        Table renameTable = parseExpr(exprTree);
+        ArrayList<String> newAttNames = parseAttributeList(t.getChild(2));
+        return myDBMS.renameQry(renameTable, newAttNames);
+    }
+
+    public Table parseUnion(ParseTree t) {
+        String tableAName = t.getChild(0).getText();
+        String tableBName = t.getChild(2).getText();
+        return myDBMS.unionQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+    }
+
+    public Table parseDifference(ParseTree t) {
+        String tableAName = t.getChild(0).getText();
+        String tableBName = t.getChild(2).getText();
+        return myDBMS.differenceQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+    }
+
+    public Table parseProduct(ParseTree t) {
+        String tableAName = t.getChild(0).getText();
+        String tableBName = t.getChild(2).getText();
+        return myDBMS.productQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+    }
+
+    public Table parseNaturalJoin(ParseTree t) {
+        String tableAName = t.getChild(0).getText();
+        String tableBName = t.getChild(2).getText();
+        return myDBMS.naturalJoinQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+    }
+
+    public Table parseExpr(ParseTree t){
+        // c is the rule that the expression parser found directly beneath the expr rule
+        String c = t.getChild(0).getClass().toString();
+        c = c.substring(34,c.length()-7);
+        ParseTree ruleContext = t.getChild(0);
+        switch(c){
+            case "AtomicExpr" :
+                return parseAtomicExpr(ruleContext);
+            case "Selection" :
+                return parseSelection(ruleContext);
+            case "Projection" :
+                return parseProjection(ruleContext);
+            case "Renaming" :
+                return parseRenaming(ruleContext);
+            case "Union" :
+                return parseUnion(ruleContext);
+            case "Difference" :
+                return parseDifference(ruleContext);
+            case "Product" :
+                return parseProduct(ruleContext);
+            case "NaturalJoin" :
+                return parseNaturalJoin(ruleContext);
+        }
+        return null;
+    }
+
+    @Override public void exitQuery(RulesParser.QueryContext ctx) {
+        List<ParseTree> children = ctx.children;
+        String tableName = children.get(0).getText();
+        Table t = parseExpr(children.get(2));
+        t.setName(tableName);
+        myDBMS.addTable(t);
+    }
+
     @Override
     public void exitSelection(RulesParser.SelectionContext ctx) {
         super.exitSelection(ctx);
     }
 
     @Override public void exitShowCmd(RulesParser.ShowCmdContext ctx) {
-        //System.out.println("SHOW");
+        //child(0) : "SHOW" ; child(1) : atomicExpr
+        Table t = parseAtomicExpr(ctx.children.get(1));
+        myDBMS.showCmd(t);
     }
 
     @Override public void exitCreateCmd(RulesParser.CreateCmdContext ctx) {
@@ -171,7 +263,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
         ArrayList<String> attributes = new ArrayList<>();
 
         if(children.get(5).getText().equals("RELATION")){
-            //TODO: parse expr here
+            myDBMS.insertCmd(tableName, parseExpr(children.get(6)));
         } else {
             //6 is the first index that a literal shows up
             for(int i = 6 ; i < ctx.getChildCount() ; i += 2){
@@ -211,6 +303,14 @@ public class MyRulesBaseListener extends RulesBaseListener {
 
     public void printTables() {
         myDBMS.printTables();
+    }
+
+    public ArrayList<String> parseAttributeList(ParseTree t){
+        ArrayList<String> attList = new ArrayList<>();
+        for(int i = 0 ; i < t.getChildCount() ; i += 2){
+            attList.add(t.getChild(i).getText());
+        }
+        return attList;
     }
 }
 

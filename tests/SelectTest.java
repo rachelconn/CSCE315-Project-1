@@ -57,15 +57,10 @@ public class SelectTest {
 
         db.serializeTables("tables");
 
-<<<<<<< Updated upstream
-        HashMapdb.deserializeTables("tables");
-        db.printTables();
-=======
         HashMap<String,Table> tables = db.deserializeTables("tables");
         System.out.println("Read " + Integer.toString(tables.size()) + " table from xml file");
         for (Map.Entry<String, Table> entry : tables.entrySet()) {
             System.out.println("Table " + entry.getKey() + " has " + Integer.toString(entry.getValue().getSize()) + " entries");
         }
->>>>>>> Stashed changes
     }
 }
