@@ -22,115 +22,113 @@ public class MyRulesBaseListener extends RulesBaseListener {
     Use this to parse a comparison tree into a conditional evalutator.
     Uses base Exception type since if the exception occurs, a fundamental problem occurred.
      */
-    public Conditional parseComparison(org.antlr.v4.runtime.tree.ParseTree ctx) throws Exception {
-        // check to ensure we are evaluating valid condition tree
-        if (!(ctx instanceof RulesParser.ConditionContext) &&
-                !(ctx instanceof RulesParser.ConjunctionContext) &&
-                !(ctx instanceof RulesParser.ComparisonContext))
-        {
-            throw new Exception(
-                    "FATAL (MyRulesBaseListener.parseComparison): invalid node recursed on: " +
-                            ctx.getClass().getSimpleName() +
-                            "\nwith text: " +
-                            ctx.getText()
-            );
-        }
-
-        if (ctx.getChildCount() != 1 && ctx.getChildCount() != 3)
-        {
-            throw new Exception("FATAL (MyRulesBaseListener.parseComparison): unforeseen case occurred");
-        }
-
-        if (ctx.getChildCount() == 1)
-        {
-            return parseComparison(ctx.getChild(0));
-        }
-
-        if (ctx.getChildCount() == 3)
-        {
-            // case ["("] [some stuff] [")"]
-            if (ctx.getChild(0).getText().equals("("))
-            {
-                return parseComparison(ctx.getChild(1));
-            }
-
-            // case [left tree] ["||"] [right tree]
-            if (ctx.getChild(1).getText().equals("||"))
-            {
-                return new ConditionBranch(
-                        ConditionType.OR,
-                        parseComparison(ctx.getChild(0)),
-                        parseComparison(ctx.getChild(2))
+    public Conditional parseComparison(org.antlr.v4.runtime.tree.ParseTree ctx) {
+        try {
+            // check to ensure we are evaluating valid condition tree
+            if (!(ctx instanceof RulesParser.ConditionContext) &&
+                    !(ctx instanceof RulesParser.ConjunctionContext) &&
+                    !(ctx instanceof RulesParser.ComparisonContext)) {
+                throw new Exception(
+                        "FATAL (MyRulesBaseListener.parseComparison): invalid node recursed on: " +
+                                ctx.getClass().getSimpleName() +
+                                "\nwith text: " +
+                                ctx.getText()
                 );
             }
 
-            // case [left tree] ["&&"] [right tree]
-            if (ctx.getChild(1).getText().equals("&&"))
-            {
-                return new ConditionBranch(
-                        ConditionType.AND,
-                        parseComparison(ctx.getChild(0)),
-                        parseComparison(ctx.getChild(2))
-                );
+            if (ctx.getChildCount() != 1 && ctx.getChildCount() != 3) {
+                throw new Exception("FATAL (MyRulesBaseListener.parseComparison): unforeseen case occurred");
             }
 
-            // case [operand] [operator] [AttributeName] or
-            // case [AttributeName] [operator] [operand]
-            if (Arrays.asList(">", "<", ">=", "<=", "==", "!=").contains(ctx.getChild(1).getText())) {
-                String fieldName = "";
-                String attributeValue = "";
+            if (ctx.getChildCount() == 1) {
+                return parseComparison(ctx.getChild(0));
+            }
 
-                if (ctx.getChild(0) instanceof RulesParser.AttributeNameContext) {
-                    fieldName = ctx.getChild(0).getText();
-                    attributeValue = ctx.getChild(2).getText();
-                } else {
-                    fieldName = ctx.getChild(2).getText();
-                    attributeValue = ctx.getChild(0).getText();
+            if (ctx.getChildCount() == 3) {
+                // case ["("] [some stuff] [")"]
+                if (ctx.getChild(0).getText().equals("(")) {
+                    return parseComparison(ctx.getChild(1));
                 }
 
-                switch (ctx.getChild(1).getText()) {
-                    case ">":
-                        return new GreaterThanComparison(
-                                Conditional.getType(attributeValue),
-                                attributeValue,
-                                fieldName
-                        );
-                    case "<":
-                        return new LessThanComparison(
-                                Conditional.getType(attributeValue),
-                                attributeValue,
-                                fieldName
-                        );
-                    case ">=":
-                        return new GreaterThanEqualsComparison(
-                                Conditional.getType(attributeValue),
-                                attributeValue,
-                                fieldName
-                        );
-                    case "<=":
-                        return new LessThanEqualsComparison(
-                                Conditional.getType(attributeValue),
-                                attributeValue,
-                                fieldName
-                        );
-                    case "==":
-                        return new EqualsComparison(
-                                Conditional.getType(attributeValue),
-                                attributeValue,
-                                fieldName
-                        );
-                    case "!=":
-                        return new NotEqualsComparison(
-                                Conditional.getType(attributeValue),
-                                attributeValue,
-                                fieldName
-                        );
-                    default:
-                        throw new Exception("Unsupported operation: " + ctx.getChild(1).getText());
+                // case [left tree] ["||"] [right tree]
+                if (ctx.getChild(1).getText().equals("||")) {
+                    return new ConditionBranch(
+                            ConditionType.OR,
+                            parseComparison(ctx.getChild(0)),
+                            parseComparison(ctx.getChild(2))
+                    );
+                }
+
+                // case [left tree] ["&&"] [right tree]
+                if (ctx.getChild(1).getText().equals("&&")) {
+                    return new ConditionBranch(
+                            ConditionType.AND,
+                            parseComparison(ctx.getChild(0)),
+                            parseComparison(ctx.getChild(2))
+                    );
+                }
+
+                // case [operand] [operator] [AttributeName] or
+                // case [AttributeName] [operator] [operand]
+                if (Arrays.asList(">", "<", ">=", "<=", "==", "!=").contains(ctx.getChild(1).getText())) {
+                    String fieldName = "";
+                    String attributeValue = "";
+
+                    if (ctx.getChild(0) instanceof RulesParser.AttributeNameContext) {
+                        fieldName = ctx.getChild(0).getText();
+                        attributeValue = ctx.getChild(2).getText();
+                    } else {
+                        fieldName = ctx.getChild(2).getText();
+                        attributeValue = ctx.getChild(0).getText();
+                    }
+
+                    switch (ctx.getChild(1).getText()) {
+                        case ">":
+                            return new GreaterThanComparison(
+                                    Conditional.getType(attributeValue),
+                                    attributeValue,
+                                    fieldName
+                            );
+                        case "<":
+                            return new LessThanComparison(
+                                    Conditional.getType(attributeValue),
+                                    attributeValue,
+                                    fieldName
+                            );
+                        case ">=":
+                            return new GreaterThanEqualsComparison(
+                                    Conditional.getType(attributeValue),
+                                    attributeValue,
+                                    fieldName
+                            );
+                        case "<=":
+                            return new LessThanEqualsComparison(
+                                    Conditional.getType(attributeValue),
+                                    attributeValue,
+                                    fieldName
+                            );
+                        case "==":
+                            return new EqualsComparison(
+                                    Conditional.getType(attributeValue),
+                                    attributeValue,
+                                    fieldName
+                            );
+                        case "!=":
+                            return new NotEqualsComparison(
+                                    Conditional.getType(attributeValue),
+                                    attributeValue,
+                                    fieldName
+                            );
+                        default:
+                            throw new Exception("Unsupported operation: " + ctx.getChild(1).getText());
+                    }
                 }
             }
+            throw new Exception("What happened? --Hillary Clinton");
+        } catch(Exception e) {
+            System.out.println(e);
+            return null;
         }
-        throw new Exception("What happened? --Hillary Clinton");
     }
 
     public Table parseAtomicExpr(ParseTree t){
