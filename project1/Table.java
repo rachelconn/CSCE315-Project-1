@@ -184,26 +184,4 @@ public class Table implements Serializable {
         }
         return toShow;
     }
-
-    public void setAttributeNames(ArrayList<String> newNames){
-        this.attributeNames = newNames;
-    }
-
-
-    // for serialization only
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAttributeTypes(ArrayList<String> attributeTypes) {
-        this.attributeTypes = attributeTypes;
-    }
-
-    public void setEntries(HashMap<ArrayList<String>, ArrayList<String>> entries) {
-        this.entries = entries;
-    }
-
-    public HashMap<ArrayList<String>, ArrayList<String>> getEntries() {
-        return entries;
-    }
 }
