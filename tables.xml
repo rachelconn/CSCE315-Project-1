@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="11.0.2" class="java.beans.XMLDecoder">
+ <object class="java.util.HashMap">
+  <void method="put">
+   <string>tabl</string>
+   <object class="project1.Table">
+    <void property="attributeNames">
+     <object class="java.util.ArrayList">
+      <void method="add">
+       <string>kind</string>
+      </void>
+      <void method="add">
+       <string>name</string>
+      </void>
+     </object>
+    </void>
+    <void property="attributeTypes">
+     <object class="java.util.ArrayList">
+      <void method="add">
+       <string>VARCHAR(20)</string>
+      </void>
+      <void method="add">
+       <string>VARCHAR(32)</string>
+      </void>
+     </object>
+    </void>
+    <void property="name">
+     <string>tabl</string>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>
