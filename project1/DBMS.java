@@ -220,17 +220,16 @@ public class DBMS {
     }
   
     public Table differenceQry(Table a, Table b){
-        if (a.getAttributeNames() == b.getAttributeNames() && a.getAttributeTypes() == b.getAttributeTypes()){
-            System.out.println("Table types must be union-compatible.");
-            return null;
-        }
-        Table c = new Table(a.getName(), a.getAttributeNames(), a.getAttributeTypes(), a.getpKeyIndices());
-        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : a.getEntries().entrySet()) {
-            if (!b.contains(entry.getValue())) {
-                c.addEntry(entry.getValue());
+        if(a.getAttributeNames().equals(b.getAttributeNames()) && a.getAttributeTypes().equals(b.getAttributeTypes())) {
+            Table c = new Table(a.getName(), a.getAttributeNames(), a.getAttributeTypes(), a.getpKeyIndices());
+            for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : a.getEntries().entrySet()) {
+                if (!b.contains(entry.getValue())) {
+                    c.addEntry(entry.getValue());
+                }
             }
+            return c;
         }
-        return c;
+        return null;
     }
 
     public Table productQry(Table a, Table b){
