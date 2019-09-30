@@ -168,27 +168,27 @@ public class MyRulesBaseListener extends RulesBaseListener {
     }
 
     public Table parseUnion(ParseTree t) {
-        String tableAName = t.getChild(0).getText();
-        String tableBName = t.getChild(2).getText();
-        return myDBMS.unionQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.unionQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseDifference(ParseTree t) {
-        String tableAName = t.getChild(0).getText();
-        String tableBName = t.getChild(2).getText();
-        return myDBMS.differenceQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.differenceQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseProduct(ParseTree t) {
-        String tableAName = t.getChild(0).getText();
-        String tableBName = t.getChild(2).getText();
-        return myDBMS.productQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.productQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseNaturalJoin(ParseTree t) {
-        String tableAName = t.getChild(0).getText();
-        String tableBName = t.getChild(2).getText();
-        return myDBMS.naturalJoinQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.naturalJoinQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseExpr(ParseTree t){
