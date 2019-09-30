@@ -138,7 +138,7 @@ public class DBMS {
             throw new NotImplementedException();
         }*/
         // 2. if conditions are not favorable, perform O(n) search
-        return tableRef.getAllKeysThatSatisfyConditions(conditionTree);
+        return tableRef.filter(conditionTree);
     }
 
     public Table selectQry(Table tableRef, Conditional conditionTree) throws IncompatibleTypesException {
@@ -157,7 +157,7 @@ public class DBMS {
             throw new NotImplementedException();
         }*/
         // 2. if conditions are not favorable, perform O(n) search
-        return tableRef.getAllKeysThatSatisfyConditions(conditionTree);
+        return tableRef.filter(conditionTree);
     }
 
     public Table projectQry(Table table, ArrayList<String> attributeNames) {
