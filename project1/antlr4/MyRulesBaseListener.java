@@ -126,7 +126,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
             }
             throw new Exception("What happened? --Hillary Clinton");
         } catch(Exception e) {
-            System.out.println(e);
+            System.out.println("Exception in parseComparison: \n" + String.valueOf(e));
             return null;
         }
     }

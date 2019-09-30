@@ -10,7 +10,7 @@ SHOW animals;
 
 dogs <- select (kind == "dog") animals;
 SHOW dogs;
-old_dogs <- select (age > 10) dogs;
+old_dogs <- select (years > 10) dogs;
 SHOW old_dogs;
 
 cats_or_dogs <- dogs + (select (kind == "cat") animals);
