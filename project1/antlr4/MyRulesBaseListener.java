@@ -227,11 +227,6 @@ public class MyRulesBaseListener extends RulesBaseListener {
         myDBMS.addTable(t);
     }
 
-    @Override
-    public void exitSelection(RulesParser.SelectionContext ctx) {
-        super.exitSelection(ctx);
-    }
-
     @Override public void exitShowCmd(RulesParser.ShowCmdContext ctx) {
         //child(0) : "SHOW" ; child(1) : atomicExpr
         Table t = parseAtomicExpr(ctx.children.get(1));
