@@ -234,20 +234,25 @@ public class DBMS {
     }
 
     public Table productQry(Table a, Table b){
-        ArrayList<String> attributeNames = a.getAttributeNames();
+        ArrayList<String> attributeNames = new ArrayList<>(a.getAttributeNames());
+        for (String s : attributeNames) {
+            if (b.getAttributeNames().contains(s)) {
+                return null;
+            }
+        }
         attributeNames.addAll(b.getAttributeNames());
-        ArrayList<String> attributeTypes = a.getAttributeTypes();
+        ArrayList<String> attributeTypes = new ArrayList<>(a.getAttributeTypes());
         attributeTypes.addAll(b.getAttributeTypes());
-        ArrayList<Integer> pKeyIndices = a.getpKeyIndices();
-        ArrayList<Integer> bPKeyIndices = b.getpKeyIndices();
+        ArrayList<Integer> pKeyIndices = new ArrayList<>(a.getpKeyIndices());
+        ArrayList<Integer> bPKeyIndices = new ArrayList<>(b.getpKeyIndices());
         for(int i = 0; i<bPKeyIndices.size();i++){
-            bPKeyIndices.set(i, bPKeyIndices.get(i)+attributeNames.size());
+            bPKeyIndices.set(i, bPKeyIndices.get(i)+a.getAttributeNames().size());
         }
         pKeyIndices.addAll(bPKeyIndices);
         Table myTable = new Table("temp",attributeNames,attributeTypes,pKeyIndices);
         for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : a.getEntries().entrySet()){
             for(HashMap.Entry<ArrayList<String>,ArrayList<String>> bEntry : b.getEntries().entrySet()){
-                ArrayList<String> entryToAdd = entry.getValue();
+                ArrayList<String> entryToAdd = new ArrayList<>(entry.getValue());
                 entryToAdd.addAll(bEntry.getValue());
                 myTable.addEntry(entryToAdd);
             }
