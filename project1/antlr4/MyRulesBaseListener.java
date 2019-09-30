@@ -146,9 +146,11 @@ public class MyRulesBaseListener extends RulesBaseListener {
         Conditional c = parseComparison(conditionTree);
         try {
             return myDBMS.selectQry(selectTable, c);
-        } catch(Exception e) {
-            System.out.println(e);
-            return null;
+        }
+        catch (IncompatibleTypesException ex) {
+            System.out.println("Unsupported operation in: " + t.getText());
+            System.out.println("Additional Information: " + ex.toString());
+            return new Table("temp", selectTable.getAllColumns(), selectTable.getPrimaryKeys());
         }
     }
 
