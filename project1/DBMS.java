@@ -69,6 +69,10 @@ public class DBMS {
     }
 
     public void showCmd(Table t){
+        if (t == null) {
+            System.out.println("Attempting to print non-existing table.");
+            return;
+        }
         System.out.println(t.showTable());
     }
 
@@ -231,6 +235,7 @@ public class DBMS {
             }
             return c;
         }
+        System.out.println("Table types must be union-compatible.");
         return null;
     }
 
@@ -238,6 +243,7 @@ public class DBMS {
         ArrayList<String> attributeNames = new ArrayList<>(a.getAttributeNames());
         for (String s : attributeNames) {
             if (b.getAttributeNames().contains(s)) {
+                System.out.println("Attempting to get product of incompatible tables:" + a.getName() + " and " + b.getName());
                 return null;
             }
         }
