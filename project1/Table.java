@@ -73,6 +73,10 @@ public class Table implements Serializable {
         this.entries = a.entries;
     }
 
+    public Table() {
+
+    }
+
     //GETTERS AND SETTERS
     public String getName() {
         return name;
@@ -162,8 +166,8 @@ public class Table implements Serializable {
             int fieldIndex = attributeNames.indexOf(cond.fieldName);
             satisfiesConditions = satisfiesConditions &&
                     cond.SelectsEntry(
-                            row.get(fieldIndex),
-                            attributeTypes.get(fieldIndex)
+                            attributeTypes.get(fieldIndex),
+                            row.get(fieldIndex)
                     );
             if (!satisfiesConditions) {break;}
             if (satisfiesConditions)
