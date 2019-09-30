@@ -164,7 +164,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
 
     public Table parseRenaming(ParseTree t) {
         ParseTree exprTree = t.getChild(4);
-        Table renameTable = parseExpr(exprTree);
+        Table renameTable = parseAtomicExpr(exprTree);
         ArrayList<String> newAttNames = parseAttributeList(t.getChild(2));
         return myDBMS.renameQry(renameTable, newAttNames);
     }
