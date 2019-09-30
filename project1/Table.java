@@ -115,6 +115,8 @@ public class Table implements Serializable {
     }
 
     //CLASS FUNCTIONS
+    //TODO: figure out what to do if there aren't any primary keys in table
+    //possibly just say the primary key is the entire attribute list?
     public void addEntry(ArrayList<String> attributes){
         ArrayList<String> pKeys = new ArrayList<>();
         for(int i = 0 ; i < pKeyIndices.size() ; i++){

@@ -84,7 +84,7 @@ public class DBMS {
         for(Map.Entry<String,String> entry : attributes.entrySet()) {
             attributeNames.add(entry.getKey());
             attributeTypes.add(entry.getValue());
-            if(primaryKeys.contains(entry.getKey())){ //TODO:
+            if(primaryKeys.contains(entry.getKey())){
                 pKeyIndices.add(i);
             }
             i++;
@@ -161,7 +161,6 @@ public class DBMS {
     }
 
     public Table projectQry(Table table, ArrayList<String> attributeNames) {
-        HashMap<ArrayList<String>, ArrayList<String>> tableMap = table.getEntries();
         ArrayList<Integer> wantedIndices = new ArrayList<>();
         ArrayList<String> tableAttributes = table.getAttributeNames();
         for (int i = 0; i < tableAttributes.size(); i++) {
@@ -172,10 +171,12 @@ public class DBMS {
 
         ArrayList<Integer> pKeyIndicesOld = table.getpKeyIndices();
         ArrayList<Integer> pKeyIndices = new ArrayList<>();
-        for(Integer i : pKeyIndicesOld){
-            if(wantedIndices.contains(i)){
-                pKeyIndices.add(i);
+        int j = 0;
+        for(Integer i : wantedIndices){
+            if(pKeyIndicesOld.contains(i)) {
+                pKeyIndices.add(j);
             }
+            j++;
         }
 
         ArrayList<String> oldAttTypes = table.getAttributeTypes();
@@ -185,16 +186,15 @@ public class DBMS {
             attributeTypes.add(newAttType);
         }
 
-        Table projection = new Table("temp", attributeNames, attributeTypes, new ArrayList<Integer>());
+        Table projection = new Table("temp", attributeNames, attributeTypes, pKeyIndices);
+        HashMap<ArrayList<String>, ArrayList<String>> tableMap = table.getEntries();
         for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : tableMap.entrySet()) {
-            ArrayList<String> toAdd = new ArrayList<>();
+            ArrayList<String> attributes = new ArrayList<>();
             //create entry to add containing each desired attribute
             for (int i : wantedIndices) {
-                toAdd.add(entry.getValue().get(i));
+                attributes.add(entry.getValue().get(i));
             }
-            if (!projection.contains(toAdd)) {
-                projection.addEntry(toAdd);
-            }
+            projection.addEntry(attributes);
         }
         return projection;
     }
