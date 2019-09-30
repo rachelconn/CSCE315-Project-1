@@ -12,6 +12,8 @@ blah = incoming_val (because it will be compared to values entering SelectsEntry
 
 package project1.conditional;
 
+import java.util.ArrayList;
+
 public class NotEqualsComparison extends Conditional
 {
     public NotEqualsComparison(String condType, String condValue, String fieldName) {
@@ -19,9 +21,10 @@ public class NotEqualsComparison extends Conditional
     }
 
     @Override
-    public boolean SelectsEntry(String type, String value) throws IncompatibleTypesException {
-        ThrowExceptionIfNotSameType(type, value, "!=");
+    public boolean SelectsEntry(ArrayList<Cell> row) throws IncompatibleTypesException, FieldNotInTableException {
+        Cell c = getCellFromRow(row);
+        ThrowExceptionIfNotSameType(c.fieldType, c.fieldValue, "!=");
 
-        return !value.equals(this.condValue);
+        return !c.fieldValue.equals(this.condValue);
     }
 }

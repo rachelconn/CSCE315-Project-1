@@ -47,7 +47,18 @@ public abstract class Conditional
     public String condType; // what we will compare the given value's types to
     public String condValue; // what we will compare the given values to
     public String fieldName; // the name of the column of value we extract
-    public abstract boolean SelectsEntry(String type, String value) throws IncompatibleTypesException;
+    public abstract boolean SelectsEntry(ArrayList<Cell> row) throws IncompatibleTypesException, FieldNotInTableException;
+
+    Cell getCellFromRow(ArrayList<Cell> row) throws FieldNotInTableException {
+        for (Cell c : row)
+        {
+            if (c.fieldName.equals(this.fieldName))
+            {
+                return c;
+            }
+        }
+        throw new FieldNotInTableException("The field [" + this.fieldName + "] is not in the passed in row: " + row.toString());
+    }
 
     public boolean HashableOperation()
     {

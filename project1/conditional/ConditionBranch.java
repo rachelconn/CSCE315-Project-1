@@ -35,14 +35,14 @@ public class ConditionBranch extends Conditional {
     }
 
     @Override
-    public boolean SelectsEntry(String type, String value) throws IncompatibleTypesException {
+    public boolean SelectsEntry(ArrayList<Cell> row) throws IncompatibleTypesException, FieldNotInTableException {
         if (condType == ConditionType.AND)
         {
-            return left.SelectsEntry(type, value) && right.SelectsEntry(type, value);
+            return left.SelectsEntry(row) && right.SelectsEntry(row);
         }
         else
         {
-            return left.SelectsEntry(type, value) || right.SelectsEntry(type, value);
+            return left.SelectsEntry(row) || right.SelectsEntry(row);
         }
     }
 

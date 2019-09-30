@@ -11,6 +11,8 @@ blah = incoming_val (because it will be compared to values entering SelectsEntry
 */
 package project1.conditional;
 
+import java.util.ArrayList;
+
 public class LessThanComparison extends Conditional
 {
     public LessThanComparison(String condType, String condValue, String fieldName) {
@@ -18,10 +20,11 @@ public class LessThanComparison extends Conditional
     }
 
     @Override
-    public boolean SelectsEntry(String type, String value) throws IncompatibleTypesException {
-        ThrowExceptionIfNotIntegersOnly(type, value, "<");
+    public boolean SelectsEntry(ArrayList<Cell> row) throws IncompatibleTypesException, FieldNotInTableException {
+        Cell c = getCellFromRow(row);
+        ThrowExceptionIfNotIntegersOnly(c.fieldType, c.fieldValue, "<");
 
-        int int_incomingVal = Integer.parseInt(value);
+        int int_incomingVal = Integer.parseInt(c.fieldValue);
         int int_condVal = Integer.parseInt(this.condValue);
 
         return int_incomingVal < int_condVal;

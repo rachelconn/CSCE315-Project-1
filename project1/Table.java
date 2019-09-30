@@ -158,15 +158,34 @@ public class Table implements Serializable {
         for (Entry<ArrayList<String>,ArrayList<String>> entry : entries.entrySet())
         {
             ArrayList<String> row = entry.getValue();
-            int fieldIndex = attributeNames.indexOf(cond.fieldName);
-            // SelectsEntry checks the type and makes sure the entry passes the condition
-            boolean satisfiesConditions = cond.SelectsEntry(attributeTypes.get(fieldIndex),row.get(fieldIndex));
-            if (satisfiesConditions)
+            ArrayList<Cell> cells = getRow(row);
+            try {
+                if (cond.SelectsEntry(cells))
+                {
+                    results.addEntry(row);
+                }
+            }
+            catch (FieldNotInTableException ex)
             {
-                results.addEntry(row);
+                System.out.println("[INFO] The command looked for a field that isn't in the tabl!!!");
+                System.out.println(ex);
             }
         }
         return results;
+    }
+
+    public ArrayList<Cell> getRow(ArrayList<String> row)
+    {
+        ArrayList<Cell> output = new ArrayList<>();
+        for (int i=0; i<attributeNames.size(); i++)
+        {
+            Cell c1 = new Cell();
+            c1.fieldName = attributeNames.get(i);
+            c1.fieldType = attributeTypes.get(i);
+            c1.fieldValue = row.get(i);
+            output.add(c1);
+        }
+        return output;
     }
 
     public String showTable() {
