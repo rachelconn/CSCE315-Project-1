@@ -170,10 +170,11 @@ public class DBMS {
             }
         }
 
-        ArrayList<Integer> pKeyIndices = table.getpKeyIndices();
-        for(Integer i : pKeyIndices){
-            if(!wantedIndices.contains(i)){
-                pKeyIndices.remove(i);
+        ArrayList<Integer> pKeyIndicesOld = table.getpKeyIndices();
+        ArrayList<Integer> pKeyIndices = new ArrayList<>();
+        for(Integer i : pKeyIndicesOld){
+            if(wantedIndices.contains(i)){
+                pKeyIndices.add(i);
             }
         }
 
@@ -233,7 +234,6 @@ public class DBMS {
     }
 
     public Table productQry(Table a, Table b){
-
         ArrayList<String> attributeNames = a.getAttributeNames();
         attributeNames.addAll(b.getAttributeNames());
         ArrayList<String> attributeTypes = a.getAttributeTypes();

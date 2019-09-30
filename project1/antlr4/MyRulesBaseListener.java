@@ -251,13 +251,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
             attributes.put(attName,type);
         }
 
-        ArrayList<String> primaryKeys = new ArrayList<>();
-        ParseTree attList = children.get(9);
-        int attCount = (attList.getChildCount() + 1) / 2;
-        for(int i = 0 ; i < attCount ; i++){
-            String pKey = attList.getChild(2*i).getText();
-            primaryKeys.add(pKey);
-        }
+        ArrayList<String> primaryKeys = parseAttributeList(children.get(9));
 
         myDBMS.createCmd(tableName, attributes, primaryKeys);
     }
