@@ -170,19 +170,27 @@ public class MyRulesBaseListener extends RulesBaseListener {
     }
 
     public Table parseUnion(ParseTree t) {
-        return myDBMS.unionQry(parseExpr(t.getChild(0)), parseExpr(t.getChild(2)));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.unionQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseDifference(ParseTree t) {
-        return myDBMS.differenceQry(parseExpr(t.getChild(0)), parseExpr(t.getChild(2)));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.differenceQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseProduct(ParseTree t) {
-        return myDBMS.productQry(parseExpr(t.getChild(0)), parseExpr(t.getChild(2)));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.productQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseNaturalJoin(ParseTree t) {
-        return myDBMS.naturalJoinQry(parseExpr(t.getChild(0)), parseExpr(t.getChild(2)));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.naturalJoinQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseExpr(ParseTree t){
