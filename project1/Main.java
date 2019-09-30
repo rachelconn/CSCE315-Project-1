@@ -18,6 +18,8 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
+        unitTesting();
+        /*
         File file = new File("project1/input.txt");
         Scanner scanner = new Scanner(file);
         List<String> lines = new ArrayList<>();
@@ -35,6 +37,32 @@ public class Main {
             ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(listener, programContext);
         }
+        */
         //listener.printTables();
+    }
+
+    public static void unitTesting(){
+        int numOfTests = 1;
+        for(int i = 1 ; i <= numOfTests ; i++) {
+            String file = "input.txt";
+            Scanner scanner = new Scanner(file);
+            List<String> lines = new ArrayList<>();
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.length() != 0) {
+                    lines.add(line);
+                }
+            }
+            MyRulesBaseListener listener = new MyRulesBaseListener();
+            for (String line : lines) {
+                CharStream charStream = CharStreams.fromString(line);
+                RulesLexer lexer = new RulesLexer(charStream);
+                CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+                RulesParser parser = new RulesParser(commonTokenStream);
+                RulesParser.ProgramContext programContext = parser.program();
+                ParseTreeWalker walker = new ParseTreeWalker();
+                walker.walk(listener, programContext);
+            }
+        }
     }
 }

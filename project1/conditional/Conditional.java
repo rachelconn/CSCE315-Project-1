@@ -21,8 +21,8 @@ public abstract class Conditional
 
     public Conditional(String condType, String condValue, String fieldName) {
         this.condType = condType;
-        this.condValue = condValue;
-        this.fieldName = fieldName;
+        this.condValue = sanitizeFieldName(condValue);
+        this.fieldName = sanitizeFieldName(fieldName);
     }
 
     public String getCondType() {
@@ -74,6 +74,9 @@ public abstract class Conditional
         // TODO: make this check more rigorous
         if (!type.equals(this.condType))
         {
+            System.out.println(type.contains("VARCHAR"));
+            System.out.println(type.equals("VARCHAR"));
+            System.out.println(this.condType.contains("VARCHAR"));
             throw new IncompatibleTypesException(this.condValue, this.condType, value, type, operator, "");
         }
     }
@@ -88,6 +91,11 @@ public abstract class Conditional
         {
             return "VARCHAR";
         }
+    }
+
+    public static String sanitizeFieldName(String input)
+    {
+        return input.replace("\"", "");
     }
 
     public static boolean tryParseInt(String value) {

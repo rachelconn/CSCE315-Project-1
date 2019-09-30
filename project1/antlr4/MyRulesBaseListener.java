@@ -74,7 +74,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
                     String fieldName = "";
                     String attributeValue = "";
 
-                    if (ctx.getChild(0) instanceof RulesParser.AttributeNameContext) {
+                    if (ctx.getChild(0).getChild(0) instanceof RulesParser.AttributeNameContext) {
                         fieldName = ctx.getChild(0).getText();
                         attributeValue = ctx.getChild(2).getText();
                     } else {
