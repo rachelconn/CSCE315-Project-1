@@ -203,7 +203,7 @@ public class DBMS {
     }
 
     public Table unionQry(Table a, Table b){
-        if(a.getAttributeNames() == b.getAttributeNames() && a.getAttributeTypes() == b.getAttributeTypes()){
+        if(a.getAttributeNames().equals(b.getAttributeNames()) && a.getAttributeTypes().equals(b.getAttributeTypes())){
             Table c = new Table(a);
             HashMap<ArrayList<String>, ArrayList<String>> aEntries = a.getEntries();
             HashMap<ArrayList<String>, ArrayList<String>> bEntries = b.getEntries();
