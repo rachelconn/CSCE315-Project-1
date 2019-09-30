@@ -8,10 +8,10 @@ package project1.conditional;
 
 public class IncompatibleTypesException extends Exception
 {
-    public IncompatibleTypesException(String baseType,
-                                      String baseValue,
-                                      String incomingType,
+    public IncompatibleTypesException(String baseValue,
+                                      String baseType,
                                       String incomingValue,
+                                      String incomingType,
                                       String operation,
                                       String message) {
         super(
