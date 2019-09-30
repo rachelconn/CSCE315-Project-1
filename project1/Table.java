@@ -169,6 +169,10 @@ public class Table implements Serializable {
 
     public String showTable() {
         String toShow = this.name + ":\n";
+        for(String s : attributeNames) {
+            toShow = toShow + s + " ";
+        }
+        toShow += "\n";
         for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : this.entries.entrySet()){
             for(int j = 0; j < entry.getValue().size(); j++){
                 toShow = toShow + entry.getValue().get(j) + " ";
