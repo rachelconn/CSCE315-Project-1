@@ -73,6 +73,7 @@ public class DBMS {
     }
 
     public void createTable(String tableName, Table table) {
+        table.setName(tableName);
         tables.put(tableName, table);
     }
 
