@@ -21,7 +21,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 public class SelectTest {
     public static void main(String[] args) throws Exception {
         List<String> lines = new ArrayList<>();
-        lines.add("t1 <- select (kind == \"dog\") tabl;");
+        lines.add("t1 <- select (1 == 1) tabl;");
         Column c1 = new Column("kind", "VARCHAR(20)");
         Column c2 = new Column("name", "VARCHAR(32)");
         ArrayList<Column> cols = new ArrayList<>();
@@ -55,6 +55,7 @@ public class SelectTest {
         }
         listener.printTables();
 
+        /*
         db.serializeTables("tables");
 
         HashMap<String,Table> tables = db.deserializeTables("tables");
@@ -62,5 +63,6 @@ public class SelectTest {
         for (Map.Entry<String, Table> entry : tables.entrySet()) {
             System.out.println("Table " + entry.getKey() + " has " + Integer.toString(entry.getValue().getSize()) + " entries");
         }
+         */
     }
 }

@@ -20,16 +20,62 @@ public class DBMS {
         tables.put(t.getName(), t);
     }
 
-    public void openCmd(){}
+    // including .xml optional
+    public void openCmd(String tableName){
+        Table tabl;
+        try {
+            tabl = deserializeTable(tableName);
+        }
+        catch (FileNotFoundException ex)
+        {
+            System.out.println("That table doesn't exit, dumbass");
+            System.out.println(ex);
+            return;
+        }
+        catch (Exception ex)
+        {
+            System.out.println("We read something, but it was NOT a table");
+            System.out.println(ex);
+            return;
+        }
+        addTable(tabl);
+    }
 
-    public void closeCmd(){}
+    public void closeCmd(Table t){
+        try {
+            serializeTable(t.getName(), t);
+        }
+        catch (FileNotFoundException ex)
+        {
+            System.out.println("Unable to save table " + t.getName() + " into the file");
+            System.out.println(ex);
+            return;
+        }
+        tables.remove(t.getName());
+    }
 
-    public void writeCmd(){}
+    public void writeCmd(Table t){
+        try {
+            serializeTable(t.getName(), t);
+        }
+        catch (FileNotFoundException ex)
+        {
+            System.out.println("Unable to save table " + t.getName() + " into the file");
+            System.out.println(ex);
+            return;
+        }
+    }
 
-    public void exitCmd(){}
+    public void exitCmd(){
+        /*
+        for (Map.Entry<> t : tables.entrySet())
+        {
+
+        }*/
+    }
 
     // TODO: modify access to private after testing
-    public void serializeTables(String filename) throws FileNotFoundException {
+    public void serializeTable(String filename, Table table) throws FileNotFoundException {
         if (!filename.substring(filename.length() - 4).equals(".xml"))
         {
             filename = filename + ".xml";
@@ -37,16 +83,16 @@ public class DBMS {
         XMLEncoder e = new XMLEncoder(
                 new BufferedOutputStream(
                         new FileOutputStream(filename)));
-        e.writeObject(tables);
+        e.writeObject(table);
         e.close();
     }
 
-    private void serializeTables() throws FileNotFoundException {
-        serializeTables("tables.xml");
+    private void serializeTable(Table table) throws FileNotFoundException {
+        serializeTable(table.getName(), table);
     }
 
     // TODO: modify access to private after testing
-    public HashMap<String,Table> deserializeTables(String filename) throws Exception, FileNotFoundException {
+    public Table deserializeTable(String filename) throws Exception, FileNotFoundException {
         if (!filename.substring(filename.length() - 4).equals(".xml"))
         {
             filename = filename + ".xml";
@@ -55,10 +101,10 @@ public class DBMS {
                 new BufferedInputStream(
                         new FileInputStream(filename)));
         Object result = d.readObject();
-        HashMap<String,Table> h_result;
-        if (result instanceof HashMap)
+        Table h_result;
+        if (result instanceof Table)
         {
-            h_result = (HashMap<String,Table>) result;
+            h_result = (Table) result;
         }
         else
         {

@@ -1,30 +1,29 @@
 package project1.conditional;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ConditionBranch extends Conditional {
     ConditionType condType;
-    Conditional left;
-    Conditional right;
+    Conditional _left;
+    Conditional _right;
 
-    public ConditionBranch(ConditionType condType, Conditional left, Conditional right) {
+    public ConditionBranch(ConditionType condType, Conditional _left, Conditional _right) {
         this.condType = condType;
-        this.left = left;
-        this.right = right;
+        this._left = _left;
+        this._right = _right;
     }
 
     @Override
     public ArrayList<String> getFieldsChecked() {
         ArrayList<String> output = new ArrayList<>();
-        for (String s : left.getFieldsChecked())
+        for (String s : _left.getFieldsChecked())
         {
             if (!output.contains(s))
             {
                 output.add(s);
             }
         }
-        for (String s : right.getFieldsChecked())
+        for (String s : _right.getFieldsChecked())
         {
             if (!output.contains(s))
             {
@@ -38,11 +37,11 @@ public class ConditionBranch extends Conditional {
     public boolean SelectsEntry(ArrayList<Cell> row) throws IncompatibleTypesException, FieldNotInTableException {
         if (condType == ConditionType.AND)
         {
-            return left.SelectsEntry(row) && right.SelectsEntry(row);
+            return _left.SelectsEntry(row) && _right.SelectsEntry(row);
         }
         else
         {
-            return left.SelectsEntry(row) || right.SelectsEntry(row);
+            return _left.SelectsEntry(row) || _right.SelectsEntry(row);
         }
     }
 
@@ -52,6 +51,6 @@ public class ConditionBranch extends Conditional {
         {
             return false;
         }
-        return left.HashableOperation() && right.HashableOperation();
+        return _left.HashableOperation() && _right.HashableOperation();
     }
 }

@@ -16,15 +16,23 @@ import java.util.ArrayList;
 
 public class NotEqualsComparison extends Conditional
 {
-    public NotEqualsComparison(String condType, String condValue, String fieldName) {
-        super(condType, condValue, fieldName);
+
+    public NotEqualsComparison(TypedData left, TypedData right) {
+        super(left, right);
     }
 
     @Override
     public boolean SelectsEntry(ArrayList<Cell> row) throws IncompatibleTypesException, FieldNotInTableException {
-        Cell c = getCellFromRow(row);
-        ThrowExceptionIfNotSameType(c.fieldType, c.fieldValue, "!=");
+        if (!left.TryDefineState(row))
+        {
+            throw new FieldNotInTableException("[FATAL] Field " + left.stateInformation + " was not in row");
+        }
+        if (!right.TryDefineState(row))
+        {
+            throw new FieldNotInTableException("[FATAL] Field " + right.stateInformation + " was not in row");
+        }
+        ThrowExceptionIfNotSameType(left, right, "==");
 
-        return !c.fieldValue.equals(this.condValue);
+        return !left.stateInformation.equals(right.stateInformation);
     }
 }

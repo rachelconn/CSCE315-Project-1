@@ -5,6 +5,15 @@ public class Cell {
     public String fieldType;
     public String fieldValue;
 
+    public Cell(String fieldName, String fieldType, String fieldValue) {
+        this.fieldName = fieldName;
+        this.fieldType = fieldType;
+        this.fieldValue = fieldValue;
+    }
+
+    public Cell() {
+    }
+
     @Override
     public int hashCode() {
         return super.hashCode();

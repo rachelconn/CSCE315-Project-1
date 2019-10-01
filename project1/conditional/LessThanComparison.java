@@ -15,18 +15,26 @@ import java.util.ArrayList;
 
 public class LessThanComparison extends Conditional
 {
-    public LessThanComparison(String condType, String condValue, String fieldName) {
-        super(condType, condValue, fieldName);
+
+    public LessThanComparison(TypedData left, TypedData right) {
+        super(left, right);
     }
 
     @Override
     public boolean SelectsEntry(ArrayList<Cell> row) throws IncompatibleTypesException, FieldNotInTableException {
-        Cell c = getCellFromRow(row);
-        ThrowExceptionIfNotIntegersOnly(c.fieldType, c.fieldValue, "<");
+        if (!left.TryDefineState(row))
+        {
+            throw new FieldNotInTableException("[FATAL] Field " + left.stateInformation + " was not in row");
+        }
+        if (!right.TryDefineState(row))
+        {
+            throw new FieldNotInTableException("[FATAL] Field " + right.stateInformation + " was not in row");
+        }
+        ThrowExceptionIfNotIntegersOnly(left, right, ">");
 
-        int int_incomingVal = Integer.parseInt(c.fieldValue);
-        int int_condVal = Integer.parseInt(this.condValue);
+        int int_left = Integer.parseInt(left.stateInformation);
+        int int_right = Integer.parseInt(right.stateInformation);
 
-        return int_incomingVal < int_condVal;
+        return int_left < int_right;
     }
 }

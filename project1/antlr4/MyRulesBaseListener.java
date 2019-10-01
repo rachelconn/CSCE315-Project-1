@@ -71,53 +71,39 @@ public class MyRulesBaseListener extends RulesBaseListener {
                 // case [operand] [operator] [AttributeName] or
                 // case [AttributeName] [operator] [operand]
                 if (Arrays.asList(">", "<", ">=", "<=", "==", "!=").contains(ctx.getChild(1).getText())) {
-                    String fieldName = "";
-                    String attributeValue = "";
-
-                    if (ctx.getChild(0).getChild(0) instanceof RulesParser.AttributeNameContext) {
-                        fieldName = ctx.getChild(0).getText();
-                        attributeValue = ctx.getChild(2).getText();
-                    } else {
-                        fieldName = ctx.getChild(2).getText();
-                        attributeValue = ctx.getChild(0).getText();
-                    }
+                    TypedData _left = parseValueLeafIntoTrackedCell(ctx.getChild(0).getChild(0));
+                    TypedData _right = parseValueLeafIntoTrackedCell(ctx.getChild(2).getChild(0));  // TODO: check 2-0 or 2-2
 
                     switch (ctx.getChild(1).getText()) {
                         case ">":
                             return new GreaterThanComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         case "<":
                             return new LessThanComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         case ">=":
                             return new GreaterThanEqualsComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         case "<=":
                             return new LessThanEqualsComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         case "==":
                             return new EqualsComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         case "!=":
                             return new NotEqualsComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         default:
                             throw new Exception("Unsupported operation: " + ctx.getChild(1).getText());
@@ -128,6 +114,19 @@ public class MyRulesBaseListener extends RulesBaseListener {
         } catch(Exception e) {
             System.out.println("Exception in parseComparison: \n" + String.valueOf(e));
             return null;
+        }
+    }
+
+    public TypedData parseValueLeafIntoTrackedCell(ParseTree pt) throws Exception
+    {
+        if (pt instanceof RulesParser.AttributeNameContext) {
+            return new TypedData(ParsedDataType.FIELD, pt.getText());
+        }
+        else if (pt instanceof RulesParser.LiteralContext) {
+            return new TypedData(TypedData.getType(pt.getText()), Utilities.sanitizeFieldName(pt.getText()));
+        }
+        else {
+            throw new Exception("[FATAL] parseValueLeafIntoTrackedCell parsed invalid type: " + pt.getClass().toString());
         }
     }
 
