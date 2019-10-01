@@ -1,6 +1,7 @@
 package project1.antlr4;
 import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.*;
+import javafx.util.Pair;
 import project1.DBMS;
 import project1.Table;
 import project1.conditional.*;
@@ -272,10 +273,19 @@ public class MyRulesBaseListener extends RulesBaseListener {
         }
     }
 
-    @Override public void exitUnion(RulesParser.UnionContext ctx) {
-
+    @Override public void exitUpdateCmd(RulesParser.UpdateCmdContext ctx) {
+        ArrayList<Pair<String, String>> updates = new ArrayList<>();
+        String tableName = ctx.getChild(1).getText();
+        for(int i = 3 ; i < ctx.getChildCount() - 4 ; i += 4){
+            String attName = ctx.getChild(i).getText();
+            String literal = ctx.getChild(i+2).getText();
+            Pair<String, String> pair = new Pair<>(attName, literal);
+            updates.add(pair);
+        }
+        ParseTree cTree = ctx.getChild(ctx.getChildCount() - 1);
+        Conditional conditionTree = parseComparison(cTree);
+        myDBMS.updateCmd(tableName, updates, conditionTree);
     }
-
     /*
     A testing method for our glorious super anti parsing thing no dijkstra's crap 100% legit
      */

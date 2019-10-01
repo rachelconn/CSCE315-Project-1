@@ -43,7 +43,7 @@ public class Main {
     }
 
     public static void unitTesting() throws FileNotFoundException{
-        int numOfTests = 1;
+        int numOfTests = 3;
         for(int i = 1 ; i <= numOfTests ; i++) {
             File file = new File("tests/test" + String.valueOf(i) + ".txt");
             Scanner scanner = new Scanner(file);

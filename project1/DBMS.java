@@ -3,6 +3,7 @@ package project1;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
+import javafx.util.Pair;
 import java.lang.System.*;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -143,7 +144,7 @@ public class DBMS {
         tables.put(tableName, new Table(tableName, attributeNames, attributeTypes, pKeyIndices));
     }
 
-    public void updateCmd(){
+    public void updateCmd(String tableName, ArrayList<Pair<String,String>> updates, Conditional conditionTree){
 
     }
 
