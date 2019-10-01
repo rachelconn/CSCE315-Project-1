@@ -3,6 +3,7 @@ package project1;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
+import javafx.util.Pair;
 import java.lang.System.*;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -20,16 +21,72 @@ public class DBMS {
         tables.put(t.getName(), t);
     }
 
-    public void openCmd(){}
+    // including .xml optional
+    public void openCmd(String tableName){
+        Table tabl;
+        try {
+            tabl = deserializeTable(tableName);
+        }
+        catch (FileNotFoundException ex)
+        {
+            System.out.println("File " + tableName + ".xml doesn't exist. Unable to open.");
+            System.out.println(ex);
+            return;
+        }
+        catch (Exception ex)
+        {
+            System.out.println("We read something, but it was NOT a table");
+            System.out.println(ex);
+            return;
+        }
+        addTable(tabl);
+    }
 
-    public void closeCmd(){}
+    public void closeCmd(String tableName){
+        Table t = tables.get(tableName);
+        if (t == null) {
+            System.out.println("Invalid table name: " + tableName + ". Unable to close.");
+            return;
+        }
+        try {
+            serializeTable(tableName, t);
+        }
+        catch (FileNotFoundException ex)
+        {
+            System.out.println("Unable to save table " + tableName + " into the file");
+            System.out.println(ex);
+            return;
+        }
+        tables.remove(tableName);
+    }
 
-    public void writeCmd(){}
+    public void writeCmd(String tableName){
+        Table t = tables.get(tableName);
+        if (t == null) {
+            System.out.println("Invalid table name: " + tableName + ". Unable to write.");
+            return;
+        }
+        try {
+            serializeTable(tableName, t);
+        }
+        catch (FileNotFoundException ex)
+        {
+            System.out.println("Unable to save table " + t.getName() + " into the file");
+            System.out.println(ex);
+            return;
+        }
+    }
 
-    public void exitCmd(){}
+    public void exitCmd(){
+        /*
+        for (Map.Entry<> t : tables.entrySet())
+        {
+
+        }*/
+    }
 
     // TODO: modify access to private after testing
-    public void serializeTables(String filename) throws FileNotFoundException {
+    public void serializeTable(String filename, Table table) throws FileNotFoundException {
         if (!filename.substring(filename.length() - 4).equals(".xml"))
         {
             filename = filename + ".xml";
@@ -37,16 +94,16 @@ public class DBMS {
         XMLEncoder e = new XMLEncoder(
                 new BufferedOutputStream(
                         new FileOutputStream(filename)));
-        e.writeObject(tables);
+        e.writeObject(table);
         e.close();
     }
 
-    private void serializeTables() throws FileNotFoundException {
-        serializeTables("tables.xml");
+    private void serializeTable(Table table) throws FileNotFoundException {
+        serializeTable(table.getName(), table);
     }
 
     // TODO: modify access to private after testing
-    public HashMap<String,Table> deserializeTables(String filename) throws Exception, FileNotFoundException {
+    public Table deserializeTable(String filename) throws Exception, FileNotFoundException {
         if (!filename.substring(filename.length() - 4).equals(".xml"))
         {
             filename = filename + ".xml";
@@ -55,10 +112,10 @@ public class DBMS {
                 new BufferedInputStream(
                         new FileInputStream(filename)));
         Object result = d.readObject();
-        HashMap<String,Table> h_result;
-        if (result instanceof HashMap)
+        Table h_result;
+        if (result instanceof Table)
         {
-            h_result = (HashMap<String,Table>) result;
+            h_result = (Table) result;
         }
         else
         {
@@ -69,10 +126,15 @@ public class DBMS {
     }
 
     public void showCmd(Table t){
+        if (t == null) {
+            System.out.println("Attempting to print non-existing table.");
+            return;
+        }
         System.out.println(t.showTable());
     }
 
     public void createTable(String tableName, Table table) {
+        table.setName(tableName);
         tables.put(tableName, table);
     }
 
@@ -84,7 +146,7 @@ public class DBMS {
         for(Map.Entry<String,String> entry : attributes.entrySet()) {
             attributeNames.add(entry.getKey());
             attributeTypes.add(entry.getValue());
-            if(primaryKeys.contains(entry.getKey())){ //TODO:
+            if(primaryKeys.contains(entry.getKey())){
                 pKeyIndices.add(i);
             }
             i++;
@@ -92,7 +154,7 @@ public class DBMS {
         tables.put(tableName, new Table(tableName, attributeNames, attributeTypes, pKeyIndices));
     }
 
-    public void updateCmd(){
+    public void updateCmd(String tableName, ArrayList<Pair<String,String>> updates, Conditional conditionTree){
 
     }
 
@@ -138,7 +200,7 @@ public class DBMS {
             throw new NotImplementedException();
         }*/
         // 2. if conditions are not favorable, perform O(n) search
-        return tableRef.getAllKeysThatSatisfyConditions(conditionTree);
+        return tableRef.filter(conditionTree);
     }
 
     public Table selectQry(Table tableRef, Conditional conditionTree) throws IncompatibleTypesException {
@@ -157,11 +219,10 @@ public class DBMS {
             throw new NotImplementedException();
         }*/
         // 2. if conditions are not favorable, perform O(n) search
-        return tableRef.getAllKeysThatSatisfyConditions(conditionTree);
+        return tableRef.filter(conditionTree);
     }
 
     public Table projectQry(Table table, ArrayList<String> attributeNames) {
-        HashMap<ArrayList<String>, ArrayList<String>> tableMap = table.getEntries();
         ArrayList<Integer> wantedIndices = new ArrayList<>();
         ArrayList<String> tableAttributes = table.getAttributeNames();
         for (int i = 0; i < tableAttributes.size(); i++) {
@@ -170,11 +231,14 @@ public class DBMS {
             }
         }
 
-        ArrayList<Integer> pKeyIndices = table.getpKeyIndices();
-        for(Integer i : pKeyIndices){
-            if(!wantedIndices.contains(i)){
-                pKeyIndices.remove(i);
+        ArrayList<Integer> pKeyIndicesOld = table.getpKeyIndices();
+        ArrayList<Integer> pKeyIndices = new ArrayList<>();
+        int j = 0;
+        for(Integer i : wantedIndices){
+            if(pKeyIndicesOld.contains(i)) {
+                pKeyIndices.add(j);
             }
+            j++;
         }
 
         ArrayList<String> oldAttTypes = table.getAttributeTypes();
@@ -184,16 +248,15 @@ public class DBMS {
             attributeTypes.add(newAttType);
         }
 
-        Table projection = new Table("temp", attributeNames, attributeTypes, new ArrayList<Integer>());
+        Table projection = new Table("temp", attributeNames, attributeTypes, pKeyIndices);
+        HashMap<ArrayList<String>, ArrayList<String>> tableMap = table.getEntries();
         for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : tableMap.entrySet()) {
-            ArrayList<String> toAdd = new ArrayList<>();
+            ArrayList<String> attributes = new ArrayList<>();
             //create entry to add containing each desired attribute
             for (int i : wantedIndices) {
-                toAdd.add(entry.getValue().get(i));
+                attributes.add(entry.getValue().get(i));
             }
-            if (!projection.contains(toAdd)) {
-                projection.addEntry(toAdd);
-            }
+            projection.addEntry(attributes);
         }
         return projection;
     }
@@ -203,7 +266,7 @@ public class DBMS {
     }
 
     public Table unionQry(Table a, Table b){
-        if(a.getAttributeNames() == b.getAttributeNames() && a.getAttributeTypes() == b.getAttributeTypes()){
+        if(a.getAttributeNames().equals(b.getAttributeNames()) && a.getAttributeTypes().equals(b.getAttributeTypes())){
             Table c = new Table(a);
             HashMap<ArrayList<String>, ArrayList<String>> aEntries = a.getEntries();
             HashMap<ArrayList<String>, ArrayList<String>> bEntries = b.getEntries();
@@ -220,35 +283,40 @@ public class DBMS {
     }
   
     public Table differenceQry(Table a, Table b){
-        if (a.getAttributeNames() == b.getAttributeNames() && a.getAttributeTypes() == b.getAttributeTypes()){
-            System.out.println("Table types must be union-compatible.");
-            return null;
-        }
-        Table c = new Table(a.getName(), a.getAttributeNames(), a.getAttributeTypes(), a.getpKeyIndices());
-        for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : a.getEntries().entrySet()) {
-            if (!b.contains(entry.getValue())) {
-                c.addEntry(entry.getValue());
+        if(a.getAttributeNames().equals(b.getAttributeNames()) && a.getAttributeTypes().equals(b.getAttributeTypes())) {
+            Table c = new Table(a.getName(), a.getAttributeNames(), a.getAttributeTypes(), a.getpKeyIndices());
+            for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : a.getEntries().entrySet()) {
+                if (!b.contains(entry.getValue())) {
+                    c.addEntry(entry.getValue());
+                }
             }
+            return c;
         }
-        return c;
+        System.out.println("Table types must be union-compatible.");
+        return null;
     }
 
     public Table productQry(Table a, Table b){
-
-        ArrayList<String> attributeNames = a.getAttributeNames();
+        ArrayList<String> attributeNames = new ArrayList<>(a.getAttributeNames());
+        for (String s : attributeNames) {
+            if (b.getAttributeNames().contains(s)) {
+                System.out.println("Attempting to get product of incompatible tables:" + a.getName() + " and " + b.getName());
+                return null;
+            }
+        }
         attributeNames.addAll(b.getAttributeNames());
-        ArrayList<String> attributeTypes = a.getAttributeTypes();
+        ArrayList<String> attributeTypes = new ArrayList<>(a.getAttributeTypes());
         attributeTypes.addAll(b.getAttributeTypes());
-        ArrayList<Integer> pKeyIndices = a.getpKeyIndices();
-        ArrayList<Integer> bPKeyIndices = b.getpKeyIndices();
+        ArrayList<Integer> pKeyIndices = new ArrayList<>(a.getpKeyIndices());
+        ArrayList<Integer> bPKeyIndices = new ArrayList<>(b.getpKeyIndices());
         for(int i = 0; i<bPKeyIndices.size();i++){
-            bPKeyIndices.set(i, bPKeyIndices.get(i)+attributeNames.size());
+            bPKeyIndices.set(i, bPKeyIndices.get(i)+a.getAttributeNames().size());
         }
         pKeyIndices.addAll(bPKeyIndices);
         Table myTable = new Table("temp",attributeNames,attributeTypes,pKeyIndices);
         for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : a.getEntries().entrySet()){
             for(HashMap.Entry<ArrayList<String>,ArrayList<String>> bEntry : b.getEntries().entrySet()){
-                ArrayList<String> entryToAdd = entry.getValue();
+                ArrayList<String> entryToAdd = new ArrayList<>(entry.getValue());
                 entryToAdd.addAll(bEntry.getValue());
                 myTable.addEntry(entryToAdd);
             }

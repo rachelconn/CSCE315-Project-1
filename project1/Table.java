@@ -73,6 +73,14 @@ public class Table implements Serializable {
         this.entries = a.entries;
     }
 
+    public Table() {
+        this.name = "";
+        this.attributeNames = new ArrayList<>();
+        this.attributeTypes = new ArrayList<>();
+        this.pKeyIndices = new ArrayList<>();
+        this.entries = new HashMap<>();
+    }
+
     //GETTERS AND SETTERS
     public String getName() {
         return name;
@@ -114,6 +122,8 @@ public class Table implements Serializable {
     }
 
     //CLASS FUNCTIONS
+    //TODO: figure out what to do if there aren't any primary keys in table
+    //possibly just say the primary key is the entire attribute list?
     public void addEntry(ArrayList<String> attributes){
         ArrayList<String> pKeys = new ArrayList<>();
         for(int i = 0 ; i < pKeyIndices.size() ; i++){
@@ -150,32 +160,47 @@ public class Table implements Serializable {
         return entries.containsValue(attributes);
     }
 
-    public Table getAllKeysThatSatisfyConditions(Conditional cond) throws IncompatibleTypesException {
+    public Table filter(Conditional cond) throws IncompatibleTypesException {
         Table results = new Table("temp", this.getAllColumns(), this.getPrimaryKeys());
         for (Entry<ArrayList<String>,ArrayList<String>> entry : entries.entrySet())
         {
-            boolean satisfiesConditions = true;
             ArrayList<String> row = entry.getValue();
-            // SelectsEntry checks to make sure the entry passes the conditions
-            // Eg. SELECT * FROM tabl WHERE dog == 1
-            // if field dog really is 1 (and the types match), it returns true
-            int fieldIndex = attributeNames.indexOf(cond.fieldName);
-            satisfiesConditions = satisfiesConditions &&
-                    cond.SelectsEntry(
-                            row.get(fieldIndex),
-                            attributeTypes.get(fieldIndex)
-                    );
-            if (!satisfiesConditions) {break;}
-            if (satisfiesConditions)
+            ArrayList<Cell> cells = getRow(row);
+            try {
+                if (cond.SelectsEntry(cells))
+                {
+                    results.addEntry(row);
+                }
+            }
+            catch (FieldNotInTableException ex)
             {
-                results.addEntry(row);
+                System.out.println("[INFO] The command looked for a field that isn't in the tabl!!!");
+                System.out.println(ex);
             }
         }
         return results;
     }
 
+    public ArrayList<Cell> getRow(ArrayList<String> row)
+    {
+        ArrayList<Cell> output = new ArrayList<>();
+        for (int i=0; i<attributeNames.size(); i++)
+        {
+            Cell c1 = new Cell();
+            c1.fieldName = attributeNames.get(i);
+            c1.fieldType = attributeTypes.get(i);
+            c1.fieldValue = row.get(i);
+            output.add(c1);
+        }
+        return output;
+    }
+
     public String showTable() {
         String toShow = this.name + ":\n";
+        for(String s : attributeNames) {
+            toShow = toShow + s + " ";
+        }
+        toShow += "\n";
         for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : this.entries.entrySet()){
             for(int j = 0; j < entry.getValue().size(); j++){
                 toShow = toShow + entry.getValue().get(j) + " ";

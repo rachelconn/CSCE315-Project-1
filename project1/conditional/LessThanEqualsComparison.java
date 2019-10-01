@@ -12,19 +12,30 @@ blah = incoming_val (because it will be compared to values entering SelectsEntry
 
 package project1.conditional;
 
+import java.util.ArrayList;
+
 public class LessThanEqualsComparison extends Conditional
 {
-    public LessThanEqualsComparison(String condType, String condValue, String fieldName) {
-        super(condType, condValue, fieldName);
+
+    public LessThanEqualsComparison(TypedData left, TypedData right) {
+        super(left, right);
     }
 
     @Override
-    public boolean SelectsEntry(String type, String value) throws IncompatibleTypesException {
-        ThrowExceptionIfNotIntegersOnly(type, value, "<=");
+    public boolean SelectsEntry(ArrayList<Cell> row) throws IncompatibleTypesException, FieldNotInTableException {
+        if (!left.TryDefineState(row))
+        {
+            throw new FieldNotInTableException("[FATAL] Field " + left.stateInformation + " was not in row");
+        }
+        if (!right.TryDefineState(row))
+        {
+            throw new FieldNotInTableException("[FATAL] Field " + right.stateInformation + " was not in row");
+        }
+        ThrowExceptionIfNotIntegersOnly(left, right, ">");
 
-        int int_incomingVal = Integer.parseInt(value);
-        int int_condVal = Integer.parseInt(this.condValue);
+        int int_left = Integer.parseInt(left.stateInformation);
+        int int_right = Integer.parseInt(right.stateInformation);
 
-        return int_incomingVal <= int_condVal;
+        return int_left <= int_right;
     }
 }

@@ -12,17 +12,28 @@ blah = incoming_val (because it will be compared to values entering SelectsEntry
 
 package project1.conditional;
 
+import java.util.ArrayList;
+
 public class EqualsComparison extends Conditional
 {
-    public EqualsComparison(String condType, String condValue, String fieldName) {
-        super(condType, condValue, fieldName);
+
+    public EqualsComparison(TypedData left, TypedData right) {
+        super(left, right);
     }
 
     @Override
-    public boolean SelectsEntry(String type, String value) throws IncompatibleTypesException {
-        ThrowExceptionIfNotSameType(type, value, "==");
+    public boolean SelectsEntry(ArrayList<Cell> row) throws IncompatibleTypesException, FieldNotInTableException {
+        if (!left.TryDefineState(row))
+        {
+            throw new FieldNotInTableException("[FATAL] Field " + left.stateInformation + " was not in row");
+        }
+        if (!right.TryDefineState(row))
+        {
+            throw new FieldNotInTableException("[FATAL] Field " + right.stateInformation + " was not in row");
+        }
+        ThrowExceptionIfNotSameType(left, right, "==");
 
-        return value.equals(this.condValue);
+        return left.stateInformation.equals(right.stateInformation);
     }
 
     @Override

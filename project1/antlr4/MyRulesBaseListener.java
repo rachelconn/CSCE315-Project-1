@@ -1,6 +1,7 @@
 package project1.antlr4;
 import org.antlr.v4.runtime.tree.ParseTree;
 import java.util.*;
+import javafx.util.Pair;
 import project1.DBMS;
 import project1.Table;
 import project1.conditional.*;
@@ -71,53 +72,39 @@ public class MyRulesBaseListener extends RulesBaseListener {
                 // case [operand] [operator] [AttributeName] or
                 // case [AttributeName] [operator] [operand]
                 if (Arrays.asList(">", "<", ">=", "<=", "==", "!=").contains(ctx.getChild(1).getText())) {
-                    String fieldName = "";
-                    String attributeValue = "";
-
-                    if (ctx.getChild(0) instanceof RulesParser.AttributeNameContext) {
-                        fieldName = ctx.getChild(0).getText();
-                        attributeValue = ctx.getChild(2).getText();
-                    } else {
-                        fieldName = ctx.getChild(2).getText();
-                        attributeValue = ctx.getChild(0).getText();
-                    }
+                    TypedData _left = parseValueLeafIntoTrackedCell(ctx.getChild(0).getChild(0));
+                    TypedData _right = parseValueLeafIntoTrackedCell(ctx.getChild(2).getChild(0));  // TODO: check 2-0 or 2-2
 
                     switch (ctx.getChild(1).getText()) {
                         case ">":
                             return new GreaterThanComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         case "<":
                             return new LessThanComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         case ">=":
                             return new GreaterThanEqualsComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         case "<=":
                             return new LessThanEqualsComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         case "==":
                             return new EqualsComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         case "!=":
                             return new NotEqualsComparison(
-                                    Conditional.getType(attributeValue),
-                                    attributeValue,
-                                    fieldName
+                                    _left,
+                                    _right
                             );
                         default:
                             throw new Exception("Unsupported operation: " + ctx.getChild(1).getText());
@@ -126,8 +113,21 @@ public class MyRulesBaseListener extends RulesBaseListener {
             }
             throw new Exception("What happened? --Hillary Clinton");
         } catch(Exception e) {
-            System.out.println(e);
+            System.out.println("Exception in parseComparison: \n" + String.valueOf(e));
             return null;
+        }
+    }
+
+    public TypedData parseValueLeafIntoTrackedCell(ParseTree pt) throws Exception
+    {
+        if (pt instanceof RulesParser.AttributeNameContext) {
+            return new TypedData(ParsedDataType.FIELD, pt.getText());
+        }
+        else if (pt instanceof RulesParser.LiteralContext) {
+            return new TypedData(TypedData.getType(pt.getText()), Utilities.sanitizeFieldName(pt.getText()));
+        }
+        else {
+            throw new Exception("[FATAL] parseValueLeafIntoTrackedCell parsed invalid type: " + pt.getClass().toString());
         }
     }
 
@@ -164,33 +164,33 @@ public class MyRulesBaseListener extends RulesBaseListener {
 
     public Table parseRenaming(ParseTree t) {
         ParseTree exprTree = t.getChild(4);
-        Table renameTable = parseExpr(exprTree);
+        Table renameTable = parseAtomicExpr(exprTree);
         ArrayList<String> newAttNames = parseAttributeList(t.getChild(2));
         return myDBMS.renameQry(renameTable, newAttNames);
     }
 
     public Table parseUnion(ParseTree t) {
-        String tableAName = t.getChild(0).getText();
-        String tableBName = t.getChild(2).getText();
-        return myDBMS.unionQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.unionQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseDifference(ParseTree t) {
-        String tableAName = t.getChild(0).getText();
-        String tableBName = t.getChild(2).getText();
-        return myDBMS.differenceQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.differenceQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseProduct(ParseTree t) {
-        String tableAName = t.getChild(0).getText();
-        String tableBName = t.getChild(2).getText();
-        return myDBMS.productQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.productQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseNaturalJoin(ParseTree t) {
-        String tableAName = t.getChild(0).getText();
-        String tableBName = t.getChild(2).getText();
-        return myDBMS.naturalJoinQry(myDBMS.getTable(tableAName), myDBMS.getTable(tableBName));
+        ParseTree exprA = t.getChild(0);
+        ParseTree exprB = t.getChild(2);
+        return myDBMS.naturalJoinQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
     public Table parseExpr(ParseTree t){
@@ -227,11 +227,6 @@ public class MyRulesBaseListener extends RulesBaseListener {
         myDBMS.addTable(t);
     }
 
-    @Override
-    public void exitSelection(RulesParser.SelectionContext ctx) {
-        super.exitSelection(ctx);
-    }
-
     @Override public void exitShowCmd(RulesParser.ShowCmdContext ctx) {
         //child(0) : "SHOW" ; child(1) : atomicExpr
         Table t = parseAtomicExpr(ctx.children.get(1));
@@ -251,13 +246,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
             attributes.put(attName,type);
         }
 
-        ArrayList<String> primaryKeys = new ArrayList<>();
-        ParseTree attList = children.get(9);
-        int attCount = (attList.getChildCount() + 1) / 2;
-        for(int i = 0 ; i < attCount ; i++){
-            String pKey = attList.getChild(2*i).getText();
-            primaryKeys.add(pKey);
-        }
+        ArrayList<String> primaryKeys = parseAttributeList(children.get(9));
 
         myDBMS.createCmd(tableName, attributes, primaryKeys);
     }
@@ -284,10 +273,31 @@ public class MyRulesBaseListener extends RulesBaseListener {
         }
     }
 
-    @Override public void exitUnion(RulesParser.UnionContext ctx) {
-
+    @Override public void exitOpenCmd(RulesParser.OpenCmdContext ctx) {
+        myDBMS.openCmd(ctx.getChild(1).getText());
     }
 
+    @Override public void exitCloseCmd(RulesParser.CloseCmdContext ctx) {
+        myDBMS.closeCmd(ctx.getChild(1).getText());
+    }
+
+    @Override public void exitWriteCmd(RulesParser.WriteCmdContext ctx) {
+        myDBMS.writeCmd(ctx.getChild(1).getText());
+    }
+
+    @Override public void exitUpdateCmd(RulesParser.UpdateCmdContext ctx) {
+        ArrayList<Pair<String, String>> updates = new ArrayList<>();
+        String tableName = ctx.getChild(1).getText();
+        for(int i = 3 ; i < ctx.getChildCount() - 4 ; i += 4){
+            String attName = ctx.getChild(i).getText();
+            String literal = ctx.getChild(i+2).getText();
+            Pair<String, String> pair = new Pair<>(attName, literal);
+            updates.add(pair);
+        }
+        ParseTree cTree = ctx.getChild(ctx.getChildCount() - 1);
+        Conditional conditionTree = parseComparison(cTree);
+        myDBMS.updateCmd(tableName, updates, conditionTree);
+    }
     /*
     A testing method for our glorious super anti parsing thing no dijkstra's crap 100% legit
      */

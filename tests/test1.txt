@@ -1,0 +1,10 @@
+CREATE TABLE a (name VARCHAR(20), major VARCHAR(8), gender VARCHAR(1), age INTEGER, height INTEGER) PRIMARY KEY (name, age);
+
+INSERT INTO a VALUES FROM ("Alice", "MEEN", "F", 18, 70);
+INSERT INTO a VALUES FROM ("Eli", "CSCE", "M", 20, 76);
+INSERT INTO a VALUES FROM ("Ryan", "CSCE", "M", 20, 68);
+INSERT INTO a VALUES FROM ("Nikolai", "CSCE", "F", 21, 71);
+INSERT INTO a VALUES FROM ("Sam", "CSCE", "M", 14, 75);
+INSERT INTO a VALUES FROM ("Kelvin", "CSCE", "M", 18, 69);
+
+SHOW a;
