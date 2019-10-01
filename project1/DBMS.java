@@ -29,7 +29,7 @@ public class DBMS {
         }
         catch (FileNotFoundException ex)
         {
-            System.out.println("That table doesn't exit, dumbass");
+            System.out.println("File " + tableName + ".xml doesn't exist. Unable to open.");
             System.out.println(ex);
             return;
         }
