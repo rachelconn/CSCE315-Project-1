@@ -33,5 +33,6 @@ SHOW answer;
 
 WRITE animals;
 CLOSE animals;
+OPEN animals;
 
 EXIT;
