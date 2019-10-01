@@ -273,6 +273,18 @@ public class MyRulesBaseListener extends RulesBaseListener {
         }
     }
 
+    @Override public void exitOpenCmd(RulesParser.OpenCmdContext ctx) {
+        myDBMS.openCmd(ctx.getChild(1).getText());
+    }
+
+    @Override public void exitCloseCmd(RulesParser.CloseCmdContext ctx) {
+        myDBMS.closeCmd(ctx.getChild(1).getText());
+    }
+
+    @Override public void exitWriteCmd(RulesParser.WriteCmdContext ctx) {
+        myDBMS.writeCmd(ctx.getChild(1).getText());
+    }
+
     @Override public void exitUpdateCmd(RulesParser.UpdateCmdContext ctx) {
         ArrayList<Pair<String, String>> updates = new ArrayList<>();
         String tableName = ctx.getChild(1).getText();
