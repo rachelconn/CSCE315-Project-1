@@ -73,6 +73,13 @@ public class Table implements Serializable {
         this.entries = a.entries;
     }
 
+    public Table() {
+        this.name = "";
+        this.attributeNames = new ArrayList<>();
+        this.attributeTypes = new ArrayList<>();
+        this.pKeyIndices = new ArrayList<>();
+        this.entries = new HashMap<>();
+    }
 
     //GETTERS AND SETTERS
     public String getName() {

@@ -1,0 +1,1 @@
+UPDATE animals SET name = "Jack", age = 10 WHERE (name == "Adam" && age == 9);
