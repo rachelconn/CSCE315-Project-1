@@ -42,22 +42,32 @@ public class DBMS {
         addTable(tabl);
     }
 
-    public void closeCmd(Table t){
+    public void closeCmd(String tableName){
+        Table t = tables.get(tableName);
+        if (t == null) {
+            System.out.println("Invalid table name: " + tableName + ". Unable to close.");
+            return;
+        }
         try {
-            serializeTable(t.getName(), t);
+            serializeTable(tableName, t);
         }
         catch (FileNotFoundException ex)
         {
-            System.out.println("Unable to save table " + t.getName() + " into the file");
+            System.out.println("Unable to save table " + tableName + " into the file");
             System.out.println(ex);
             return;
         }
-        tables.remove(t.getName());
+        tables.remove(tableName);
     }
 
-    public void writeCmd(Table t){
+    public void writeCmd(String tableName){
+        Table t = tables.get(tableName);
+        if (t == null) {
+            System.out.println("Invalid table name: " + tableName + ". Unable to write.");
+            return;
+        }
         try {
-            serializeTable(t.getName(), t);
+            serializeTable(tableName, t);
         }
         catch (FileNotFoundException ex)
         {
