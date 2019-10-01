@@ -6,7 +6,7 @@ import project1.conditional.*;
 import java.lang.System;
 import java.util.*;
 import java.util.Map.Entry;
-
+import javafx.util.Pair;
 
 public class Table implements Serializable {
 
@@ -114,7 +114,7 @@ public class Table implements Serializable {
 
     public ArrayList<String> getpKeyNames() {
         ArrayList<String> pKeyNames = new ArrayList<>();
-        for(Integer i : pKeyIndices){
+        for (Integer i : pKeyIndices) {
             String pKeyName = attributeNames.get(i);
             pKeyNames.add(pKeyName);
         }
@@ -122,6 +122,18 @@ public class Table implements Serializable {
     }
 
     //CLASS FUNCTIONS
+    //TODO: error checking
+    public int getPKeyIndex(int attIndex){
+        int keyIndex = -1;
+        for(int i = 0 ; i < attIndex ; i++){
+            if(pKeyIndices.contains(i)){
+                keyIndex++;
+            }
+        }
+        return keyIndex;
+    }
+
+
     //TODO: figure out what to do if there aren't any primary keys in table
     //possibly just say the primary key is the entire attribute list?
     public void addEntry(ArrayList<String> attributes){
@@ -193,6 +205,23 @@ public class Table implements Serializable {
             output.add(c1);
         }
         return output;
+    }
+
+    public void updateRow(ArrayList<String> pKeys, ArrayList<Pair<String,String>> updates) {
+        //Map.Entry<ArrayList<String>, ArrayList<String>>.get(pKeys);
+        ArrayList<String> attributes =  entries.get(pKeys);
+        entries.remove(pKeys);
+        for(Pair<String,String> update : updates){
+            int attIndex = attributeNames.indexOf(update.getKey());
+            boolean isKey = pKeyIndices.contains(attIndex);
+            attributes.set(attIndex, update.getValue());
+            if(isKey){
+                int keyIndex = getPKeyIndex(attIndex);
+                pKeys.set(keyIndex, update.getValue());
+            }
+        }
+        entries.put(pKeys, attributes);
+
     }
 
     public String showTable() {

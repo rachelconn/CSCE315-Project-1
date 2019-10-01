@@ -155,6 +155,19 @@ public class DBMS {
     }
 
     public void updateCmd(String tableName, ArrayList<Pair<String,String>> updates, Conditional conditionTree){
+        Table t = tables.get(tableName);
+        HashMap<ArrayList<String>,ArrayList<String>> entries = t.getEntries();
+        ArrayList<Integer> indexes = t.getpKeyIndices();
+        ArrayList<String> newAttributeNames = t.getAttributeNames();
+        int i = 0;
+        int pKey = -1;
+        for(Map.Entry<ArrayList<String>,ArrayList<String>> entry : entries.entrySet()) {
+            if(true /*KELVIN CONDITIONAL*/ )
+            {
+                t.updateRow(entry.getKey(), updates);
+            }
+            i++;
+        }
 
     }
 
