@@ -125,7 +125,7 @@ public class Table implements Serializable {
     //TODO: error checking
     public int getPKeyIndex(int attIndex){
         int keyIndex = -1;
-        for(int i = 0 ; i < attIndex ; i++){
+        for(int i = 0 ; i <= attIndex ; i++){
             if(pKeyIndices.contains(i)){
                 keyIndex++;
             }
