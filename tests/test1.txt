@@ -8,3 +8,5 @@ INSERT INTO a VALUES FROM ("Sam", "CSCE", "M", 14, 75);
 INSERT INTO a VALUES FROM ("Kelvin", "CSCE", "M", 18, 69);
 
 SHOW a;
+OPEN animals;
+SHOW animals;

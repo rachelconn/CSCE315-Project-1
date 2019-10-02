@@ -5,5 +5,7 @@ INSERT INTO animals VALUES FROM ("Spot", "dog", 10);
 INSERT INTO animals VALUES FROM ("Snoopy", "dog", 3);
 INSERT INTO animals VALUES FROM ("Tweety", "bird", 1);
 INSERT INTO animals VALUES FROM ("Joe", "bird", 2);
+SHOW animals;
 
-UPDATE animals SET name = "Jack", years = 10 WHERE (name == "Adam" && age == 9);
+UPDATE animals SET name = "Jack", years = 10 WHERE (name == "Joe");
+SHOW animals;

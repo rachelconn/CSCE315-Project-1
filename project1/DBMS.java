@@ -160,11 +160,19 @@ public class DBMS {
         HashMap<ArrayList<String>,ArrayList<String>> entriesCopy = (HashMap<ArrayList<String>, ArrayList<String>>) entries.clone();
         ArrayList<Integer> indexes = t.getpKeyIndices();
         ArrayList<String> newAttributeNames = t.getAttributeNames();
-
         for(Map.Entry<ArrayList<String>,ArrayList<String>> entry : entriesCopy.entrySet()) {
-            if(true /*KELVIN CONDITIONAL*/ ) {
-                t.updateRow(entry.getKey(), updates);
+            ArrayList<Cell> cells = t.getRow(entry.getValue());
+            try {
+                if(conditionTree.SelectsEntry(cells)) {
+                    t.updateRow(entry.getKey(), updates);
+                }
             }
+            catch (Exception ex)
+            {
+                System.out.println("Exception thrown in updateCmd: ");
+                System.out.println(ex);
+            }
+
         }
     }
 

@@ -291,6 +291,9 @@ public class MyRulesBaseListener extends RulesBaseListener {
         for(int i = 3 ; i < ctx.getChildCount() - 4 ; i += 4){
             String attName = ctx.getChild(i).getText();
             String literal = ctx.getChild(i+2).getText();
+            if(literal.charAt(0) == '"'){
+                literal = literal.substring(1,literal.length() - 1);
+            }
             Pair<String, String> pair = new Pair<>(attName, literal);
             updates.add(pair);
         }
