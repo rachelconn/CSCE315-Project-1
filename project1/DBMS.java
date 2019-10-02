@@ -68,6 +68,7 @@ public class DBMS {
         }
     }
 
+    //TODO: implement exit command
     public void exitCmd(){
         /*
         for (Map.Entry<> t : tables.entrySet())

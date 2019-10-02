@@ -14,124 +14,11 @@ public class MyRulesBaseListener extends RulesBaseListener {
         myDBMS = new DBMS();
     }
 
-    public MyRulesBaseListener(DBMS db)
-    {
+    public MyRulesBaseListener(DBMS db) {
         myDBMS = db;
     }
 
-    /*
-    Use this to parse a comparison tree into a conditional evalutator.
-    Uses base Exception type since if the exception occurs, a fundamental problem occurred.
-     */
-    public Conditional parseComparison(org.antlr.v4.runtime.tree.ParseTree ctx) {
-        try {
-            // check to ensure we are evaluating valid condition tree
-            if (!(ctx instanceof RulesParser.ConditionContext) &&
-                    !(ctx instanceof RulesParser.ConjunctionContext) &&
-                    !(ctx instanceof RulesParser.ComparisonContext)) {
-                throw new Exception(
-                        "FATAL (MyRulesBaseListener.parseComparison): invalid node recursed on: " +
-                                ctx.getClass().getSimpleName() +
-                                "\nwith text: " +
-                                ctx.getText()
-                );
-            }
-
-            if (ctx.getChildCount() != 1 && ctx.getChildCount() != 3) {
-                throw new Exception("FATAL (MyRulesBaseListener.parseComparison): unforeseen case occurred");
-            }
-
-            if (ctx.getChildCount() == 1) {
-                return parseComparison(ctx.getChild(0));
-            }
-
-            if (ctx.getChildCount() == 3) {
-                // case ["("] [some stuff] [")"]
-                if (ctx.getChild(0).getText().equals("(")) {
-                    return parseComparison(ctx.getChild(1));
-                }
-
-                // case [left tree] ["||"] [right tree]
-                if (ctx.getChild(1).getText().equals("||")) {
-                    return new ConditionBranch(
-                            ConditionType.OR,
-                            parseComparison(ctx.getChild(0)),
-                            parseComparison(ctx.getChild(2))
-                    );
-                }
-
-                // case [left tree] ["&&"] [right tree]
-                if (ctx.getChild(1).getText().equals("&&")) {
-                    return new ConditionBranch(
-                            ConditionType.AND,
-                            parseComparison(ctx.getChild(0)),
-                            parseComparison(ctx.getChild(2))
-                    );
-                }
-
-                // case [operand] [operator] [AttributeName] or
-                // case [AttributeName] [operator] [operand]
-                if (Arrays.asList(">", "<", ">=", "<=", "==", "!=").contains(ctx.getChild(1).getText())) {
-                    TypedData _left = parseValueLeafIntoTrackedCell(ctx.getChild(0).getChild(0));
-                    TypedData _right = parseValueLeafIntoTrackedCell(ctx.getChild(2).getChild(0));  // TODO: check 2-0 or 2-2
-
-                    switch (ctx.getChild(1).getText()) {
-                        case ">":
-                            return new GreaterThanComparison(
-                                    _left,
-                                    _right
-                            );
-                        case "<":
-                            return new LessThanComparison(
-                                    _left,
-                                    _right
-                            );
-                        case ">=":
-                            return new GreaterThanEqualsComparison(
-                                    _left,
-                                    _right
-                            );
-                        case "<=":
-                            return new LessThanEqualsComparison(
-                                    _left,
-                                    _right
-                            );
-                        case "==":
-                            return new EqualsComparison(
-                                    _left,
-                                    _right
-                            );
-                        case "!=":
-                            return new NotEqualsComparison(
-                                    _left,
-                                    _right
-                            );
-                        default:
-                            throw new Exception("Unsupported operation: " + ctx.getChild(1).getText());
-                    }
-                }
-            }
-            throw new Exception("What happened? --Hillary Clinton");
-        } catch(Exception e) {
-            System.out.println("Exception in parseComparison: \n" + String.valueOf(e));
-            return null;
-        }
-    }
-
-    public TypedData parseValueLeafIntoTrackedCell(ParseTree pt) throws Exception
-    {
-        if (pt instanceof RulesParser.AttributeNameContext) {
-            return new TypedData(ParsedDataType.FIELD, pt.getText());
-        }
-        else if (pt instanceof RulesParser.LiteralContext) {
-            return new TypedData(TypedData.getType(pt.getText()), Utilities.sanitizeFieldName(pt.getText()));
-        }
-        else {
-            throw new Exception("[FATAL] parseValueLeafIntoTrackedCell parsed invalid type: " + pt.getClass().toString());
-        }
-    }
-
-    public Table parseAtomicExpr(ParseTree t){
+    public Table parseAtomicExpr(ParseTree t) {
         if(t.getChild(0).getText().equals("(")) {
             return parseExpr(t.getChild(1));
         } else {
@@ -193,12 +80,12 @@ public class MyRulesBaseListener extends RulesBaseListener {
         return myDBMS.naturalJoinQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
-    public Table parseExpr(ParseTree t){
+    public Table parseExpr(ParseTree t) {
         // c is the rule that the expression parser found directly beneath the expr rule
         String c = t.getChild(0).getClass().toString();
         c = c.substring(34,c.length()-7);
         ParseTree ruleContext = t.getChild(0);
-        switch(c){
+        switch(c) {
             case "AtomicExpr" :
                 return parseAtomicExpr(ruleContext);
             case "Selection" :
@@ -240,7 +127,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
         LinkedHashMap<String,String> attributes = new LinkedHashMap<>(); //using linkedHashMap to guarantee insertion order
         ParseTree typedAttList = children.get(4);
         int typedAttCount = (typedAttList.getChildCount() + 1) / 3;
-        for(int i = 0 ; i < typedAttCount ; i++){
+        for(int i = 0 ; i < typedAttCount ; i++) {
             String attName = typedAttList.getChild(i*3).getText();
             String type = typedAttList.getChild(i*3 + 1).getText();
             attributes.put(attName,type);
@@ -256,14 +143,14 @@ public class MyRulesBaseListener extends RulesBaseListener {
         String tableName = children.get(2).getText();
         ArrayList<String> attributes = new ArrayList<>();
 
-        if(children.get(5).getText().equals("RELATION")){
+        if(children.get(5).getText().equals("RELATION")) {
             myDBMS.insertCmd(tableName, parseExpr(children.get(6)));
         } else {
             //6 is the first index that a literal shows up
-            for(int i = 6 ; i < ctx.getChildCount() ; i += 2){
+            for(int i = 6 ; i < ctx.getChildCount() ; i += 2) {
                 String str = children.get(i).getText();
                 // If the literal is a string, remove the quotations
-                if(str.charAt(0) == '"'){
+                if(str.charAt(0) == '"') {
                     str = str.substring(1,str.length() - 1);
                 }
                 attributes.add(str);
@@ -271,18 +158,6 @@ public class MyRulesBaseListener extends RulesBaseListener {
 
             myDBMS.insertCmd(tableName, attributes);
         }
-    }
-
-    @Override public void exitOpenCmd(RulesParser.OpenCmdContext ctx) {
-        myDBMS.openCmd(ctx.getChild(1).getText());
-    }
-
-    @Override public void exitCloseCmd(RulesParser.CloseCmdContext ctx) {
-        myDBMS.closeCmd(ctx.getChild(1).getText());
-    }
-
-    @Override public void exitWriteCmd(RulesParser.WriteCmdContext ctx) {
-        myDBMS.writeCmd(ctx.getChild(1).getText());
     }
 
     @Override public void exitUpdateCmd(RulesParser.UpdateCmdContext ctx) {
@@ -301,21 +176,113 @@ public class MyRulesBaseListener extends RulesBaseListener {
         Conditional conditionTree = parseComparison(cTree);
         myDBMS.updateCmd(tableName, updates, conditionTree);
     }
+
+    @Override public void exitOpenCmd(RulesParser.OpenCmdContext ctx) {
+        myDBMS.openCmd(ctx.getChild(1).getText());
+    }
+
+    @Override public void exitCloseCmd(RulesParser.CloseCmdContext ctx) {
+        myDBMS.closeCmd(ctx.getChild(1).getText());
+    }
+
+    @Override public void exitWriteCmd(RulesParser.WriteCmdContext ctx) {
+        myDBMS.writeCmd(ctx.getChild(1).getText());
+    }
+
+    //TODO: implement exit command parser
+    @Override public void exitExitCmd(RulesParser.ExitCmdContext ctx) { }
+
     /*
-    A testing method for our glorious super anti parsing thing no dijkstra's crap 100% legit
+    Use this to parse a comparison tree into a conditional evalutator.
+    Uses base Exception type since if the exception occurs, a fundamental problem occurred.
      */
-    @Override
-    public void exitComparison(RulesParser.ComparisonContext ctx) {
-        // comparison debugging
-        if (false) {
-            try {
-                Conditional cond = parseComparison(ctx);
-                System.out.println(ctx.getText() + " -> SUCCESS");
+    public Conditional parseComparison(org.antlr.v4.runtime.tree.ParseTree ctx) {
+        try {
+            // check to ensure we are evaluating valid condition tree
+            if (!(ctx instanceof RulesParser.ConditionContext) &&
+                    !(ctx instanceof RulesParser.ConjunctionContext) &&
+                    !(ctx instanceof RulesParser.ComparisonContext)) {
+                throw new Exception(
+                        "FATAL (MyRulesBaseListener.parseComparison): invalid node recursed on: " +
+                                ctx.getClass().getSimpleName() +
+                                "\nwith text: " +
+                                ctx.getText()
+                );
             }
-            catch (Exception ex) {
-                System.out.println(ex);
-                System.out.println(ctx.getText() + " -> FAIL");
+
+            if (ctx.getChildCount() != 1 && ctx.getChildCount() != 3) {
+                throw new Exception("FATAL (MyRulesBaseListener.parseComparison): unforeseen case occurred");
             }
+
+            if (ctx.getChildCount() == 1) {
+                return parseComparison(ctx.getChild(0));
+            }
+
+            if (ctx.getChildCount() == 3) {
+                // case ["("] [some stuff] [")"]
+                if (ctx.getChild(0).getText().equals("(")) {
+                    return parseComparison(ctx.getChild(1));
+                }
+
+                // case [left tree] ["||"] [right tree]
+                if (ctx.getChild(1).getText().equals("||")) {
+                    return new ConditionBranch(
+                            ConditionType.OR,
+                            parseComparison(ctx.getChild(0)),
+                            parseComparison(ctx.getChild(2))
+                    );
+                }
+
+                // case [left tree] ["&&"] [right tree]
+                if (ctx.getChild(1).getText().equals("&&")) {
+                    return new ConditionBranch(
+                            ConditionType.AND,
+                            parseComparison(ctx.getChild(0)),
+                            parseComparison(ctx.getChild(2))
+                    );
+                }
+
+                // case [operand] [operator] [AttributeName] or
+                // case [AttributeName] [operator] [operand]
+                if (Arrays.asList(">", "<", ">=", "<=", "==", "!=").contains(ctx.getChild(1).getText())) {
+                    TypedData _left = parseValueLeafIntoTrackedCell(ctx.getChild(0).getChild(0));
+                    TypedData _right = parseValueLeafIntoTrackedCell(ctx.getChild(2).getChild(0));  // TODO: check 2-0 or 2-2
+
+                    switch (ctx.getChild(1).getText()) {
+                        case ">":
+                            return new GreaterThanComparison(_left, _right);
+                        case "<":
+                            return new LessThanComparison(_left, _right);
+                        case ">=":
+                            return new GreaterThanEqualsComparison(_left, _right);
+                        case "<=":
+                            return new LessThanEqualsComparison(_left, _right);
+                        case "==":
+                            return new EqualsComparison(_left, _right);
+                        case "!=":
+                            return new NotEqualsComparison(_left, _right);
+                        default:
+                            throw new Exception("Unsupported operation: " + ctx.getChild(1).getText());
+                    }
+                }
+            }
+            throw new Exception("What happened? --Hillary Clinton");
+        } catch(Exception e) {
+            System.out.println("Exception in parseComparison: \n" + String.valueOf(e));
+            return null;
+        }
+    }
+
+    public TypedData parseValueLeafIntoTrackedCell(ParseTree pt) throws Exception
+    {
+        if (pt instanceof RulesParser.AttributeNameContext) {
+            return new TypedData(ParsedDataType.FIELD, pt.getText());
+        }
+        else if (pt instanceof RulesParser.LiteralContext) {
+            return new TypedData(TypedData.getType(pt.getText()), Utilities.sanitizeFieldName(pt.getText()));
+        }
+        else {
+            throw new Exception("[FATAL] parseValueLeafIntoTrackedCell parsed invalid type: " + pt.getClass().toString());
         }
     }
 
