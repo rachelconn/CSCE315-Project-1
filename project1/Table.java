@@ -124,6 +124,7 @@ public class Table implements Serializable {
 
     //TODO: figure out what to do if there aren't any primary keys in table
     //possibly just say the primary key is the entire attribute list?
+    //TODO: reject attributes if there's already an element with pKeys
     public void addEntry(ArrayList<String> attributes) {
         ArrayList<String> pKeys = new ArrayList<>();
         for(int i = 0 ; i < pKeyIndices.size() ; i++) {

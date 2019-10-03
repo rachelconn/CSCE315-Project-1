@@ -328,7 +328,9 @@ public class MyRulesBaseListener extends RulesBaseListener {
     }
 
     //TODO: implement exit command parser
-    @Override public void exitExitCmd(RulesParser.ExitCmdContext ctx) { }
+    @Override public void exitExitCmd(RulesParser.ExitCmdContext ctx) {
+        myDBMS.exitCmd();
+    }
 
     public void printTables() {
         myDBMS.printTables();

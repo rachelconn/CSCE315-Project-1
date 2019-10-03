@@ -1,12 +1,41 @@
-CREATE TABLE a (name VARCHAR(20), major VARCHAR(8), gender VARCHAR(1), age INTEGER, height INTEGER) PRIMARY KEY (name, age);
+CREATE TABLE students1 (name VARCHAR(20), major VARCHAR(8), gender VARCHAR(1), age INTEGER, height INTEGER) PRIMARY KEY (name, age);
+CREATE TABLE students2 (name VARCHAR(20), major VARCHAR(8), gender VARCHAR(1), age INTEGER, height INTEGER) PRIMARY KEY (name, age);
+CREATE TABLE scores (name VARCHAR(20), form VARCHAR(1), score INTEGER) PRIMARY KEY (name);
+CREATE TABLE animals (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);
 
-INSERT INTO a VALUES FROM ("Alice", "MEEN", "F", 18, 70);
-INSERT INTO a VALUES FROM ("Eli", "CSCE", "M", 20, 76);
-INSERT INTO a VALUES FROM ("Ryan", "CSCE", "M", 20, 68);
-INSERT INTO a VALUES FROM ("Nikolai", "CSCE", "F", 21, 71);
-INSERT INTO a VALUES FROM ("Sam", "CSCE", "M", 14, 75);
-INSERT INTO a VALUES FROM ("Kelvin", "CSCE", "M", 18, 69);
+INSERT INTO students1 VALUES FROM ("Sam", "CSCE", "M", 14, 75);
+INSERT INTO students1 VALUES FROM ("Eli", "CSCE", "M", 20, 76);
+INSERT INTO students1 VALUES FROM ("Ryan", "CSCE", "M", 20, 68);
 
-SHOW a;
-OPEN animals;
+INSERT INTO students2 VALUES FROM ("Nikolai", "CSCE", "F", 21, 71);
+INSERT INTO students2 VALUES FROM ("Sam", "CSCE", "M", 14, 75);
+INSERT INTO students2 VALUES FROM ("Kelvin", "CSCE", "M", 18, 69);
+
+INSERT INTO scores VALUES FROM ("Eli", "A", 85);
+INSERT INTO scores VALUES FROM ("Ryan", "B", 80);
+INSERT INTO scores VALUES FROM ("Nikolai", "A", 75);
+INSERT INTO scores VALUES FROM ("Sam", "B", 100);
+INSERT INTO scores VALUES FROM ("Kelvin", "B", 95);
+
+INSERT INTO animals VALUES FROM ("Joe", "cat", 4);
+INSERT INTO animals VALUES FROM ("Spot", "dog", 10);
+INSERT INTO animals VALUES FROM ("Snoopy", "dog", 3);
+INSERT INTO animals VALUES FROM ("Tweety", "bird", 1);
+INSERT INTO animals VALUES FROM ("Joe", "bird", 2);
+
+animals <- rename (petName, kind, yearsOld) animals;
 SHOW animals;
+
+sam <- select (major == "CSCE" && (gender == "M" && age == 14 && height == 75)) students1;
+SHOW sam;
+
+add <- students1 + students2;
+SHOW add;
+
+sub <- students1 - students2;
+SHOW sub;
+
+times <- students1 * animals;
+SHOW times;
+
+EXIT;

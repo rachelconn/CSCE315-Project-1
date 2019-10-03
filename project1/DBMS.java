@@ -68,8 +68,8 @@ public class DBMS {
         }
     }
 
-    public void exitCmd() throws Exception {
-        throw new Exception("Thanks for using our database!");
+    public void exitCmd() {
+        System.out.println("Thanks for using our system.");
     }
 
     //TODO: formatting on constructor
