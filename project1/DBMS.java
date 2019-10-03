@@ -360,9 +360,6 @@ public class DBMS {
                 cpKeyIndices.add(a.getAttributeNames().size()+i-commonCount);
             }
         }
-        for(int i = 0;i<cpKeyIndices.size();i++) {
-            System.out.println(cpKeyIndices.get(i));
-        }
         //done making cattributename cattributetype and cpkeyIndices
         //now need to construct aCommonNameIndexCorrespond and bCommon..Correspond
         //The idea is that index n of a and b will store indexes of a.getAttributeNames and b.getAttibuteNames
@@ -404,8 +401,6 @@ public class DBMS {
                 }
                 if(shouldAdd){
                     //construct this pKeyAtt and entry values
-                    System.out.println("adding");
-
                     ArrayList<String> cEntry = new ArrayList<String>();
                     for(int i = 0;i< aEntry.getValue().size();i++){
                        cEntry.add(aEntry.getValue().get(i));
