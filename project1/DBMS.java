@@ -69,7 +69,7 @@ public class DBMS {
 
     public void exitCmd() {
         System.out.println("Thanks for using our system.");
-        System.exit(0);
+        //System.exit(0);
     }
 
     private void serializeTable(String filename, Table table) throws FileNotFoundException {
@@ -130,6 +130,7 @@ public class DBMS {
 
     public void updateCmd(String tableName, ArrayList<Pair<String,String>> updates, Conditional conditionTree) {
         Table t = tables.get(tableName);
+        if(t.getEntries().size() == 0) return;
         HashMap<ArrayList<String>,ArrayList<String>> entries = t.getEntries();
         HashMap<ArrayList<String>,ArrayList<String>> entriesCopy = (HashMap<ArrayList<String>, ArrayList<String>>) entries.clone();
         ArrayList<Integer> indexes = t.getPKeyIndices();
@@ -165,6 +166,9 @@ public class DBMS {
 
     public void deleteCmd(String tableName, Conditional conditionTree) throws IncompatibleTypesException {
         Table toRemove = selectQry(tableName, conditionTree);
+        if (toRemove.getEntries().size() == 0){
+            return;
+        }
         for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.getEntries().entrySet()) {
             tables.get(tableName).deleteEntry(entry.getKey());
         }

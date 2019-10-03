@@ -38,7 +38,13 @@ SHOW sub;
 times <- students1 * animals;
 SHOW times;
 
-natural <- add & scores;
+natural <- (students1 + students2) & scores;
+SHOW natural;
+
+p <- project (name, major, score) natural;
+SHOW p;
+
+DELETE FROM natural WHERE (name == "Eli" || score > 95);
 SHOW natural;
 
 EXIT;
