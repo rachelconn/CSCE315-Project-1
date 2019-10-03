@@ -68,12 +68,12 @@ public class DBMS {
         }
     }
 
-    public void exitCmd(){
-        /*
-        for (Map.Entry<> t : tables.entrySet())
+    public void exitCmd() throws Exception {
+        for (Map.Entry<String, Table> t : tables.entrySet())
         {
-
-        }*/
+            writeCmd(t.getKey());
+        }
+        throw new Exception("Thanks for using our database!");
     }
 
     //TODO: formatting on constructor
