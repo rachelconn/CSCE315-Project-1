@@ -69,6 +69,7 @@ public class DBMS {
 
     public void exitCmd() {
         System.out.println("Thanks for using our system.");
+        System.exit(0);
     }
 
     private void serializeTable(String filename, Table table) throws FileNotFoundException {
