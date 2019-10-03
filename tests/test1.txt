@@ -38,4 +38,7 @@ SHOW sub;
 times <- students1 * animals;
 SHOW times;
 
+natural <- add & scores;
+SHOW natural;
+
 EXIT;

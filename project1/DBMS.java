@@ -69,16 +69,14 @@ public class DBMS {
 
     public void exitCmd() {
         System.out.println("Thanks for using our system.");
+        System.exit(0);
     }
 
-    //TODO: formatting on constructor
     private void serializeTable(String filename, Table table) throws FileNotFoundException {
         if (!filename.substring(filename.length() - 4).equals(".xml")) {
             filename = filename + ".xml";
         }
-        XMLEncoder e = new XMLEncoder(
-                new BufferedOutputStream(
-                        new FileOutputStream(filename)));
+        XMLEncoder e = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(filename)));
         e.writeObject(table);
         e.close();
     }
@@ -114,11 +112,6 @@ public class DBMS {
         System.out.println(t.showTable());
     }
 
-    public void createTable(String tableName, Table table) {
-        table.setName(tableName);
-        tables.put(tableName, table);
-    }
-
     public void createCmd(String tableName, LinkedHashMap<String,String> attributes, ArrayList<String> primaryKeys) {
         ArrayList<Integer> pKeyIndices = new ArrayList<>();
         ArrayList<String> attributeNames = new ArrayList<>();
@@ -139,7 +132,7 @@ public class DBMS {
         Table t = tables.get(tableName);
         HashMap<ArrayList<String>,ArrayList<String>> entries = t.getEntries();
         HashMap<ArrayList<String>,ArrayList<String>> entriesCopy = (HashMap<ArrayList<String>, ArrayList<String>>) entries.clone();
-        ArrayList<Integer> indexes = t.getpKeyIndices();
+        ArrayList<Integer> indexes = t.getPKeyIndices();
         ArrayList<String> newAttributeNames = t.getAttributeNames();
         for(Map.Entry<ArrayList<String>,ArrayList<String>> entry : entriesCopy.entrySet()) {
             ArrayList<Cell> cells = t.getRow(entry.getValue());
@@ -169,15 +162,11 @@ public class DBMS {
             t.addEntry(e.getValue());
         }
     }
-  
-    public void insertCmd(Table tbl) {
-        tables.put(tbl.getName(), tbl);
-    }
 
     public void deleteCmd(String tableName, Conditional conditionTree) throws IncompatibleTypesException {
         Table toRemove = selectQry(tableName, conditionTree);
         for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : toRemove.getEntries().entrySet()) {
-            tables.get("tableName").deleteEntry(entry.getKey());
+            tables.get(tableName).deleteEntry(entry.getKey());
         }
     }
     
@@ -216,7 +205,7 @@ public class DBMS {
         }
 
         //Get the new indexes of the primary keys, factoring in those that weren't included in the projection
-        ArrayList<Integer> pKeyIndicesOld = table.getpKeyIndices();
+        ArrayList<Integer> pKeyIndicesOld = table.getPKeyIndices();
         ArrayList<Integer> pKeyIndices = new ArrayList<>();
         int j = 0;
         for(Integer i : wantedIndices) {
@@ -272,7 +261,7 @@ public class DBMS {
   
     public Table differenceQry(Table a, Table b) {
         if(a.getAttributeNames().equals(b.getAttributeNames()) && a.getAttributeTypes().equals(b.getAttributeTypes())) {
-            Table c = new Table(a.getName(), a.getAttributeNames(), a.getAttributeTypes(), a.getpKeyIndices());
+            Table c = new Table(a.getName(), a.getAttributeNames(), a.getAttributeTypes(), a.getPKeyIndices());
             for (Map.Entry<ArrayList<String>, ArrayList<String>> entry : a.getEntries().entrySet()) {
                 if (!b.contains(entry.getValue())) {
                     c.addEntry(entry.getValue());
@@ -295,8 +284,8 @@ public class DBMS {
         attributeNames.addAll(b.getAttributeNames());
         ArrayList<String> attributeTypes = new ArrayList<>(a.getAttributeTypes());
         attributeTypes.addAll(b.getAttributeTypes());
-        ArrayList<Integer> pKeyIndices = new ArrayList<>(a.getpKeyIndices());
-        ArrayList<Integer> bPKeyIndices = new ArrayList<>(b.getpKeyIndices());
+        ArrayList<Integer> pKeyIndices = new ArrayList<>(a.getPKeyIndices());
+        ArrayList<Integer> bPKeyIndices = new ArrayList<>(b.getPKeyIndices());
         for(int i = 0; i<bPKeyIndices.size();i++) {
             bPKeyIndices.set(i, bPKeyIndices.get(i)+a.getAttributeNames().size());
         }
@@ -325,8 +314,8 @@ public class DBMS {
             cAttributeNames.add(a.getAttributeNames().get(i));
             cAttributeTypes.add(a.getAttributeTypes().get(i));
         }
-        for(int i = 0;i<a.getpKeyIndices().size();i++){
-            cpKeyIndices.add(a.getpKeyIndices().get(i));
+        for(int i = 0;i<a.getPKeyIndices().size();i++){
+            cpKeyIndices.add(a.getPKeyIndices().get(i));
         }
         for(int i = 0;i<b.getAttributeNames().size();i++){
             if(!a.getAttributeNames().contains(b.getAttributeNames().get(i))){
@@ -337,10 +326,10 @@ public class DBMS {
             }
         }
         int commonCount = 0;
-        for(int i = 0;i<b.getpKeyIndices().size();i++){
+        for(int i = 0;i<b.getPKeyIndices().size();i++){
             boolean isCommonIndex = false;
             for(int j = 0;j<commonNamesAndTypes.size();j++){
-                if(b.getAttributeNames().get(b.getpKeyIndices().get(i)).equals(commonNamesAndTypes.get(j)))
+                if(b.getAttributeNames().get(b.getPKeyIndices().get(i)).equals(commonNamesAndTypes.get(j)))
                     isCommonIndex = true;
             }
             if(isCommonIndex){

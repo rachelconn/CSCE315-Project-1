@@ -94,7 +94,7 @@ public class Table implements Serializable {
 
     public void setAttributeNames(ArrayList<String> newNames){ this.attributeNames = newNames; }
 
-    public ArrayList<Integer> getpKeyIndices() { return pKeyIndices; }
+    public ArrayList<Integer> getPKeyIndices() { return pKeyIndices; }
 
     public void setpKeyIndices(ArrayList<Integer> pKeyIndices) { this.pKeyIndices = pKeyIndices; }
 
@@ -122,15 +122,21 @@ public class Table implements Serializable {
     }
 
 
-    //TODO: figure out what to do if there aren't any primary keys in table
-    //possibly just say the primary key is the entire attribute list?
-    //TODO: reject attributes if there's already an element with pKeys
     public void addEntry(ArrayList<String> attributes) {
         ArrayList<String> pKeys = new ArrayList<>();
-        for(int i = 0 ; i < pKeyIndices.size() ; i++) {
-            int keyIndex = pKeyIndices.get(i);
-            String pKey = attributes.get(keyIndex);
-            pKeys.add(pKey);
+        if(pKeyIndices.size() != 0) {
+            for (int i = 0; i < pKeyIndices.size(); i++) {
+                int keyIndex = pKeyIndices.get(i);
+                String pKey = attributes.get(keyIndex);
+                pKeys.add(pKey);
+            }
+        } else {
+            pKeys = attributes;
+        }
+        //don't add to table if primary key already exists
+        if(entries.containsKey(pKeys)){
+            //System.out.println("Tried to add entry to table " + name + " which already exists.");
+            return;
         }
         entries.put(pKeys, attributes);
     }
