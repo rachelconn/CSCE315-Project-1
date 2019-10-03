@@ -340,7 +340,6 @@ public class MyRulesBaseListener extends RulesBaseListener {
         myDBMS.writeCmd(ctx.getChild(1).getText());
     }
 
-    //TODO: implement exit command parser
     @Override public void exitExitCmd(RulesParser.ExitCmdContext ctx) {
         myDBMS.exitCmd();
     }

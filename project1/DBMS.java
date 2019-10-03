@@ -71,14 +71,11 @@ public class DBMS {
         System.out.println("Thanks for using our system.");
     }
 
-    //TODO: formatting on constructor
     private void serializeTable(String filename, Table table) throws FileNotFoundException {
         if (!filename.substring(filename.length() - 4).equals(".xml")) {
             filename = filename + ".xml";
         }
-        XMLEncoder e = new XMLEncoder(
-                new BufferedOutputStream(
-                        new FileOutputStream(filename)));
+        XMLEncoder e = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(filename)));
         e.writeObject(table);
         e.close();
     }

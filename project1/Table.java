@@ -122,7 +122,6 @@ public class Table implements Serializable {
     }
 
 
-    //TODO: reject attributes if there's already an element with pKeys
     public void addEntry(ArrayList<String> attributes) {
         ArrayList<String> pKeys = new ArrayList<>();
         if(pKeyIndices.size() != 0) {
@@ -136,6 +135,7 @@ public class Table implements Serializable {
         }
         //don't add to table if primary key already exists
         if(entries.containsKey(pKeys)){
+            //System.out.println("Tried to add entry to table " + name + " which already exists.");
             return;
         }
         entries.put(pKeys, attributes);
