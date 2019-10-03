@@ -37,7 +37,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
                 );
             }
 
-            if (ctx.getChildCount() != 1 && ctx.getChildCount() != 3) {
+            if (ctx.getChildCount() != 1 && ctx.getChildCount() != 3 && ctx.getChildCount() % 2 != 1) {
                 throw new Exception("FATAL (MyRulesBaseListener.parseComparison): unforeseen case occurred");
             }
 
@@ -45,7 +45,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
                 return parseComparison(ctx.getChild(0));
             }
 
-            if (ctx.getChildCount() == 3) {
+            else if (ctx.getChildCount() == 3) {
                 // case ["("] [some stuff] [")"]
                 if (ctx.getChild(0).getText().equals("(")) {
                     return parseComparison(ctx.getChild(1));
@@ -110,6 +110,32 @@ public class MyRulesBaseListener extends RulesBaseListener {
                             throw new Exception("Unsupported operation: " + ctx.getChild(1).getText());
                     }
                 }
+            }
+            else if (ctx.getChildCount() % 2 == 1) {
+                Conditional leftSide = parseComparison(ctx.getChild(0));
+                for (int i=1; i<ctx.getChildCount(); i+=2)
+                {
+                    // i is the operator
+                    // i+1 is the other conditional
+                    // case [left tree] ["||"] [right tree]
+                    if (ctx.getChild(i).getText().equals("||")) {
+                        leftSide = new ConditionBranch(
+                                ConditionType.OR,
+                                leftSide,
+                                parseComparison(ctx.getChild(i+1))
+                        );
+                    }
+
+                    // case [left tree] ["&&"] [right tree]
+                    if (ctx.getChild(i).getText().equals("&&")) {
+                        leftSide = new ConditionBranch(
+                                ConditionType.AND,
+                                leftSide,
+                                parseComparison(ctx.getChild(i+1))
+                        );
+                    }
+                }
+                return leftSide;
             }
             throw new Exception("What happened? --Hillary Clinton");
         } catch(Exception e) {

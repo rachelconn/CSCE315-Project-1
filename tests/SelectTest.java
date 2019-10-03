@@ -21,7 +21,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 public class SelectTest {
     public static void main(String[] args) throws Exception {
         List<String> lines = new ArrayList<>();
-        lines.add("t1 <- select (1 == 1) tabl;");
+        lines.add("t1 <- select (1 == 1  || 2 == 2 && (1 == 1 || 2 == 1) || 3 == 1 && 3 == 3) tabl;");
         Column c1 = new Column("kind", "VARCHAR(20)");
         Column c2 = new Column("name", "VARCHAR(32)");
         ArrayList<Column> cols = new ArrayList<>();
