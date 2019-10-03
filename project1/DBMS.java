@@ -5,7 +5,6 @@ import java.lang.reflect.Array;
 import java.util.*;
 import javafx.util.Pair;
 import java.lang.System.*;
-
 import org.antlr.v4.runtime.tree.ParseTree;
 import project1.conditional.*;
 
@@ -313,10 +312,100 @@ public class DBMS {
         return myTable;
     }
 
-    public Table naturalJoinQry(Table a, Table b) {
-        return null;
+    public Table naturalJoinQry(Table a, Table b){
+        ArrayList<String> commonNamesAndTypes= new ArrayList<String>();//all common names and types of a,b
+        ArrayList<Integer> aCommonNameIndex = new ArrayList<Integer>();//indexes of attributename list that are common ones
+        ArrayList<Integer> bCommonNameIndex = new ArrayList<Integer>();//same as above but for table b
+        ArrayList<String> cAttributeNames = new ArrayList<String>();//next 3 are table c properties
+        ArrayList<String> cAttributeTypes = new ArrayList<String>();
+        ArrayList<Integer> cpKeyIndices = new ArrayList<Integer>();
+        ArrayList<Integer> aCommonNameIndexCorrespond = new ArrayList<Integer>();
+        ArrayList<Integer> bCommonNameIndexCorrespond = new ArrayList<Integer>();// index 0 of both have the index of the same attributeName
+        for(int i = 0;i<a.getAttributeNames().size();i++){
+            cAttributeNames.add(a.getAttributeNames().get(i));
+            cAttributeTypes.add(a.getAttributeTypes().get(i));
+        }
+        for(int i = 0;i<a.getpKeyIndices().size();i++){
+            cpKeyIndices.add(a.getpKeyIndices().get(i));
+        }
+        for(int i = 0;i<b.getAttributeNames().size();i++){
+            if(!a.getAttributeNames().contains(b.getAttributeNames().get(i))){
+                cAttributeNames.add(b.getAttributeNames().get(i));
+                cAttributeTypes.add(b.getAttributeTypes().get(i));
+            } else {
+                commonNamesAndTypes.add(b.getAttributeNames().get(i));
+            }
+        }
+        int commonCount = 0;
+        for(int i = 0;i<b.getpKeyIndices().size();i++){
+            boolean isCommonIndex = false;
+            for(int j = 0;j<commonNamesAndTypes.size();j++){
+                if(b.getAttributeNames().get(b.getpKeyIndices().get(i)).equals(commonNamesAndTypes.get(j)))
+                    isCommonIndex = true;
+            }
+            if(isCommonIndex){
+                commonCount++;
+            } else{
+                cpKeyIndices.add(a.getAttributeNames().size()+i-commonCount);
+            }
+        }
+        //done making cattributename cattributetype and cpkeyIndices
+        //now need to construct aCommonNameIndexCorrespond and bCommon..Correspond
+        //The idea is that index n of a and b will store indexes of a.getAttributeNames and b.getAttibuteNames
+        // that point to common a common attribute name
+        for(int i = 0;i<a.getAttributeNames().size();i++){
+            for(int j = 0; j<commonNamesAndTypes.size();j++){
+                if(a.getAttributeNames().get(i).equals(commonNamesAndTypes.get(j))) {
+                    aCommonNameIndex.add(i);
+                }
+            }
+        }
+        for(int i = 0;i<b.getAttributeNames().size();i++){
+            for(int j = 0; j<commonNamesAndTypes.size();j++){
+                if(b.getAttributeNames().get(i).equals(commonNamesAndTypes.get(j))) {
+                    bCommonNameIndex.add(i);
+                }
+            }
+        }
+        for(int i =0;i< aCommonNameIndex.size();i++){
+            for(int j = 0; j< bCommonNameIndex.size();j++) {
+                if (a.getAttributeNames().get(aCommonNameIndex.get(i)).equals(b.getAttributeNames().get(bCommonNameIndex.get(j)))){
+                    aCommonNameIndexCorrespond.add(aCommonNameIndex.get(i));
+                    bCommonNameIndexCorrespond.add(bCommonNameIndex.get(j));
+                }
+            }
+        }
+       /* for(int i = 0;i<aCommonNameIndexCorrespond.size();i++){
+            System.out.println(aCommonNameIndexCorrespond.get(i));
+            System.out.println(bCommonNameIndexCorrespond.get(i));
+        }*/
+        Table c = new Table("c",cAttributeNames,cAttributeTypes,cpKeyIndices);
+        for(HashMap.Entry<ArrayList<String>,ArrayList<String>> aEntry: a.getEntries().entrySet()){
+            for(HashMap.Entry<ArrayList<String>,ArrayList<String>> bEntry: b.getEntries().entrySet()){
+                boolean shouldAdd = true;
+                for(int i = 0;i<aCommonNameIndexCorrespond.size();i++) {
+                    if (!aEntry.getValue().get(aCommonNameIndexCorrespond.get(i)).equals(bEntry.getValue().get(bCommonNameIndexCorrespond.get(i)))){
+                            shouldAdd = false;
+                    }
+                }
+                if(shouldAdd){
+                    //construct this pKeyAtt and entry values
+                    ArrayList<String> cEntry = new ArrayList<String>();
+                    for(int i = 0;i< aEntry.getValue().size();i++){
+                       cEntry.add(aEntry.getValue().get(i));
+                    }
+                    for(int i = 0;i<bEntry.getValue().size();i++){
+                        if(!bCommonNameIndexCorrespond.contains(i)){
+                            cEntry.add(bEntry.getValue().get(i));
+                        }
+                    }
+                    c.addEntry(cEntry);
+                }
+            }
+        }
+        return c;
     }
-
+  
     //HELPER FUNCTIONS
     public void addTable(Table t) {
         tables.put(t.getName(), t);

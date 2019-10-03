@@ -31,5 +31,7 @@ SHOW answer;
 
 WRITE animals;
 CLOSE animals;
+OPEN animals;
+SHOW animals;
 
 EXIT;
