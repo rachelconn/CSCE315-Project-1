@@ -68,13 +68,8 @@ public class DBMS {
         }
     }
 
-    //TODO: implement exit command
-    public void exitCmd(){
-        /*
-        for (Map.Entry<> t : tables.entrySet())
-        {
-
-        }*/
+    public void exitCmd() throws Exception {
+        throw new Exception("Thanks for using our database!");
     }
 
     //TODO: formatting on constructor
