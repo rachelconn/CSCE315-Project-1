@@ -64,6 +64,7 @@ public class Main {
                 ParseTreeWalker walker = new ParseTreeWalker();
                 walker.walk(listener, programContext);
             }
+            System.out.println("----------------------");
         }
     }
 }

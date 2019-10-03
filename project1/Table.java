@@ -6,7 +6,7 @@ import project1.conditional.*;
 import java.lang.System;
 import java.util.*;
 import java.util.Map.Entry;
-
+import javafx.util.Pair;
 
 public class Table implements Serializable {
 
@@ -14,22 +14,8 @@ public class Table implements Serializable {
     private String name;
     private ArrayList<String> attributeNames;
     private ArrayList<String> attributeTypes;
-
-    public ArrayList<Integer> getPKeyIndices() {
-        return pKeyIndices;
-    }
-
-    public void setPKeyIndices(ArrayList<Integer> pKeyIndices) {
-        this.pKeyIndices = pKeyIndices;
-    }
-
     private ArrayList<Integer> pKeyIndices;
     private HashMap<ArrayList<String>,ArrayList<String>> entries; //key is the list of primary keys, value is a list of all the attributes
-
-    public int getSize()
-    {
-        return entries.size();
-    }
   
     //CLASS CONSTRUCTORS
     public Table(String name, ArrayList<String> attributeNames, ArrayList<String> attributeTypes, ArrayList<Integer> pKeyIndices) {
@@ -112,9 +98,11 @@ public class Table implements Serializable {
 
     public void setpKeyIndices(ArrayList<Integer> pKeyIndices) { this.pKeyIndices = pKeyIndices; }
 
+    public int getSize() { return entries.size(); }
+
     public ArrayList<String> getpKeyNames() {
         ArrayList<String> pKeyNames = new ArrayList<>();
-        for(Integer i : pKeyIndices){
+        for (Integer i : pKeyIndices) {
             String pKeyName = attributeNames.get(i);
             pKeyNames.add(pKeyName);
         }
@@ -122,11 +110,24 @@ public class Table implements Serializable {
     }
 
     //CLASS FUNCTIONS
+    //TODO: error checking
+    public int getPKeyIndex(int attIndex) {
+        int keyIndex = -1;
+        for(int i = 0 ; i <= attIndex ; i++) {
+            if(pKeyIndices.contains(i)) {
+                keyIndex++;
+            }
+        }
+        return keyIndex;
+    }
+
+
     //TODO: figure out what to do if there aren't any primary keys in table
     //possibly just say the primary key is the entire attribute list?
-    public void addEntry(ArrayList<String> attributes){
+    //TODO: reject attributes if there's already an element with pKeys
+    public void addEntry(ArrayList<String> attributes) {
         ArrayList<String> pKeys = new ArrayList<>();
-        for(int i = 0 ; i < pKeyIndices.size() ; i++){
+        for(int i = 0 ; i < pKeyIndices.size() ; i++) {
             int keyIndex = pKeyIndices.get(i);
             String pKey = attributes.get(keyIndex);
             pKeys.add(pKey);
@@ -140,8 +141,7 @@ public class Table implements Serializable {
 
     public ArrayList<Column> getPrimaryKeys() {
         ArrayList<Column> pKeys = new ArrayList<>();
-        for (Integer i : pKeyIndices)
-        {
+        for (Integer i : pKeyIndices) {
             pKeys.add(new Column(attributeNames.get(i), attributeTypes.get(i)));
         }
         return pKeys;
@@ -149,8 +149,7 @@ public class Table implements Serializable {
 
     public ArrayList<Column> getAllColumns() {
         ArrayList<Column> cols = new ArrayList<>();
-        for (int i = 0; i < attributeNames.size(); ++i)
-        {
+        for (int i = 0; i < attributeNames.size(); ++i) {
             cols.add(new Column(attributeNames.get(i), attributeTypes.get(i)));
         }
         return cols;
@@ -162,18 +161,15 @@ public class Table implements Serializable {
 
     public Table filter(Conditional cond) throws IncompatibleTypesException {
         Table results = new Table("temp", this.getAllColumns(), this.getPrimaryKeys());
-        for (Entry<ArrayList<String>,ArrayList<String>> entry : entries.entrySet())
-        {
+        for (Entry<ArrayList<String>,ArrayList<String>> entry : entries.entrySet()) {
             ArrayList<String> row = entry.getValue();
             ArrayList<Cell> cells = getRow(row);
             try {
-                if (cond.SelectsEntry(cells))
-                {
+                if (cond.SelectsEntry(cells)) {
                     results.addEntry(row);
                 }
             }
-            catch (FieldNotInTableException ex)
-            {
+            catch (FieldNotInTableException ex) {
                 System.out.println("[INFO] The command looked for a field that isn't in the tabl!!!");
                 System.out.println(ex);
             }
@@ -181,11 +177,9 @@ public class Table implements Serializable {
         return results;
     }
 
-    public ArrayList<Cell> getRow(ArrayList<String> row)
-    {
+    public ArrayList<Cell> getRow(ArrayList<String> row) {
         ArrayList<Cell> output = new ArrayList<>();
-        for (int i=0; i<attributeNames.size(); i++)
-        {
+        for (int i=0; i<attributeNames.size(); i++) {
             Cell c1 = new Cell();
             c1.fieldName = attributeNames.get(i);
             c1.fieldType = attributeTypes.get(i);
@@ -195,14 +189,31 @@ public class Table implements Serializable {
         return output;
     }
 
+    public void updateRow(ArrayList<String> pKeys, ArrayList<Pair<String,String>> updates) {
+        //Map.Entry<ArrayList<String>, ArrayList<String>>.get(pKeys);
+        ArrayList<String> attributes =  entries.get(pKeys);
+        entries.remove(pKeys);
+        for(Pair<String,String> update : updates) {
+            int attIndex = attributeNames.indexOf(update.getKey());
+            boolean isKey = pKeyIndices.contains(attIndex);
+            attributes.set(attIndex, update.getValue());
+            if(isKey) {
+                int keyIndex = getPKeyIndex(attIndex);
+                pKeys.set(keyIndex, update.getValue());
+            }
+        }
+        entries.put(pKeys, attributes);
+
+    }
+
     public String showTable() {
         String toShow = this.name + ":\n";
         for(String s : attributeNames) {
             toShow = toShow + s + " ";
         }
         toShow += "\n";
-        for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : this.entries.entrySet()){
-            for(int j = 0; j < entry.getValue().size(); j++){
+        for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : this.entries.entrySet()) {
+            for(int j = 0; j < entry.getValue().size(); j++) {
                 toShow = toShow + entry.getValue().get(j) + " ";
             }
             toShow = toShow + "\n";

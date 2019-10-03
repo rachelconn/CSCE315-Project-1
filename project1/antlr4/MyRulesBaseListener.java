@@ -14,8 +14,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
         myDBMS = new DBMS();
     }
 
-    public MyRulesBaseListener(DBMS db)
-    {
+    public MyRulesBaseListener(DBMS db) {
         myDBMS = db;
     }
 
@@ -37,7 +36,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
                 );
             }
 
-            if (ctx.getChildCount() != 1 && ctx.getChildCount() != 3) {
+            if (ctx.getChildCount() != 1 && ctx.getChildCount() != 3 && ctx.getChildCount() % 2 != 1) {
                 throw new Exception("FATAL (MyRulesBaseListener.parseComparison): unforeseen case occurred");
             }
 
@@ -45,7 +44,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
                 return parseComparison(ctx.getChild(0));
             }
 
-            if (ctx.getChildCount() == 3) {
+            else if (ctx.getChildCount() == 3) {
                 // case ["("] [some stuff] [")"]
                 if (ctx.getChild(0).getText().equals("(")) {
                     return parseComparison(ctx.getChild(1));
@@ -110,6 +109,32 @@ public class MyRulesBaseListener extends RulesBaseListener {
                             throw new Exception("Unsupported operation: " + ctx.getChild(1).getText());
                     }
                 }
+            }
+            else if (ctx.getChildCount() % 2 == 1) {
+                Conditional leftSide = parseComparison(ctx.getChild(0));
+                for (int i=1; i<ctx.getChildCount(); i+=2)
+                {
+                    // i is the operator
+                    // i+1 is the other conditional
+                    // case [left tree] ["||"] [right tree]
+                    if (ctx.getChild(i).getText().equals("||")) {
+                        leftSide = new ConditionBranch(
+                                ConditionType.OR,
+                                leftSide,
+                                parseComparison(ctx.getChild(i+1))
+                        );
+                    }
+
+                    // case [left tree] ["&&"] [right tree]
+                    if (ctx.getChild(i).getText().equals("&&")) {
+                        leftSide = new ConditionBranch(
+                                ConditionType.AND,
+                                leftSide,
+                                parseComparison(ctx.getChild(i+1))
+                        );
+                    }
+                }
+                return leftSide;
             }
             throw new Exception("What happened? --Hillary Clinton");
         } catch(Exception e) {
@@ -193,12 +218,12 @@ public class MyRulesBaseListener extends RulesBaseListener {
         return myDBMS.naturalJoinQry(parseAtomicExpr(exprA), parseAtomicExpr(exprB));
     }
 
-    public Table parseExpr(ParseTree t){
+    public Table parseExpr(ParseTree t) {
         // c is the rule that the expression parser found directly beneath the expr rule
         String c = t.getChild(0).getClass().toString();
         c = c.substring(34,c.length()-7);
         ParseTree ruleContext = t.getChild(0);
-        switch(c){
+        switch(c) {
             case "AtomicExpr" :
                 return parseAtomicExpr(ruleContext);
             case "Selection" :
@@ -240,7 +265,7 @@ public class MyRulesBaseListener extends RulesBaseListener {
         LinkedHashMap<String,String> attributes = new LinkedHashMap<>(); //using linkedHashMap to guarantee insertion order
         ParseTree typedAttList = children.get(4);
         int typedAttCount = (typedAttList.getChildCount() + 1) / 3;
-        for(int i = 0 ; i < typedAttCount ; i++){
+        for(int i = 0 ; i < typedAttCount ; i++) {
             String attName = typedAttList.getChild(i*3).getText();
             String type = typedAttList.getChild(i*3 + 1).getText();
             attributes.put(attName,type);
@@ -256,14 +281,14 @@ public class MyRulesBaseListener extends RulesBaseListener {
         String tableName = children.get(2).getText();
         ArrayList<String> attributes = new ArrayList<>();
 
-        if(children.get(5).getText().equals("RELATION")){
+        if(children.get(5).getText().equals("RELATION")) {
             myDBMS.insertCmd(tableName, parseExpr(children.get(6)));
         } else {
             //6 is the first index that a literal shows up
-            for(int i = 6 ; i < ctx.getChildCount() ; i += 2){
+            for(int i = 6 ; i < ctx.getChildCount() ; i += 2) {
                 String str = children.get(i).getText();
                 // If the literal is a string, remove the quotations
-                if(str.charAt(0) == '"'){
+                if(str.charAt(0) == '"') {
                     str = str.substring(1,str.length() - 1);
                 }
                 attributes.add(str);
@@ -271,6 +296,23 @@ public class MyRulesBaseListener extends RulesBaseListener {
 
             myDBMS.insertCmd(tableName, attributes);
         }
+    }
+
+    @Override public void exitUpdateCmd(RulesParser.UpdateCmdContext ctx) {
+        ArrayList<Pair<String, String>> updates = new ArrayList<>();
+        String tableName = ctx.getChild(1).getText();
+        for(int i = 3 ; i < ctx.getChildCount() - 4 ; i += 4){
+            String attName = ctx.getChild(i).getText();
+            String literal = ctx.getChild(i+2).getText();
+            if(literal.charAt(0) == '"'){
+                literal = literal.substring(1,literal.length() - 1);
+            }
+            Pair<String, String> pair = new Pair<>(attName, literal);
+            updates.add(pair);
+        }
+        ParseTree cTree = ctx.getChild(ctx.getChildCount() - 1);
+        Conditional conditionTree = parseComparison(cTree);
+        myDBMS.updateCmd(tableName, updates, conditionTree);
     }
 
     @Override public void exitOpenCmd(RulesParser.OpenCmdContext ctx) {
@@ -285,35 +327,9 @@ public class MyRulesBaseListener extends RulesBaseListener {
         myDBMS.writeCmd(ctx.getChild(1).getText());
     }
 
-    @Override public void exitUpdateCmd(RulesParser.UpdateCmdContext ctx) {
-        ArrayList<Pair<String, String>> updates = new ArrayList<>();
-        String tableName = ctx.getChild(1).getText();
-        for(int i = 3 ; i < ctx.getChildCount() - 4 ; i += 4){
-            String attName = ctx.getChild(i).getText();
-            String literal = ctx.getChild(i+2).getText();
-            Pair<String, String> pair = new Pair<>(attName, literal);
-            updates.add(pair);
-        }
-        ParseTree cTree = ctx.getChild(ctx.getChildCount() - 1);
-        Conditional conditionTree = parseComparison(cTree);
-        myDBMS.updateCmd(tableName, updates, conditionTree);
-    }
-    /*
-    A testing method for our glorious super anti parsing thing no dijkstra's crap 100% legit
-     */
-    @Override
-    public void exitComparison(RulesParser.ComparisonContext ctx) {
-        // comparison debugging
-        if (false) {
-            try {
-                Conditional cond = parseComparison(ctx);
-                System.out.println(ctx.getText() + " -> SUCCESS");
-            }
-            catch (Exception ex) {
-                System.out.println(ex);
-                System.out.println(ctx.getText() + " -> FAIL");
-            }
-        }
+    //TODO: implement exit command parser
+    @Override public void exitExitCmd(RulesParser.ExitCmdContext ctx) {
+        myDBMS.exitCmd();
     }
 
     public void printTables() {
