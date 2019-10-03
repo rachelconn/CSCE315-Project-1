@@ -9,3 +9,5 @@ SHOW animals;
 
 UPDATE animals SET name = "Jack", years = 10 WHERE (name == "Joe");
 SHOW animals;
+
+DELETE FROM animals WHERE name == Jack;

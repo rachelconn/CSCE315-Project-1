@@ -114,11 +114,6 @@ public class DBMS {
         System.out.println(t.showTable());
     }
 
-    public void createTable(String tableName, Table table) {
-        table.setName(tableName);
-        tables.put(tableName, table);
-    }
-
     public void createCmd(String tableName, LinkedHashMap<String,String> attributes, ArrayList<String> primaryKeys) {
         ArrayList<Integer> pKeyIndices = new ArrayList<>();
         ArrayList<String> attributeNames = new ArrayList<>();
@@ -168,10 +163,6 @@ public class DBMS {
         for(Map.Entry<ArrayList<String>,ArrayList<String>> e : entries.entrySet()) {
             t.addEntry(e.getValue());
         }
-    }
-  
-    public void insertCmd(Table tbl) {
-        tables.put(tbl.getName(), tbl);
     }
 
     public void deleteCmd(String tableName, Conditional conditionTree) throws IncompatibleTypesException {

@@ -276,6 +276,19 @@ public class MyRulesBaseListener extends RulesBaseListener {
         myDBMS.createCmd(tableName, attributes, primaryKeys);
     }
 
+    @Override public void exitDeleteCmd(RulesParser.DeleteCmdContext ctx) {
+        String tableName = ctx.getChild(2).getText();
+        ParseTree condition = ctx.getChild(4);
+        Conditional comparisonTree = parseComparison(condition);
+        try {
+            myDBMS.deleteCmd(tableName, comparisonTree);
+        } catch (IncompatibleTypesException e) {
+            System.out.println("Error in conditional at DELETE branch: incompatible types comparison.");
+            return;
+        }
+    }
+
+
     @Override public void exitInsertCmd(RulesParser.InsertCmdContext ctx) {
         List<ParseTree> children = ctx.children;
         String tableName = children.get(2).getText();
