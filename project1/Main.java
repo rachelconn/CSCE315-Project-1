@@ -19,7 +19,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         unitTesting();
         //example query:
-        //System.out.println(listener.getMyDBMS().query(listener, "dogs + cats;").showTable());
+        //System.out.println(listener.getMyDBMS().query(listener, "dogs + cats;"));
     }
 
     public static void unitTesting() throws FileNotFoundException{
