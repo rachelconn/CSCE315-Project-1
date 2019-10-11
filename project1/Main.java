@@ -19,7 +19,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
         //unitTesting();
-        File file = new File("project1/input.txt");
+        File file = new File("project1/test5.txt");
         Scanner scanner = new Scanner(file);
         List<String> lines = new ArrayList<>();
         while (scanner.hasNextLine()) {
