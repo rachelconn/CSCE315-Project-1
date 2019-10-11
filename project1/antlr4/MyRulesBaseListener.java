@@ -9,6 +9,7 @@ import project1.conditional.*;
 public class MyRulesBaseListener extends RulesBaseListener {
 
     private DBMS myDBMS;
+    private Table table;
 
     public MyRulesBaseListener() {
         myDBMS = new DBMS();
@@ -244,6 +245,10 @@ public class MyRulesBaseListener extends RulesBaseListener {
         return null;
     }
 
+    @Override public void exitSoleExpr(RulesParser.SoleExprContext ctx) {
+        table = parseExpr(ctx.getChild(0));
+    }
+
     @Override public void exitQuery(RulesParser.QueryContext ctx) {
         List<ParseTree> children = ctx.children;
         String tableName = children.get(0).getText();
@@ -355,6 +360,12 @@ public class MyRulesBaseListener extends RulesBaseListener {
         }
         return attList;
     }
+
+    public Table getTable() {
+        return table;
+    }
+
+    public DBMS getMyDBMS() {
+        return myDBMS;
+    }
 }
-
-

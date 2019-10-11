@@ -1,11 +1,16 @@
 package project1;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 import javafx.util.Pair;
-import java.lang.System.*;
-import org.antlr.v4.runtime.tree.ParseTree;
+
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import project1.antlr4.MyRulesBaseListener;
+import project1.antlr4.RulesLexer;
+import project1.antlr4.RulesParser;
 import project1.conditional.*;
 
 import java.beans.XMLDecoder;
@@ -446,5 +451,16 @@ public class DBMS {
         keys1.sort(strCmp);
         keys2.sort(strCmp);
         return keys1.equals(keys2);
+    }
+
+    public Table query(MyRulesBaseListener listener, String s) {
+        CharStream charStream = CharStreams.fromString(s);
+        RulesLexer lexer = new RulesLexer(charStream);
+        CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
+        RulesParser parser = new RulesParser(commonTokenStream);
+        RulesParser.ProgramContext programContext = parser.program();
+        ParseTreeWalker walker = new ParseTreeWalker();
+        walker.walk(listener, programContext);
+        return listener.getTable();
     }
 }
