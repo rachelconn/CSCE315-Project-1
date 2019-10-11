@@ -114,7 +114,7 @@ public class DBMS {
             System.out.println("Attempting to print non-existing table.");
             return;
         }
-        System.out.println(t.showTable());
+        System.out.println(t);
     }
 
     public void createCmd(String tableName, LinkedHashMap<String,String> attributes, ArrayList<String> primaryKeys) {
@@ -416,7 +416,7 @@ public class DBMS {
     public void printTables() {
         System.out.println("DB contains " + tables.size() + " tables");
         for (Map.Entry<String, Table> entry : tables.entrySet()) {
-            System.out.println(entry.getValue().showTable());
+            System.out.println(entry.getValue());
         }
     }
 
