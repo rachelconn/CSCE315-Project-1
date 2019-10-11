@@ -1,12 +1,13 @@
 // Define a grammar called Hello
 grammar Rules;
 
-program: (query ';'| command ';')+;
+program: (soleExpr ';'| query ';'| command ';')+;
 
 query: relationName '<-' expr;
 relationName: IDENTIFIER;
 attributeName: IDENTIFIER;
 
+soleExpr: expr;
 expr: (atomicExpr | selection | projection | renaming | union | difference | product | naturalJoin);
 command  : ( openCmd | closeCmd | writeCmd | exitCmd | showCmd | createCmd | updateCmd | insertCmd | deleteCmd ) ;
 
