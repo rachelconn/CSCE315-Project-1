@@ -2,10 +2,12 @@ package project1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import csce315.project1.*;
 import project1.antlr4.MyRulesBaseListener;
 import project1.antlr4.RulesLexer;
 import project1.antlr4.RulesParser;
@@ -17,8 +19,15 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 
 public class Main {
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
+        MovieDatabaseParser parser = new MovieDatabaseParser();
+
+        List<Movie> moviesList = parser.deserializeMovies("C:/Users/ptaele/Desktop/movie_data/dataJSON/movies_single.json");
+        List<Credits> creditsList = parser.deserializeCredits("C:/Users/ptaele/Desktop/movie_data/dataJSON/credits_single.json");
+
+
         //unitTesting();
+        /*
         File file = new File("project1/input.txt");
         Scanner scanner = new Scanner(file);
         List<String> lines = new ArrayList<>();
@@ -36,6 +45,7 @@ public class Main {
             ParseTreeWalker walker = new ParseTreeWalker();
             walker.walk(listener, programContext);
         }
+        */
     }
 
     public static void unitTesting() throws FileNotFoundException{
