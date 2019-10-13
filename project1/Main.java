@@ -26,9 +26,10 @@ public class Main {
 
         List<Movie> moviesList = parser.deserializeMovies("./data/movies_single.json");
         generateMovieTable(moviesList, myDBMS);
+        myDBMS.showCmd(myDBMS.getTable("movies"));
         List<Credits> creditsList = parser.deserializeCredits("./data/credits_single.json");
         generateCastTable(creditsList, myDBMS);
-
+        myDBMS.showCmd(myDBMS.getTable("casts"));
     }
 
     static void generateMovieTable(List<Movie> moviesList, DBMS myDBMS) {
@@ -68,7 +69,7 @@ public class Main {
             String mId = Integer.toString(m.getId());
             attributes.add(mId);
             String title = m.getTitle();
-            title = title.replace(" ", "_");
+            title = sanitizeString(title);
             attributes.add(title);
             //rating is on a scale 1-10 with one decimal point, multiply by 10 to get integer between 1-100
             //round to get rid of any floating point precision error
@@ -81,6 +82,7 @@ public class Main {
             for(Movie.Genre g : genreList){
                 String gId = Integer.toString(g.getId());
                 String gName = g.getName();
+
                 //add the genre lookup to the genres table
                 ArrayList<String> gAtts = new ArrayList<>();
                 gAtts.add(gId); gAtts.add(gName);
@@ -94,7 +96,40 @@ public class Main {
     }
 
     public static void generateCastTable(List<Credits> creditsList, DBMS myDBMS){
+        //define CASTS table
+        ArrayList<String> cNames = new ArrayList<>();
+        cNames.add("movieId"); cNames.add("actorId");
+        cNames.add("actorName"); cNames.add("character");
+        ArrayList<String> cTypes = new ArrayList<>();
+        cTypes.add("INTEGER"); cTypes.add("INTEGER");
+        cTypes.add("VARCHAR(50)"); cTypes.add("VARCHAR(50)");
+        ArrayList<Integer> cKeys = new ArrayList<>();
+        cKeys.add(0); cKeys.add(1);
+        Table castTable = new Table("casts", cNames, cTypes, cKeys);
+        myDBMS.addTable(castTable);
 
+        for(Credits c : creditsList){
+            String movieId = c.getId();
+            List<Credits.CastMember> cast = c.getCastMember();
+            for(Credits.CastMember cm : cast){
+                String actorId = Integer.toString(cm.getId());
+                String name = sanitizeString(cm.getName());
+                String character = sanitizeString(cm.getCharacter());
+
+                ArrayList<String> castAtts = new ArrayList<>();
+                castAtts.add(movieId); castAtts.add(actorId);
+                castAtts.add(name); castAtts.add(character);
+                myDBMS.insertCmd("casts", castAtts);
+            }
+
+        }
+
+    }
+
+    private static String sanitizeString(String s){
+        String s1 = s.replace(" ", "_");
+        String s2 = s1.replaceAll("[^a-zA-Z0-9_]", "");
+        return s2;
     }
 
     public static void unitTesting() throws FileNotFoundException{
