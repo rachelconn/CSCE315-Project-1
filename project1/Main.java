@@ -36,6 +36,7 @@ public class Main {
         //example query:
         System.out.println("Done");
         //System.out.println(listener.getMyDBMS().query(listener, "dogs + cats;"));
+        System.out.println(myDBMS.getMostPlayedGenre("Danny_McBride"));
     }
 
     static void generateMovieTable(List<Movie> moviesList, DBMS myDBMS) {
