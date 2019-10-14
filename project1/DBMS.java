@@ -1,6 +1,7 @@
 package project1;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import javafx.util.Pair;
 
@@ -523,9 +524,9 @@ public class DBMS {
     Rachel_Sellan
     Anastasios_Soulis
      */
-    public Table getActorsByCharacterName(String name) {
+    public ArrayList<String> getActorsByCharacterName(String name) {
         Table t = query("project (actorName) (select (character == \"" + sanitizeString(name) + "\") casts);");
-        System.out.println(t);
-        return t;
+        // System.out.println(t);
+        return t.getColumn("actorName");
     }
 }
