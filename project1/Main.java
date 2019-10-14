@@ -29,7 +29,9 @@ public class Main {
         //myDBMS.showCmd(myDBMS.getTable("movies"));
         List<Credits> creditsList = MovieDatabaseParser.deserializeCredits("./data/credits.json");
         generateCastTable(creditsList, myDBMS);
+        generateCrewTable(creditsList,myDBMS);
         System.out.println("casts: \n" + myDBMS.getTable("casts").attributesAsString());
+        System.out.println("crew: \n" + myDBMS.getTable("crew").attributesAsString());
         System.out.println("genres: \n" + myDBMS.getTable("genres").attributesAsString());
         System.out.println("movieGenres: \n" + myDBMS.getTable("movieGenres").attributesAsString());
         //myDBMS.showCmd(myDBMS.getTable("casts"));
@@ -132,6 +134,45 @@ public class Main {
                 castAtts.add(movieId); castAtts.add(actorId);
                 castAtts.add(name); castAtts.add(character);
                 myDBMS.insertCmd("casts", castAtts);
+            }
+
+        }
+
+    }
+
+    public static void generateCrewTable(List<Credits> creditsList, DBMS myDBMS){
+        //define CASTS table
+        ArrayList<String> cNames = new ArrayList<>();
+        cNames.add("movieId");
+        cNames.add("DirectorId");
+        cNames.add("DirectorName");
+        ArrayList<String> cTypes = new ArrayList<>();
+        cTypes.add("INTEGER");
+        cTypes.add("INTEGER");
+        cTypes.add("VARCHAR(50)");
+        ArrayList<Integer> cKeys = new ArrayList<>();
+        cKeys.add(0); cKeys.add(1);
+        Table crewTable = new Table("crew", cNames, cTypes, cKeys);
+        myDBMS.addTable(crewTable);
+
+        for(Credits c : creditsList){
+            String movieId = c.getId();
+            List<Credits.CrewMember> crew = c.getCrewMember();
+            boolean done = false;
+            for(Credits.CrewMember cm : crew){
+                if(done)
+                    break;
+                if(cm.getJob().equals("Director")) {
+                    done = true;
+                    String DirectorId = Integer.toString(cm.getId());
+                    String name = sanitizeString(cm.getName());
+
+                    ArrayList<String> crewAtts = new ArrayList<>();
+                    crewAtts.add(movieId);
+                    crewAtts.add(DirectorId);
+                    crewAtts.add(name);
+                    myDBMS.insertCmd("crew", crewAtts);
+                }
             }
 
         }
