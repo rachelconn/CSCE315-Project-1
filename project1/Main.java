@@ -23,14 +23,14 @@ public class Main {
 
         DBMS myDBMS = new DBMS();
 
-        List<Movie> moviesList = parser.deserializeMovies("./data/movies.json");
+        List<Movie> moviesList = MovieDatabaseParser.deserializeMovies("./data/movies.json");
         generateMovieTable(moviesList, myDBMS);
-        System.out.println("Generated movie table");
+        System.out.println("Generated movie table, size: " + myDBMS.getTable("movies").getSize());
         //myDBMS.showCmd(myDBMS.getTable("movies"));
-        List<Credits> creditsList = parser.deserializeCredits("./data/credits.json");
-        System.out.println("Generated credits table");
+        List<Credits> creditsList = MovieDatabaseParser.deserializeCredits("./data/credits.json");
+        System.out.println("Generated credits table but not really");
         generateCastTable(creditsList, myDBMS);
-        System.out.println("Generated cast table");
+        System.out.println("Generated cast table, size: " + myDBMS.getTable("casts").getSize());
         //myDBMS.showCmd(myDBMS.getTable("casts"));
         //example query:
         System.out.println("Done");
