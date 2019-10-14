@@ -212,6 +212,24 @@ public class Table implements Serializable {
 
     }
 
+    public String attributesAsString() {
+        String toShow = "";
+        for(String s : attributeNames) {
+            toShow += s + " ";
+        }
+        toShow += "\n";
+        int i = 0;
+        for(HashMap.Entry<ArrayList<String>,ArrayList<String>> entry : this.entries.entrySet()) {
+            for(int j = 0; j < entry.getValue().size(); j++) {
+                toShow = toShow + entry.getValue().get(j) + " ";
+            }
+            toShow = toShow + "\n";
+            if (i++ > 10)
+                return toShow;
+        }
+        return toShow + "\n";
+    }
+
     public String toString() {
         String toShow = this.name + ":\n";
         for(String s : attributeNames) {
