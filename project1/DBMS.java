@@ -513,5 +513,19 @@ public class DBMS {
             }
         }
         return genreNumberToString(mostCommonGenre);
+    /*
+    eg. calling with character name Alex returns table:
+    
+    temp:
+    actorName
+    Timmy_Deters
+    Aaron_Costa_Ganis
+    Rachel_Sellan
+    Anastasios_Soulis
+     */
+    public Table getActorsByCharacterName(String name) {
+        Table t = query("project (actorName) (select (character == \"" + name + "\") casts);");
+        System.out.println(t);
+        return t;
     }
 }
