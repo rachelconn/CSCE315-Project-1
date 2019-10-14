@@ -490,6 +490,10 @@ public class DBMS {
         return s2;
     }
 
+    private static String underscoreToSpace(String s) {
+        return s.replace("_"," ");
+    }
+
     public String genreNumberToString(String num) {
         Table t = query("select (id == " + num + ") genres;");
         if (t == null) {
@@ -530,7 +534,7 @@ public class DBMS {
                 maxOccurances = entry.getValue();
             }
         }
-        return genreNumberToString(mostCommonGenre);
+        return underscoreToSpace(genreNumberToString(mostCommonGenre));
     }
     /*
     eg. calling with character name Alex returns table:
@@ -545,6 +549,10 @@ public class DBMS {
     public ArrayList<String> getActorsByCharacterName(String name) {
         Table t = query("project (actorName) (select (character == \"" + sanitizeString(name) + "\") casts);");
         // System.out.println(t);
-        return t.getColumn("actorName");
+        ArrayList<String> actors = new ArrayList<>();
+        for(String actor : t.getColumn("actorName")){
+            actors.add(underscoreToSpace(actor));
+        }
+        return actors;
     }
 }
