@@ -529,4 +529,201 @@ public class DBMS {
         // System.out.println(t);
         return t.getColumn("actorName");
     }
+
+    /// the list of movies is banned
+    public static class DeadLineException extends Exception {
+
+        public DeadLineException() {
+        }
+    }
+
+    // Bacon Search Helper Class
+    private class AugmentedActor {
+        public String name;
+        public String movieRelation;
+
+        public AugmentedActor(String name, String movieRelation) {
+            this.name = name;
+            this.movieRelation = movieRelation;
+        }
+
+        @Override
+        public int hashCode() {
+            return name.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            String cmp = "";
+            if (obj instanceof AugmentedActor) {
+                cmp = ((AugmentedActor) obj).name;
+            }
+            else if (obj instanceof String) {
+                cmp = (String) obj;
+            }
+            else {
+                return false;
+            }
+            return cmp.equals(name);
+        }
+    }
+
+    // Bacon Search Helper Class
+    private class AugmentedMovie {
+        public String name;
+        public String actorRelation;
+
+        public AugmentedMovie(String name, String actorRelation) {
+            this.name = name;
+            this.actorRelation = actorRelation;
+        }
+
+        @Override
+        public int hashCode() {
+            return name.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            String cmp = "";
+            if (obj instanceof AugmentedMovie) {
+                cmp = ((AugmentedMovie) obj).name;
+            }
+            else if (obj instanceof String) {
+                cmp = (String) obj;
+            }
+            else {
+                return false;
+            }
+            return cmp.equals(name);
+        }
+    }
+
+    // the public facing function
+    public ArrayList<String> getBaconNumber(String actor1, String actor2) {
+        try {
+            LinkedHashSet<AugmentedActor> actorContainer = new LinkedHashSet<>();
+            actorContainer.add(new AugmentedActor(actor1, "INITIAL NODE"));
+            return getBaconNumberSearchActor(
+                    actorContainer,
+                    actor2,
+                    new LinkedHashSet<String>(),
+                    new LinkedHashSet<String>()
+            );
+        }
+        catch (DeadLineException de) {
+            return null;
+        }
+    }
+
+    // the version of the recursive search in actors
+    private ArrayList<String> getBaconNumberSearchActor(LinkedHashSet<AugmentedActor> actorSearchNodes,
+                                                        String actorTarget,
+                                                        LinkedHashSet<String> actorsSearched,
+                                                        LinkedHashSet<String> moviesSearched) throws DeadLineException{
+        // generate the next stack on the cake by getting all the movies.
+        // no need to check if we win yet, just make sure no dupe nodes are searched
+        LinkedHashSet<AugmentedMovie> moviesToSearch = new LinkedHashSet<>();
+        for (AugmentedActor aa : actorSearchNodes) {
+            LinkedHashSet<String> movies = getMoviesByActor(aa.name);
+            for (String movieName : movies) {
+                if (!moviesSearched.contains(movieName))
+                {
+                    moviesToSearch.add(new AugmentedMovie(movieName, aa.name));
+                    moviesSearched.add(movieName);
+                }
+            }
+        }
+
+        // end of the line, kiddo! nothing to look at here!!
+        if (moviesToSearch.isEmpty()) {
+            throw new DeadLineException();
+        }
+
+        ArrayList<String> pathFromEnd = getBaconNumberSearchMovie(
+                moviesToSearch,
+                actorTarget,
+                actorsSearched,
+                moviesSearched
+        );
+
+        String nameOfConnectingActor = pathFromEnd.get(pathFromEnd.size() - 1);
+        pathFromEnd.add(FindPrevConnectorOnActor(actorSearchNodes, nameOfConnectingActor));
+        return pathFromEnd;
+    }
+
+    // the version of the recursive search in movies
+    private ArrayList<String> getBaconNumberSearchMovie(LinkedHashSet<AugmentedMovie> movieSearchNodes,
+                                                        String actorTarget,
+                                                        LinkedHashSet<String> actorsSearched,
+                                                        LinkedHashSet<String> moviesSearched) throws DeadLineException{
+        // same as searching actors, but prematurely kill if you find the right actor
+        // it all unfolds like a house of cards
+        LinkedHashSet<AugmentedActor> actorsToSearch = new LinkedHashSet<>();
+        for (AugmentedMovie am : movieSearchNodes) {
+            LinkedHashSet<String> actors = getActorsByMovie(am.name);
+            for (String actorName : actors) {
+                if (actorTarget.equals(actorName))
+                {
+                    // THE SEARCH IS OVER 🔫🔫🔫
+                    // Hamza bin Laden, Son of Qaeda Founder, Is Dead 🔫🔫🔫🔫
+
+                    ArrayList<String> output = new ArrayList<>();
+                    output.add(actorTarget);
+                    output.add(actorName);
+                    output.add(am.actorRelation);
+                    return output;
+                }
+                if (!actorsSearched.contains(actorName))
+                {
+                    actorsToSearch.add(new AugmentedActor(actorName, am.name));
+                    actorsSearched.add(actorName);
+                }
+            }
+        }
+
+        // end of the line, kiddo! nothing to look at here!!
+        if (actorsToSearch.isEmpty()) {
+            throw new DeadLineException();
+        }
+
+        ArrayList<String> pathFromEnd = getBaconNumberSearchActor(
+                actorsToSearch,
+                actorTarget,
+                actorsSearched,
+                moviesSearched
+        );
+
+        String nameOfConnectingMovie = pathFromEnd.get(pathFromEnd.size() - 1);
+        pathFromEnd.add(FindPrevConnectorOnMovie(movieSearchNodes, nameOfConnectingMovie));
+        return pathFromEnd;
+    }
+
+    private LinkedHashSet<String> getMoviesByActor(String actor) {
+        Table t = query(String.format("project (movieId) (select (actorId == \"%s\") casts);", actor));
+        return new LinkedHashSet<String>(t.getColumn(actor));
+    }
+
+    private LinkedHashSet<String> getActorsByMovie(String movie) {
+        Table t = query(String.format("project (actorId) (select (movieId == \"%s\") casts);", movie));
+        return new LinkedHashSet<String>(t.getColumn(movie));
+    }
+
+    private String FindPrevConnectorOnActor(LinkedHashSet<AugmentedActor> laa, String actorName) {
+        for (AugmentedActor aa : laa) {
+            if (aa.name.equals(actorName)) {
+                return aa.movieRelation;
+            }
+        }
+        return "\n[FATAL] connector lost\n";
+    }
+
+    private String FindPrevConnectorOnMovie(LinkedHashSet<AugmentedMovie> laa, String movieName) {
+        for (AugmentedMovie am : laa) {
+            if (am.name.equals(movieName)) {
+                return am.actorRelation;
+            }
+        }
+        return "\n[FATAL] connector lost\n";
+    }
 }
