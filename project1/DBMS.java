@@ -466,13 +466,23 @@ public class DBMS {
         return listener.getTable();
     }
 
-    public String query5(String actor, String appearances){
+   /* public String query5(String actor, String appearances) {
         int appear = Integer.parseInt(appearances);
-        String temp1 ="castWithActor <- select( actorName == "+actor+") casts);";
+        String temp1 = "castWithActor <- select( actorName == " + actor + ") casts);";
         Table castWithActor = query(temp1);
+        Table movies = getTable("movies");
         int max = 0;
-        for(HashMap.Entry<ArrayList<String>,ArrayList<String>>)
-        return "a";
+        String  actorBestMovieId = "";
+        ArrayList<String> movieIDs = castWithActor.getColumn("id");
+        for (HashMap.Entry<ArrayList<String>, ArrayList<String>> movieEntry: movies.getEntries().entrySet()){
+            for(int i = 0;i< movieIDs.size();i++){
+                if(movieEntry.getValue().get(0) == movieIDs.get(i) && Integer.parseInt(movieEntry.getValue().get(2)) > max)//0 is id index and 2 is rating
+                    actorBestMovieId = movieEntry.getValue().get(0);
+            }
+        }
+        for()
+            return "a";
+    }*/
 
     private static String sanitizeString(String s){
         String s1 = s.replace(" ", "_");
