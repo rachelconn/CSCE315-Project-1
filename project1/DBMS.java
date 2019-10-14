@@ -472,6 +472,10 @@ public class DBMS {
         return s2;
     }
 
+    private static String underscoreToSpace(String s) {
+        return s.replace("_"," ");
+    }
+
     public String genreNumberToString(String num) {
         Table t = query("select (id == " + num + ") genres;");
         if (t == null) {
