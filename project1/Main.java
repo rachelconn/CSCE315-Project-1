@@ -36,6 +36,8 @@ public class Main {
         //example query:
         System.out.println("Done");
         //System.out.println(listener.getMyDBMS().query(listener, "dogs + cats;"));
+
+        myDBMS.getActorsByCharacterName("Alex");
     }
 
     static void generateMovieTable(List<Movie> moviesList, DBMS myDBMS) {

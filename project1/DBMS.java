@@ -454,7 +454,7 @@ public class DBMS {
     }
 
     public Table query(String s) {
-        MyRulesBaseListener listener = new MyRulesBaseListener();
+        MyRulesBaseListener listener = new MyRulesBaseListener(this);
         CharStream charStream = CharStreams.fromString(s);
         RulesLexer lexer = new RulesLexer(charStream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
@@ -463,5 +463,21 @@ public class DBMS {
         ParseTreeWalker walker = new ParseTreeWalker();
         walker.walk(listener, programContext);
         return listener.getTable();
+    }
+
+    /*
+    eg. calling with character name Alex returns table:
+    
+    temp:
+    actorName
+    Timmy_Deters
+    Aaron_Costa_Ganis
+    Rachel_Sellan
+    Anastasios_Soulis
+     */
+    public Table getActorsByCharacterName(String name) {
+        Table t = query("project (actorName) (select (character == \"" + name + "\") casts);");
+        System.out.println(t);
+        return t;
     }
 }
