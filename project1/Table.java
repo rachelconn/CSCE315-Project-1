@@ -98,6 +98,15 @@ public class Table implements Serializable {
 
     public void setpKeyIndices(ArrayList<Integer> pKeyIndices) { this.pKeyIndices = pKeyIndices; }
 
+    public ArrayList<String> getColumn(String attributeName) {
+        ArrayList<String> col = new ArrayList<>();
+        int attributeIndex = attributeNames.indexOf(attributeName);
+        for (ArrayList<String> val : entries.values()) {
+            col.add(val.get(attributeIndex));
+        }
+        return col;
+    }
+
     public int getSize() { return entries.size(); }
 
     public ArrayList<String> getpKeyNames() {
