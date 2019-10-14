@@ -466,10 +466,32 @@ public class DBMS {
         return listener.getTable();
     }
 
+   /* public String query5(String actor, String appearances) {
+        int appear = Integer.parseInt(appearances);
+        String temp1 = "castWithActor <- select( actorName == " + actor + ") casts);";
+        Table castWithActor = query(temp1);
+        Table movies = getTable("movies");
+        int max = 0;
+        String  actorBestMovieId = "";
+        ArrayList<String> movieIDs = castWithActor.getColumn("id");
+        for (HashMap.Entry<ArrayList<String>, ArrayList<String>> movieEntry: movies.getEntries().entrySet()){
+            for(int i = 0;i< movieIDs.size();i++){
+                if(movieEntry.getValue().get(0) == movieIDs.get(i) && Integer.parseInt(movieEntry.getValue().get(2)) > max)//0 is id index and 2 is rating
+                    actorBestMovieId = movieEntry.getValue().get(0);
+            }
+        }
+        for()
+            return "a";
+    }*/
+
     private static String sanitizeString(String s){
         String s1 = s.replace(" ", "_");
         String s2 = s1.replaceAll("[^a-zA-Z0-9_]", "");
         return s2;
+    }
+
+    private static String underscoreToSpace(String s) {
+        return s.replace("_"," ");
     }
 
     public String genreNumberToString(String num) {
@@ -512,7 +534,7 @@ public class DBMS {
                 maxOccurances = entry.getValue();
             }
         }
-        return genreNumberToString(mostCommonGenre);
+        return underscoreToSpace(genreNumberToString(mostCommonGenre));
     }
     /*
     eg. calling with character name Alex returns table:
@@ -527,7 +549,11 @@ public class DBMS {
     public ArrayList<String> getActorsByCharacterName(String name) {
         Table t = query("project (actorName) (select (character == \"" + sanitizeString(name) + "\") casts);");
         // System.out.println(t);
-        return t.getColumn("actorName");
+        ArrayList<String> actors = new ArrayList<>();
+        for(String actor : t.getColumn("actorName")){
+            actors.add(underscoreToSpace(actor));
+        }
+        return actors;
     }
 
     /// the list of movies is banned
