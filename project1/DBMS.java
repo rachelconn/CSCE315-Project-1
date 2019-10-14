@@ -464,4 +464,13 @@ public class DBMS {
         walker.walk(listener, programContext);
         return listener.getTable();
     }
+
+    public String query5(String actor, String appearances){
+        int appear = Integer.parseInt(appearances);
+        String temp1 ="castWithActor <- select( actorName == "+actor+") casts);";
+        Table castWithActor = query(temp1);
+        int max = 0;
+        for(HashMap.Entry<ArrayList<String>,ArrayList<String>>)
+        return "a";
+    }
 }
