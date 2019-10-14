@@ -1,6 +1,7 @@
 package project1;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import javafx.util.Pair;
 
@@ -454,7 +455,7 @@ public class DBMS {
     }
 
     public Table query(String s) {
-        MyRulesBaseListener listener = new MyRulesBaseListener();
+        MyRulesBaseListener listener = new MyRulesBaseListener(this);
         CharStream charStream = CharStreams.fromString(s);
         RulesLexer lexer = new RulesLexer(charStream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
@@ -472,5 +473,68 @@ public class DBMS {
         int max = 0;
         for(HashMap.Entry<ArrayList<String>,ArrayList<String>>)
         return "a";
+
+    private static String sanitizeString(String s){
+        String s1 = s.replace(" ", "_");
+        String s2 = s1.replaceAll("[^a-zA-Z0-9_]", "");
+        return s2;
+    }
+
+    public String genreNumberToString(String num) {
+        Table t = query("select (id == " + num + ") genres;");
+        if (t == null) {
+            System.out.println("Invalid genre number: " + num + ".");
+            return "";
+        }
+        return t.getColumn("name").get(0);
+    }
+
+    public String getMostPlayedGenre(String actor) {
+        //get table of movies an actor has been in
+        HashMap<String, Integer> genreCounts = new HashMap<>();
+        Table t = query("project (movieId) (select (actorName == \"" + sanitizeString(actor) + "\") casts);");
+        if (t == null) {
+            System.out.println("Actor " + actor + "not found in database.");
+            return "";
+        }
+        //convert to arraylist
+        ArrayList<String> movieIds = t.getColumn("movieId");
+        //get genres for each movie
+        for (String s : movieIds) {
+            t = query("select (movieId == " + s + ") movieGenres;");
+            ArrayList<String> genres = t.getColumn("genreId");
+            for (String genre : genres) {
+                if (!genreCounts.containsKey(genre)) {
+                    genreCounts.put(genre, 1);
+                } else {
+                    genreCounts.put(genre, genreCounts.get(genre) + 1);
+                }
+            }
+        }
+        //find genre with most entries
+        String mostCommonGenre = "";
+        int maxOccurances = 0;
+        for (Map.Entry<String, Integer> entry : genreCounts.entrySet()) {
+            if (entry.getValue() > maxOccurances) {
+                mostCommonGenre = entry.getKey();
+                maxOccurances = entry.getValue();
+            }
+        }
+        return genreNumberToString(mostCommonGenre);
+    }
+    /*
+    eg. calling with character name Alex returns table:
+    
+    temp:
+    actorName
+    Timmy_Deters
+    Aaron_Costa_Ganis
+    Rachel_Sellan
+    Anastasios_Soulis
+     */
+    public ArrayList<String> getActorsByCharacterName(String name) {
+        Table t = query("project (actorName) (select (character == \"" + sanitizeString(name) + "\") casts);");
+        // System.out.println(t);
+        return t.getColumn("actorName");
     }
 }
