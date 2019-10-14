@@ -453,7 +453,8 @@ public class DBMS {
         return keys1.equals(keys2);
     }
 
-    public Table query(MyRulesBaseListener listener, String s) {
+    public Table query(String s) {
+        MyRulesBaseListener listener = new MyRulesBaseListener();
         CharStream charStream = CharStreams.fromString(s);
         RulesLexer lexer = new RulesLexer(charStream);
         CommonTokenStream commonTokenStream = new CommonTokenStream(lexer);
