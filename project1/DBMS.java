@@ -497,8 +497,7 @@ public class DBMS {
             for (String genre : genres) {
                 if (!genreCounts.containsKey(genre)) {
                     genreCounts.put(genre, 1);
-                }
-                else {
+                } else {
                     genreCounts.put(genre, genreCounts.get(genre) + 1);
                 }
             }
@@ -513,6 +512,7 @@ public class DBMS {
             }
         }
         return genreNumberToString(mostCommonGenre);
+    }
     /*
     eg. calling with character name Alex returns table:
     
@@ -524,7 +524,7 @@ public class DBMS {
     Anastasios_Soulis
      */
     public Table getActorsByCharacterName(String name) {
-        Table t = query("project (actorName) (select (character == \"" + name + "\") casts);");
+        Table t = query("project (actorName) (select (character == \"" + sanitizeString(name) + "\") casts);");
         System.out.println(t);
         return t;
     }
