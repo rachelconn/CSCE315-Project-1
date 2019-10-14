@@ -212,7 +212,7 @@ public class Table implements Serializable {
 
     }
 
-    public String showTable() {
+    public String toString() {
         String toShow = this.name + ":\n";
         for(String s : attributeNames) {
             toShow = toShow + s + " ";

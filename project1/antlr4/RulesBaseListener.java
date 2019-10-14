@@ -1,4 +1,4 @@
-// Generated from C:/Users/asus/IdeaProjects/Project 1/src/project1\Rules.g4 by ANTLR 4.7.2
+// Generated from /home/ryan/IdeaProjects/CSCE315-Project-1/project1/antlr4/Rules.g4 by ANTLR 4.7.2
 package project1.antlr4;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -59,6 +59,18 @@ public class RulesBaseListener implements RulesListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAttributeName(RulesParser.AttributeNameContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSoleExpr(RulesParser.SoleExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSoleExpr(RulesParser.SoleExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -1,4 +1,4 @@
-// Generated from C:/Users/asus/IdeaProjects/Project 1/src/project1\Rules.g4 by ANTLR 4.7.2
+// Generated from /home/ryan/IdeaProjects/CSCE315-Project-1/project1/antlr4/Rules.g4 by ANTLR 4.7.2
 package project1.antlr4;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -34,6 +34,12 @@ public interface RulesVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAttributeName(RulesParser.AttributeNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link RulesParser#soleExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSoleExpr(RulesParser.SoleExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link RulesParser#expr}.
 	 * @param ctx the parse tree

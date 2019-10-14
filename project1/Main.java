@@ -10,12 +10,11 @@ import java.util.Scanner;
 import csce315.project1.*;
 import project1.antlr4.MyRulesBaseListener;
 import project1.antlr4.RulesLexer;
-import project1.antlr4.RulesParser;
-import project1.conditional.*;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import project1.antlr4.RulesParser;
 
 
 public class Main {
@@ -30,6 +29,8 @@ public class Main {
         List<Credits> creditsList = parser.deserializeCredits("./data/credits_single.json");
         generateCastTable(creditsList, myDBMS);
         myDBMS.showCmd(myDBMS.getTable("casts"));
+        //example query:
+        //System.out.println(listener.getMyDBMS().query(listener, "dogs + cats;"));
     }
 
     static void generateMovieTable(List<Movie> moviesList, DBMS myDBMS) {
@@ -134,6 +135,7 @@ public class Main {
 
     public static void unitTesting() throws FileNotFoundException{
         int numOfTests = 3;
+        MyRulesBaseListener listener = new MyRulesBaseListener();
         for(int i = 1 ; i <= numOfTests ; i++) {
             File file = new File("tests/test" + String.valueOf(i) + ".txt");
             Scanner scanner = new Scanner(file);
@@ -144,7 +146,6 @@ public class Main {
                     lines.add(line);
                 }
             }
-            MyRulesBaseListener listener = new MyRulesBaseListener();
             for (String line : lines) {
                 CharStream charStream = CharStreams.fromString(line);
                 RulesLexer lexer = new RulesLexer(charStream);
