@@ -104,11 +104,15 @@ public class Main {
     public static void generateCastTable(List<Credits> creditsList, DBMS myDBMS){
         //define CASTS table
         ArrayList<String> cNames = new ArrayList<>();
-        cNames.add("movieId"); cNames.add("actorId");
-        cNames.add("actorName"); cNames.add("character");
+        cNames.add("movieId");
+        cNames.add("actorId");
+        cNames.add("actorName");
+        cNames.add("character");
         ArrayList<String> cTypes = new ArrayList<>();
-        cTypes.add("INTEGER"); cTypes.add("INTEGER");
-        cTypes.add("VARCHAR(50)"); cTypes.add("VARCHAR(50)");
+        cTypes.add("INTEGER");
+        cTypes.add("INTEGER");
+        cTypes.add("VARCHAR(50)");
+        cTypes.add("VARCHAR(50)");
         ArrayList<Integer> cKeys = new ArrayList<>();
         cKeys.add(0); cKeys.add(1);
         Table castTable = new Table("casts", cNames, cTypes, cKeys);
