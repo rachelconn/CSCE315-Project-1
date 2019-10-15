@@ -112,7 +112,6 @@ public class GUI extends Application {
             }
             else {
                 error.setText("");
-                //System.out.println(nameField1.getText() + " " + nameField2.getText()); //CALL QUERY1 FUNCTION ON THIS LINE
                 final Stage result = new Stage();
                 result.initModality(Modality.NONE);
                 result.initOwner(primaryStage);
@@ -121,6 +120,9 @@ public class GUI extends Application {
                 title.setFont(new Font(20));
 
                 Label resultText = new Label(nameField1.getText() + " " + nameField2.getText());
+                //Set the above constructor to the call for Query 1. Ensure that the function returns a string
+                //If the text goes out of the window uncomment below code
+                //resultText.setWrapText(true);
 
                 VBox layout = new VBox(20);
                 layout.getChildren().addAll(title,resultText);
@@ -200,6 +202,9 @@ public class GUI extends Application {
                 title.setFont(new Font(20));
 
                 Label resultText = new Label(nameField1.getText() + " " + nameField2.getText());
+                //Set the above constructor to the call for Query 2. Ensure that the function returns a string
+                //If the text goes out of the window uncomment below code
+                //resultText.setWrapText(true);
 
                 VBox layout = new VBox(20);
                 layout.getChildren().addAll(title,resultText);
@@ -273,6 +278,9 @@ public class GUI extends Application {
                 title.setFont(new Font(20));
 
                 Label resultText = new Label(nameField1.getText());
+                //Set the above constructor to the call for Query 3. Ensure that the function returns a string
+                //If the text goes out of the window uncomment below code
+                //resultText.setWrapText(true);
 
                 VBox layout = new VBox(20);
                 layout.getChildren().addAll(title,resultText);
@@ -337,7 +345,6 @@ public class GUI extends Application {
             }
             else {
                 error.setText("");
-                //System.out.println(nameField1.getText());
                 final Stage result = new Stage();
                 result.initModality(Modality.NONE);
                 result.initOwner(primaryStage);
@@ -346,6 +353,9 @@ public class GUI extends Application {
                 title.setFont(new Font(20));
 
                 Label resultText = new Label(nameField1.getText());
+                //Set the above constructor to the call for Query 4. Ensure that the function returns a string
+                //If the text goes out of the window uncomment below code
+                //resultText.setWrapText(true);
 
                 VBox layout = new VBox(20);
                 layout.getChildren().addAll(title,resultText);
@@ -410,7 +420,6 @@ public class GUI extends Application {
             }
             else {
                 error.setText("");
-                //System.out.println(nameField1.getText()); //CALL QUERY 5 FUNCTION HERE
                 final Stage result = new Stage();
                 result.initModality(Modality.NONE);
                 result.initOwner(primaryStage);
@@ -419,6 +428,9 @@ public class GUI extends Application {
                 title.setFont(new Font(20));
 
                 Label resultText = new Label(nameField1.getText());
+                //Set the above constructor to the call for Query 1. Ensure that the function returns a string
+                //If the text goes out of the window uncomment below code
+                //resultText.setWrapText(true);
 
                 VBox layout = new VBox(20);
                 layout.getChildren().addAll(title,resultText);
