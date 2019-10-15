@@ -149,7 +149,7 @@ public class Main {
     public static void generateCrewTable(List<Credits> creditsList, DBMS myDBMS){
         //define CASTS table
         ArrayList<String> cNames = new ArrayList<>();
-        cNames.add("movieId");
+        cNames.add("MovieId");
         cNames.add("DirectorId");
         cNames.add("DirectorName");
         ArrayList<String> cTypes = new ArrayList<>();

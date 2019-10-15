@@ -179,7 +179,7 @@ public class DBMS {
             tables.get(tableName).deleteEntry(entry.getKey());
         }
     }
-    
+
     public Table selectQry(String tableName, Conditional conditionTree) throws IncompatibleTypesException {
         Table tableRef = tables.get(tableName);
         return selectQry(tableRef, conditionTree);
@@ -268,7 +268,7 @@ public class DBMS {
             return null;
         }
     }
-  
+
     public Table differenceQry(Table a, Table b) {
         if(a.getAttributeNames().equals(b.getAttributeNames()) && a.getAttributeTypes().equals(b.getAttributeTypes())) {
             Table c = new Table(a.getName(), a.getAttributeNames(), a.getAttributeTypes(), a.getPKeyIndices());
@@ -404,7 +404,7 @@ public class DBMS {
         }
         return c;
     }
-  
+
     //HELPER FUNCTIONS
     public void addTable(Table t) {
         tables.put(t.getName(), t);
@@ -466,23 +466,45 @@ public class DBMS {
         return listener.getTable();
     }
 
-   /* public String query5(String actor, String appearances) {
-        int appear = Integer.parseInt(appearances);
-        String temp1 = "castWithActor <- select( actorName == " + actor + ") casts);";
+    public String query5(String actor) {
+        String temp1 = "select( actorName == \"" + actor + "\") casts;";
         Table castWithActor = query(temp1);
         Table movies = getTable("movies");
         int max = 0;
         String  actorBestMovieId = "";
-        ArrayList<String> movieIDs = castWithActor.getColumn("id");
+        ArrayList<String> movieIDs = castWithActor.getColumn("movieId");
         for (HashMap.Entry<ArrayList<String>, ArrayList<String>> movieEntry: movies.getEntries().entrySet()){
             for(int i = 0;i< movieIDs.size();i++){
-                if(movieEntry.getValue().get(0) == movieIDs.get(i) && Integer.parseInt(movieEntry.getValue().get(2)) > max)//0 is id index and 2 is rating
+                String idFromMovieEntry = movieEntry.getValue().get(0);
+                String curId = movieIDs.get(i);
+                if(idFromMovieEntry.equals(curId) && Integer.parseInt(movieEntry.getValue().get(2)) > max)//0 is id index and 2 is rating
+                {
                     actorBestMovieId = movieEntry.getValue().get(0);
+                    max = Integer.parseInt(movieEntry.getValue().get(2));
+                }
             }
         }
-        for()
-            return "a";
-    }*/
+        String  directorId = "";
+        String temp3 = "select( MovieId == " + actorBestMovieId + ") crew;";
+        Table movieWithDirector = query(temp3);
+        directorId = movieWithDirector.getColumn("DirectorId").get(0);
+        String temp2 = "select( DirectorId == " + directorId + ") crew;";
+        Table moviesWithDirector = query(temp2);
+        int size = moviesWithDirector.getSize();
+        int min = 101;
+        String directorWorstMovie = "";
+        ArrayList<String> movieDirectorIds = moviesWithDirector.getColumn("MovieId");
+        for (HashMap.Entry<ArrayList<String>, ArrayList<String>> movieEntry: movies.getEntries().entrySet()){
+            for(int i = 0;i<movieDirectorIds.size();i++) {
+                if (movieEntry.getValue().get(0).equals(movieDirectorIds.get(i)) && Integer.parseInt(movieEntry.getValue().get(2)) < min)//0 is id index and 2 is rating
+                {
+                    directorWorstMovie = movieEntry.getValue().get(1);
+                    min = Integer.parseInt(movieEntry.getValue().get(2));
+                }
+            }
+        }
+            return directorWorstMovie;
+    }
 
     private static String sanitizeString(String s){
         String s1 = s.replace(" ", "_");
@@ -538,7 +560,7 @@ public class DBMS {
     }
     /*
     eg. calling with character name Alex returns table:
-    
+
     temp:
     actorName
     Timmy_Deters
