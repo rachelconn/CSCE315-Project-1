@@ -308,7 +308,7 @@ public class GUI extends Application {
                 Label title = new Label("Result: ");
                 title.setFont(new Font(20));
 
-                Label resultText = new Label(nameField1.getText());
+                Label resultText = new Label(myDBMS.getMostPlayedGenre(nameField1.getText()));
                 //Set the above constructor to the call for Query 3. Ensure that the function returns a string
                 //If the text goes out of the window uncomment below code
                 //resultText.setWrapText(true);
