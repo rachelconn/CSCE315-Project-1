@@ -1,5 +1,15 @@
 package project1;
 
+import java.io.File;
+import java.io.IOException;
+import java.lang.*;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import csce315.project1.Credits;
+import csce315.project1.Movie;
+import csce315.project1.MovieDatabaseParser;
 import javafx.application.Application;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -19,14 +29,22 @@ import javafx.stage.Stage;
 public class GUI extends Application {
 
     private Scene mainMenu, bacon, constellation, typecasting, coverRoles, bodwod;
-
+    private DBMS myDBMS;
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
+
+        myDBMS = new DBMS();
+        List<Movie> moviesList = MovieDatabaseParser.deserializeMovies("./data/movies.json");
+        generateMovieTable(moviesList, myDBMS);
+
+        List<Credits> creditsList = MovieDatabaseParser.deserializeCredits("./data/credits.json");
+        generateCastTable(creditsList, myDBMS);
+        generateCrewTable(creditsList,myDBMS);
 
         Label title = new Label("Howdy!");
         title.setTextAlignment(TextAlignment.CENTER);
@@ -63,7 +81,8 @@ public class GUI extends Application {
         mainMenu = new Scene(menu,450,250);
 
         primaryStage.setScene(mainMenu);
-        primaryStage.getIcons().add(new Image("computerIcon.png")); //<https://icons8.com/icons/set/computer">
+        String url = new File("./project1/computerIcon.png").toURI().toURL().toString();
+        primaryStage.getIcons().add(new Image(url)); //<https://icons8.com/icons/set/computer">
         primaryStage.setTitle("GUI TESTING");
         primaryStage.setResizable(false);
         primaryStage.show();
@@ -106,7 +125,7 @@ public class GUI extends Application {
         gridPane.add(error,1,2);
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(actionEvent -> {
-            if(nameField1.getText().isBlank() || nameField2.getText().isBlank()) {
+            if(nameField1.getText().isEmpty() || nameField2.getText().isEmpty()) {
                 error.setText("One or both fields are blank! Enter actor names.");
                 error.setTextFill(Color.color(1,0,0));
             }
@@ -131,7 +150,13 @@ public class GUI extends Application {
                 Scene answer = new Scene(layout,400,400);
 
                 result.setScene(answer);
-                result.getIcons().add(new Image("resultIcon.png")); //<"https://icons8.com/icons/set/report-card">
+                String resultURL = "";
+                try {
+                    resultURL = new File("./project1/resultIcon.png").toURI().toURL().toString();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                result.getIcons().add(new Image(resultURL)); //<"https://icons8.com/icons/set/report-card">
                 result.setTitle("Bacon Number Result");
                 result.setResizable(false);
                 result.show();
@@ -187,7 +212,7 @@ public class GUI extends Application {
         gridPane.add(error,1,3);
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(actionEvent -> {
-            if(nameField1.getText().isBlank() || nameField2.getText().isBlank()) {
+            if(nameField1.getText().isEmpty() || nameField2.getText().isEmpty()) {
                 error.setText("One or both fields are blank! Enter an actor name and the number of co-star appearances.");
                 error.setTextFill(Color.color(1,0,0));
             }
@@ -214,7 +239,13 @@ public class GUI extends Application {
 
                 result.setScene(answer);
                 result.setTitle("Constellation Result");
-                result.getIcons().add(new Image("resultIcon.png")); //<"https://icons8.com/icons/set/report-card">
+                String resultURL = "";
+                try {
+                    resultURL = new File("./project1/resultIcon.png").toURI().toURL().toString();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                result.getIcons().add(new Image(resultURL)); //<"https://icons8.com/icons/set/report-card">
                 result.setResizable(false);
                 result.show();
             }
@@ -263,7 +294,7 @@ public class GUI extends Application {
         nameField1.setPrefHeight(40);
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(actionEvent -> {
-            if(nameField1.getText().isBlank()) {
+            if(nameField1.getText().isEmpty()) {
                 error.setText("Field is blank! Enter an actor name.");
                 error.setTextFill(Color.color(1,0,0));
             }
@@ -290,8 +321,14 @@ public class GUI extends Application {
 
                 result.setScene(answer);
                 result.setTitle("Typecasting Result");
-                result.getIcons().add(new Image("resultIcon.png")); //<"https://icons8.com/icons/set/report-card">
-                result.setResizable(false);
+
+                String resultURL = "";
+                try {
+                    resultURL = new File("./project1/resultIcon.png").toURI().toURL().toString();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                result.getIcons().add(new Image(resultURL)); //<"https://icons8.com/icons/set/report-card">                result.setResizable(false);
                 result.show();
             }
         });
@@ -339,7 +376,7 @@ public class GUI extends Application {
         gridPane.add(error,1,2);
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(actionEvent -> {
-            if(nameField1.getText().isBlank()) {
+            if(nameField1.getText().isEmpty()) {
                 error.setText("Field is blank! Enter a Character name.");
                 error.setTextFill(Color.color(1,0,0));
             }
@@ -352,10 +389,11 @@ public class GUI extends Application {
                 Label title = new Label("Result: ");
                 title.setFont(new Font(20));
 
-                Label resultText = new Label(nameField1.getText());
+                Label resultText = new Label(myDBMS.getActorsByCharacterName(nameField1.getText()));
                 //Set the above constructor to the call for Query 4. Ensure that the function returns a string
                 //If the text goes out of the window uncomment below code
-                //resultText.setWrapText(true);
+                resultText.setWrapText(true);
+                resultText.setTextAlignment(TextAlignment.CENTER);
 
                 VBox layout = new VBox(20);
                 layout.getChildren().addAll(title,resultText);
@@ -365,8 +403,15 @@ public class GUI extends Application {
 
                 result.setScene(answer);
                 result.setTitle("Cover Roles Result");
-                result.getIcons().add(new Image("resultIcon.png")); //<"https://icons8.com/icons/set/report-card">
-                result.setResizable(false);
+
+                String resultURL = "";
+                try {
+                    resultURL = new File("./project1/resultIcon.png").toURI().toURL().toString();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                result.getIcons().add(new Image(resultURL)); //<"https://icons8.com/icons/set/report-card">
+                // result.setResizable(false);
                 result.show();
             }
         });
@@ -414,7 +459,7 @@ public class GUI extends Application {
         gridPane.add(error,1,2);
         Button submitButton = new Button("Submit");
         submitButton.setOnAction(actionEvent -> {
-            if(nameField1.getText().isBlank()) {
+            if(nameField1.getText().isEmpty()) {
                 error.setText("Field is blank! Enter an actor name.");
                 error.setTextFill(Color.color(1,0,0));
             }
@@ -440,8 +485,14 @@ public class GUI extends Application {
 
                 result.setScene(answer);
                 result.setTitle("Best of Days, Worst of Days Result");
-                result.getIcons().add(new Image("resultIcon.png")); //<"https://icons8.com/icons/set/report-card">
-                result.setResizable(false);
+
+                String resultURL = "";
+                try {
+                    resultURL = new File("./project1/resultIcon.png").toURI().toURL().toString();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                result.getIcons().add(new Image(resultURL)); //<"https://icons8.com/icons/set/report-card">                result.setResizable(false);
                 result.show();
             }
         });
@@ -453,5 +504,148 @@ public class GUI extends Application {
         bodMenu.setAlignment(Pos.TOP_CENTER);
         bodwod = new Scene(bodMenu,800,450);
         primaryStage.setScene(bodwod);
+    }
+
+    static void generateMovieTable(List<Movie> moviesList, DBMS myDBMS) {
+        //Define MOVIES table
+        ArrayList<String> attNames = new ArrayList<>();
+        attNames.add("id"); attNames.add("title"); attNames.add("rating");
+        ArrayList<String> attTypes = new ArrayList<>();
+        attTypes.add("INTEGER"); attTypes.add("VARCHAR(50)"); attTypes.add("INTEGER");
+        ArrayList<Integer> pKeys = new ArrayList<>();
+        pKeys.add(0);
+        Table movies = new Table("movies",attNames, attTypes, pKeys);
+        myDBMS.addTable(movies);
+
+        //define GENRES table
+        ArrayList<String> gNames = new ArrayList<>();
+        gNames.add("id"); gNames.add("name");
+        ArrayList<String> gTypes = new ArrayList<>();
+        gTypes.add("INTEGER"); gTypes.add("VARCHAR(20)");
+        ArrayList<Integer> gPKeys = new ArrayList<>();
+        gPKeys.add(0);
+        Table genresTable = new Table("genres", gNames, gTypes, gPKeys);
+        myDBMS.addTable(genresTable);
+
+        //define MOVIEGENRES table
+        ArrayList<String> mgNames = new ArrayList<>();
+        mgNames.add("movieId"); mgNames.add("genreId");
+        ArrayList<String> mgTypes = new ArrayList<>();
+        mgTypes.add("INTEGER"); mgTypes.add("INTEGER");
+        ArrayList<Integer> mgKeys = new ArrayList<>();
+        mgKeys.add(0); mgKeys.add(1);
+        Table movieGenres = new Table("movieGenres", mgNames, mgTypes, mgKeys);
+        myDBMS.addTable(movieGenres);
+
+        //parse through each movie in the list
+        for(Movie m : moviesList){
+            ArrayList<String> attributes = new ArrayList<>();
+            String mId = Integer.toString(m.getId());
+            attributes.add(mId);
+            String title = m.getTitle();
+            title = sanitizeString(title);
+            attributes.add(title);
+            //rating is on a scale 1-10 with one decimal point, multiply by 10 to get integer between 1-100
+            //round to get rid of any floating point precision error
+            int rating = (int) Math.round(m.getVote_average() * 10);
+            attributes.add(Integer.toString(rating));
+            myDBMS.insertCmd("movies", attributes);
+
+            List<Movie.Genre> genreList = m.getGenres();
+            //parse through list of genres given
+            for(Movie.Genre g : genreList){
+                String gId = Integer.toString(g.getId());
+                String gName = g.getName();
+
+                //add the genre lookup to the genres table
+                ArrayList<String> gAtts = new ArrayList<>();
+                gAtts.add(gId); gAtts.add(gName);
+                myDBMS.insertCmd("genres", gAtts);
+                //add the movie-genre relation to the table
+                ArrayList<String> mgAtts = new ArrayList<>();
+                mgAtts.add(mId); mgAtts.add(gId);
+                myDBMS.insertCmd("movieGenres", mgAtts);
+            }
+        }
+    }
+
+    public static void generateCastTable(List<Credits> creditsList, DBMS myDBMS){
+        //define CASTS table
+        ArrayList<String> cNames = new ArrayList<>();
+        cNames.add("movieId");
+        cNames.add("actorId");
+        cNames.add("actorName");
+        cNames.add("character");
+        ArrayList<String> cTypes = new ArrayList<>();
+        cTypes.add("INTEGER");
+        cTypes.add("INTEGER");
+        cTypes.add("VARCHAR(50)");
+        cTypes.add("VARCHAR(50)");
+        ArrayList<Integer> cKeys = new ArrayList<>();
+        cKeys.add(0); cKeys.add(1);
+        Table castTable = new Table("casts", cNames, cTypes, cKeys);
+        myDBMS.addTable(castTable);
+
+        for(Credits c : creditsList){
+            String movieId = c.getId();
+            List<Credits.CastMember> cast = c.getCastMember();
+            for(Credits.CastMember cm : cast){
+                String actorId = Integer.toString(cm.getId());
+                String name = sanitizeString(cm.getName());
+                String character = sanitizeString(cm.getCharacter());
+
+                ArrayList<String> castAtts = new ArrayList<>();
+                castAtts.add(movieId); castAtts.add(actorId);
+                castAtts.add(name); castAtts.add(character);
+                myDBMS.insertCmd("casts", castAtts);
+            }
+
+        }
+
+    }
+
+    public static void generateCrewTable(List<Credits> creditsList, DBMS myDBMS){
+        //define CASTS table
+        ArrayList<String> cNames = new ArrayList<>();
+        cNames.add("movieId");
+        cNames.add("DirectorId");
+        cNames.add("DirectorName");
+        ArrayList<String> cTypes = new ArrayList<>();
+        cTypes.add("INTEGER");
+        cTypes.add("INTEGER");
+        cTypes.add("VARCHAR(50)");
+        ArrayList<Integer> cKeys = new ArrayList<>();
+        cKeys.add(0); cKeys.add(1);
+        Table crewTable = new Table("crew", cNames, cTypes, cKeys);
+        myDBMS.addTable(crewTable);
+
+        for(Credits c : creditsList){
+            String movieId = c.getId();
+            List<Credits.CrewMember> crew = c.getCrewMember();
+            boolean done = false;
+            for(Credits.CrewMember cm : crew){
+                if(done)
+                    break;
+                if(cm.getJob().equals("Director")) {
+                    done = true;
+                    String DirectorId = Integer.toString(cm.getId());
+                    String name = sanitizeString(cm.getName());
+
+                    ArrayList<String> crewAtts = new ArrayList<>();
+                    crewAtts.add(movieId);
+                    crewAtts.add(DirectorId);
+                    crewAtts.add(name);
+                    myDBMS.insertCmd("crew", crewAtts);
+                }
+            }
+
+        }
+
+    }
+
+    private static String sanitizeString(String s){
+        String s1 = s.replace(" ", "_");
+        String s2 = s1.replaceAll("[^a-zA-Z0-9_]", "");
+        return s2;
     }
 }
