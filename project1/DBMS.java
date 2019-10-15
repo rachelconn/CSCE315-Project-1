@@ -568,12 +568,12 @@ public class DBMS {
     Rachel_Sellan
     Anastasios_Soulis
      */
-    public ArrayList<String> getActorsByCharacterName(String name) {
+    public String getActorsByCharacterName(String name) {
         Table t = query("project (actorName) (select (character == \"" + sanitizeString(name) + "\") casts);");
         // System.out.println(t);
-        ArrayList<String> actors = new ArrayList<>();
+        String actors = "";
         for(String actor : t.getColumn("actorName")){
-            actors.add(underscoreToSpace(actor));
+            actors = actors + underscoreToSpace(actor) + ", ";
         }
         return actors;
     }
