@@ -3,6 +3,7 @@ package project1;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,6 +16,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import project1.antlr4.RulesParser;
+import project1.conditional.Cell;
 
 
 public class Main {
@@ -40,6 +42,10 @@ public class Main {
         //System.out.println(listener.getMyDBMS().query(listener, "dogs + cats;"));
         System.out.println(myDBMS.getMostPlayedGenre("Danny_McBride"));
         myDBMS.getActorsByCharacterName("Alex");
+
+        System.out.println(
+                myDBMS.getBaconNumber("Will_Patton",  "Jacob_Auzanneau")
+        );
     }
 
     static void generateMovieTable(List<Movie> moviesList, DBMS myDBMS) {
