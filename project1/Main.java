@@ -40,6 +40,7 @@ public class Main {
         //System.out.println(listener.getMyDBMS().query(listener, "dogs + cats;"));
         System.out.println(myDBMS.getMostPlayedGenre("Danny_McBride"));
         myDBMS.getActorsByCharacterName("Alex");
+        System.out.println(myDBMS.query2("Johnny_Depp","7"));
     }
 
     static void generateMovieTable(List<Movie> moviesList, DBMS myDBMS) {

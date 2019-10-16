@@ -506,6 +506,37 @@ public class DBMS {
             return directorWorstMovie;
     }
 
+    public String query2(String actor,String appearances){
+        int appear = Integer.parseInt(appearances);
+        HashMap<String,Integer> actors= new HashMap<String,Integer>();
+        String temp1 = "select( actorName == \"" + actor + "\") casts;";
+        ArrayList<String> moviesActorPlays = query(temp1).getColumn("movieId");
+        for(int i = 0;i< moviesActorPlays.size();i++){
+            ArrayList<String> movieCast;
+            String temp2 = "select( movieId == " + moviesActorPlays.get(i) + ") casts;";
+            movieCast = query(temp2).getColumn("actorName");
+                for(int j = 0;j<movieCast.size();j++){
+                    if(!actors.containsKey(movieCast.get(j))) {
+                        actors.put(movieCast.get(j), 1);
+                    } else{
+                        actors.put(movieCast.get(j), actors.get(movieCast.get(j))+1);
+                    }
+                }
+        }
+        ArrayList<String> costars = new ArrayList<String>();
+        for(HashMap.Entry<String,Integer> actorEntry: actors.entrySet()){
+            if(actorEntry.getValue() == appear){
+                if(!actorEntry.getKey().equals(actor)) {
+                    costars.add(actorEntry.getKey());
+                }
+            }
+        }
+        if(costars.toString().equals("[]")){
+            return "no costars meet conditions";
+        }
+        return costars.toString();
+    }
+
     private static String sanitizeString(String s){
         String s1 = s.replace(" ", "_");
         String s2 = s1.replaceAll("[^a-zA-Z0-9_]", "");
