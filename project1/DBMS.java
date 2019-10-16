@@ -658,8 +658,8 @@ public class DBMS {
     }
 
     public ArrayList<String> getBaconNumber(String actor1, String actor2) {
-        String actor1id = getIdByActor(actor1);
-        String actor2id = getIdByActor(actor2);
+        String actor1id = getIdByActor(sanitizeString(actor1));
+        String actor2id = getIdByActor(sanitizeString(actor2));
         return getBaconNumberByIDs(actor1id, actor2id);
     }
 

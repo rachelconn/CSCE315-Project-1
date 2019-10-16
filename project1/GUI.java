@@ -138,7 +138,7 @@ public class GUI extends Application {
                 Label title = new Label("Result: ");
                 title.setFont(new Font(20));
 
-                Label resultText = new Label(nameField1.getText() + " " + nameField2.getText());
+                Label resultText = new Label(myDBMS.getBaconNumber(nameField1.getText(),nameField2.getText()).toString());
                 //Set the above constructor to the call for Query 1. Ensure that the function returns a string
                 //If the text goes out of the window uncomment below code
                 //resultText.setWrapText(true);
@@ -472,7 +472,7 @@ public class GUI extends Application {
                 Label title = new Label("Result: ");
                 title.setFont(new Font(20));
 
-                Label resultText = new Label(nameField1.getText());
+                Label resultText = new Label(myDBMS.query5(nameField1.getText()));
                 //Set the above constructor to the call for Query 1. Ensure that the function returns a string
                 //If the text goes out of the window uncomment below code
                 //resultText.setWrapText(true);
