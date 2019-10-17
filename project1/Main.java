@@ -1,3 +1,4 @@
+
 package project1;
 
 import java.io.File;
@@ -29,7 +30,7 @@ public class Main {
         //myDBMS.showCmd(myDBMS.getTable("movies"));
         List<Credits> creditsList = MovieDatabaseParser.deserializeCredits("./data/credits.json");
         generateCastTable(creditsList, myDBMS);
-        generateCrewTable(creditsList,myDBMS);
+        generateCrewTable(creditsList, myDBMS);
         System.out.println("casts: \n" + myDBMS.getTable("casts").attributesAsString());
         System.out.println("crew: \n" + myDBMS.getTable("crew").attributesAsString());
         System.out.println("genres: \n" + myDBMS.getTable("genres").attributesAsString());
@@ -40,25 +41,31 @@ public class Main {
         //System.out.println(listener.getMyDBMS().query(listener, "dogs + cats;"));
         System.out.println(myDBMS.getMostPlayedGenre("Danny_McBride"));
         myDBMS.getActorsByCharacterName("Alex");
-        System.out.println(myDBMS.query2("Johnny_Depp","7"));
+        System.out.println(myDBMS.query2("Johnny_Depp", "7"));
     }
 
     static void generateMovieTable(List<Movie> moviesList, DBMS myDBMS) {
         //Define MOVIES table
         ArrayList<String> attNames = new ArrayList<>();
-        attNames.add("id"); attNames.add("title"); attNames.add("rating");
+        attNames.add("id");
+        attNames.add("title");
+        attNames.add("rating");
         ArrayList<String> attTypes = new ArrayList<>();
-        attTypes.add("INTEGER"); attTypes.add("VARCHAR(50)"); attTypes.add("INTEGER");
+        attTypes.add("INTEGER");
+        attTypes.add("VARCHAR(50)");
+        attTypes.add("INTEGER");
         ArrayList<Integer> pKeys = new ArrayList<>();
         pKeys.add(0);
-        Table movies = new Table("movies",attNames, attTypes, pKeys);
+        Table movies = new Table("movies", attNames, attTypes, pKeys);
         myDBMS.addTable(movies);
 
         //define GENRES table
         ArrayList<String> gNames = new ArrayList<>();
-        gNames.add("id"); gNames.add("name");
+        gNames.add("id");
+        gNames.add("name");
         ArrayList<String> gTypes = new ArrayList<>();
-        gTypes.add("INTEGER"); gTypes.add("VARCHAR(20)");
+        gTypes.add("INTEGER");
+        gTypes.add("VARCHAR(20)");
         ArrayList<Integer> gPKeys = new ArrayList<>();
         gPKeys.add(0);
         Table genresTable = new Table("genres", gNames, gTypes, gPKeys);
@@ -66,16 +73,19 @@ public class Main {
 
         //define MOVIEGENRES table
         ArrayList<String> mgNames = new ArrayList<>();
-        mgNames.add("movieId"); mgNames.add("genreId");
+        mgNames.add("movieId");
+        mgNames.add("genreId");
         ArrayList<String> mgTypes = new ArrayList<>();
-        mgTypes.add("INTEGER"); mgTypes.add("INTEGER");
+        mgTypes.add("INTEGER");
+        mgTypes.add("INTEGER");
         ArrayList<Integer> mgKeys = new ArrayList<>();
-        mgKeys.add(0); mgKeys.add(1);
+        mgKeys.add(0);
+        mgKeys.add(1);
         Table movieGenres = new Table("movieGenres", mgNames, mgTypes, mgKeys);
         myDBMS.addTable(movieGenres);
 
         //parse through each movie in the list
-        for(Movie m : moviesList){
+        for (Movie m : moviesList) {
             ArrayList<String> attributes = new ArrayList<>();
             String mId = Integer.toString(m.getId());
             attributes.add(mId);
@@ -90,23 +100,25 @@ public class Main {
 
             List<Movie.Genre> genreList = m.getGenres();
             //parse through list of genres given
-            for(Movie.Genre g : genreList){
+            for (Movie.Genre g : genreList) {
                 String gId = Integer.toString(g.getId());
                 String gName = g.getName();
 
                 //add the genre lookup to the genres table
                 ArrayList<String> gAtts = new ArrayList<>();
-                gAtts.add(gId); gAtts.add(gName);
+                gAtts.add(gId);
+                gAtts.add(gName);
                 myDBMS.insertCmd("genres", gAtts);
                 //add the movie-genre relation to the table
                 ArrayList<String> mgAtts = new ArrayList<>();
-                mgAtts.add(mId); mgAtts.add(gId);
+                mgAtts.add(mId);
+                mgAtts.add(gId);
                 myDBMS.insertCmd("movieGenres", mgAtts);
             }
         }
     }
 
-    public static void generateCastTable(List<Credits> creditsList, DBMS myDBMS){
+    public static void generateCastTable(List<Credits> creditsList, DBMS myDBMS) {
         //define CASTS table
         ArrayList<String> cNames = new ArrayList<>();
         cNames.add("movieId");
@@ -119,21 +131,24 @@ public class Main {
         cTypes.add("VARCHAR(50)");
         cTypes.add("VARCHAR(50)");
         ArrayList<Integer> cKeys = new ArrayList<>();
-        cKeys.add(0); cKeys.add(1);
+        cKeys.add(0);
+        cKeys.add(1);
         Table castTable = new Table("casts", cNames, cTypes, cKeys);
         myDBMS.addTable(castTable);
 
-        for(Credits c : creditsList){
+        for (Credits c : creditsList) {
             String movieId = c.getId();
             List<Credits.CastMember> cast = c.getCastMember();
-            for(Credits.CastMember cm : cast){
+            for (Credits.CastMember cm : cast) {
                 String actorId = Integer.toString(cm.getId());
                 String name = sanitizeString(cm.getName());
                 String character = sanitizeString(cm.getCharacter());
 
                 ArrayList<String> castAtts = new ArrayList<>();
-                castAtts.add(movieId); castAtts.add(actorId);
-                castAtts.add(name); castAtts.add(character);
+                castAtts.add(movieId);
+                castAtts.add(actorId);
+                castAtts.add(name);
+                castAtts.add(character);
                 myDBMS.insertCmd("casts", castAtts);
             }
 
@@ -141,7 +156,7 @@ public class Main {
 
     }
 
-    public static void generateCrewTable(List<Credits> creditsList, DBMS myDBMS){
+    public static void generateCrewTable(List<Credits> creditsList, DBMS myDBMS) {
         //define CASTS table
         ArrayList<String> cNames = new ArrayList<>();
         cNames.add("MovieId");
@@ -152,18 +167,19 @@ public class Main {
         cTypes.add("INTEGER");
         cTypes.add("VARCHAR(50)");
         ArrayList<Integer> cKeys = new ArrayList<>();
-        cKeys.add(0); cKeys.add(1);
+        cKeys.add(0);
+        cKeys.add(1);
         Table crewTable = new Table("crew", cNames, cTypes, cKeys);
         myDBMS.addTable(crewTable);
 
-        for(Credits c : creditsList){
+        for (Credits c : creditsList) {
             String movieId = c.getId();
             List<Credits.CrewMember> crew = c.getCrewMember();
             boolean done = false;
-            for(Credits.CrewMember cm : crew){
-                if(done)
+            for (Credits.CrewMember cm : crew) {
+                if (done)
                     break;
-                if(cm.getJob().equals("Director")) {
+                if (cm.getJob().equals("Director")) {
                     done = true;
                     String DirectorId = Integer.toString(cm.getId());
                     String name = sanitizeString(cm.getName());
@@ -180,16 +196,16 @@ public class Main {
 
     }
 
-    private static String sanitizeString(String s){
+    private static String sanitizeString(String s) {
         String s1 = s.replace(" ", "_");
         String s2 = s1.replaceAll("[^a-zA-Z0-9_]", "");
         return s2;
     }
 
-    public static void unitTesting() throws FileNotFoundException{
+    public static void unitTesting() throws FileNotFoundException {
         int numOfTests = 3;
         MyRulesBaseListener listener = new MyRulesBaseListener();
-        for(int i = 1 ; i <= numOfTests ; i++) {
+        for (int i = 1; i <= numOfTests; i++) {
             File file = new File("tests/test" + String.valueOf(i) + ".txt");
             Scanner scanner = new Scanner(file);
             List<String> lines = new ArrayList<>();
@@ -218,7 +234,9 @@ public class Main {
         List<String> lines = new ArrayList<>();
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            if (line.length() != 0) { lines.add(line); }
+            if (line.length() != 0) {
+                lines.add(line);
+            }
         }
         MyRulesBaseListener listener = new MyRulesBaseListener();
         for (String line : lines) {

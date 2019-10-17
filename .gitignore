@@ -131,3 +131,6 @@ hs_err_pid*
 *.xml
 #data files
 data/*
+#test files
+tests/*
+project1/test*

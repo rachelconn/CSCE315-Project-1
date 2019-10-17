@@ -11,11 +11,14 @@ import javafx.util.Pair;
 public class Table implements Serializable {
 
     //CLASS FIELDS
+    public static int STATS_totalFilters = 0;
     private String name;
     private ArrayList<String> attributeNames;
     private ArrayList<String> attributeTypes;
     private ArrayList<Integer> pKeyIndices;
     private HashMap<ArrayList<String>,ArrayList<String>> entries; //key is the list of primary keys, value is a list of all the attributes
+
+    private transient HashMap<String, HashMap<String, project1.Table>> fastMapTable;
   
     //CLASS CONSTRUCTORS
     public Table(String name, ArrayList<String> attributeNames, ArrayList<String> attributeTypes, ArrayList<Integer> pKeyIndices) {
@@ -30,6 +33,7 @@ public class Table implements Serializable {
                 return o1 - o2;
             }
         });
+        this.fastMapTable = new HashMap<>();
     }
 
     public Table(String name, ArrayList<Column> cols, ArrayList<Column> pKeys)
@@ -67,6 +71,29 @@ public class Table implements Serializable {
         this.entries = new HashMap<>();
     }
 
+    public void GenerateFastMapForColumn(String colName)
+    {
+        int attributeIndex = attributeNames.indexOf(colName);
+        HashMap<String, Table> fastTable = new HashMap<>();
+        if (attributeIndex == -1) {
+            System.out.println(String.format(
+                    "Table::GenerateFastMapForColumn Row \"%s\" is not in Table \"%s\"\n",
+                    colName,
+                    this.name
+            ));
+        }
+        for (Entry<ArrayList<String>,ArrayList<String>> entry : entries.entrySet()) {
+            ArrayList<String> row = entry.getValue();
+            String hash = row.get(attributeIndex);
+
+            if (!fastTable.containsKey(hash)) {
+                fastTable.put(hash, new Table("FAST_"+this.name+"_"+colName, this.getAllColumns(), this.getPrimaryKeys()));
+            }
+            fastTable.get(hash).addEntry(row);
+        }
+        fastMapTable.put(colName, fastTable);
+    }
+
     //GETTERS AND SETTERS
     public String getName() {
         return name;
@@ -101,6 +128,13 @@ public class Table implements Serializable {
     public ArrayList<String> getColumn(String attributeName) {
         ArrayList<String> col = new ArrayList<>();
         int attributeIndex = attributeNames.indexOf(attributeName);
+        if (attributeIndex == -1) {
+            System.out.println(String.format(
+                    "Row \"%s\" is not in Table \"%s\"\n",
+                    attributeName,
+                    this.name
+            ));
+        }
         for (ArrayList<String> val : entries.values()) {
             col.add(val.get(attributeIndex));
         }
@@ -132,6 +166,9 @@ public class Table implements Serializable {
 
 
     public void addEntry(ArrayList<String> attributes) {
+        //invalidate fast entries
+        this.fastMapTable = new HashMap<>();
+
         ArrayList<String> pKeys = new ArrayList<>();
         if(pKeyIndices.size() != 0) {
             for (int i = 0; i < pKeyIndices.size(); i++) {
@@ -189,7 +226,44 @@ public class Table implements Serializable {
                 System.out.println(ex);
             }
         }
+        Table.STATS_totalFilters += entries.size();
         return results;
+    }
+
+    public Table fastFilter(String columnName, String value) {
+        if (this.fastMapTable.containsKey(columnName))
+        {
+            Table t = fastMapTable.get(columnName).get(value);
+            try {
+                return new Table(t);
+            }
+            catch (Exception ex) {
+                if (t == null && columnName.equals("id") && value.equals("INITIAL NODE"))
+                {
+                    return null;
+                }
+                if (t == null)
+                {
+                    System.out.println(String.format(
+                            "[FATAL] null table when accessing columnName: %s, value: %s",
+                            columnName,
+                            value
+                    ));
+                }
+                System.out.println(String.format(
+                        "[FATAL] table name: %s, table size: %s",
+                        t.name,
+                        t.getSize()
+                ));
+                throw ex;
+            }
+        }
+        else
+        {
+            System.out.println("[WARNING] No fastMapTable existed, so one was made. Bad for performance since they're invalidated whenever a new entry is added.");
+            GenerateFastMapForColumn(columnName);
+            return fastFilter(columnName, value);
+        }
     }
 
     public ArrayList<Cell> getRow(ArrayList<String> row) {
