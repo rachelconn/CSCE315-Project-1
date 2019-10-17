@@ -141,7 +141,7 @@ public class GUI extends Application {
                 Label resultText = new Label(myDBMS.getBaconNumber(nameField1.getText(),nameField2.getText()).toString());
                 //Set the above constructor to the call for Query 1. Ensure that the function returns a string
                 //If the text goes out of the window uncomment below code
-                //resultText.setWrapText(true);
+                resultText.setWrapText(true);
 
                 VBox layout = new VBox(20);
                 layout.getChildren().addAll(title,resultText);
@@ -226,7 +226,7 @@ public class GUI extends Application {
                 Label title = new Label("Result: ");
                 title.setFont(new Font(20));
 
-                Label resultText = new Label(nameField1.getText() + " " + nameField2.getText());
+                Label resultText = new Label(myDBMS.query2(nameField1.getText(), nameField2.getText()));
                 //Set the above constructor to the call for Query 2. Ensure that the function returns a string
                 //If the text goes out of the window uncomment below code
                 //resultText.setWrapText(true);

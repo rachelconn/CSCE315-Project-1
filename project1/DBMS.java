@@ -506,7 +506,8 @@ public class DBMS {
             return directorWorstMovie;
     }
 
-    public String query2(String actor,String appearances){
+    public String query2(String spacedActor,String appearances){
+        String actor = sanitizeString(spacedActor);
         int appear = Integer.parseInt(appearances);
         HashMap<String,Integer> actors= new HashMap<String,Integer>();
         String temp1 = "select( actorName == \"" + actor + "\") casts;";
@@ -534,7 +535,8 @@ public class DBMS {
         if(costars.toString().equals("[]")){
             return "no costars meet conditions";
         }
-        return costars.toString();
+        String result = underscoreToSpace(costars.toString());
+        return result;
     }
 
     private static String sanitizeString(String s){
