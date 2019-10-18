@@ -42,6 +42,7 @@ public class Main {
         System.out.println(myDBMS.getMostPlayedGenre("Danny_McBride"));
         myDBMS.getActorsByCharacterName("Alex");
         System.out.println(myDBMS.query2("Johnny_Depp", "7"));
+        System.out.println(myDBMS.query5("Elijah_Wood"));
     }
 
     static void generateMovieTable(List<Movie> moviesList, DBMS myDBMS) {

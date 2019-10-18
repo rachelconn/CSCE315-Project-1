@@ -467,7 +467,8 @@ public class DBMS {
     }
 
     public String query5(String actor) {
-        String temp1 = "select( actorName == \"" + actor + "\") casts;";
+
+        String temp1 = "select( actorName == \"" + sanitizeString(actor) + "\") casts;";
         Table castWithActor = query(temp1);
         Table movies = getTable("movies");
         int max = 0;
