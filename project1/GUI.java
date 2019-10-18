@@ -138,7 +138,14 @@ public class GUI extends Application {
                 Label title = new Label("Result: ");
                 title.setFont(new Font(20));
 
-                Label resultText = new Label(myDBMS.getBaconNumber(nameField1.getText(),nameField2.getText()).toString());
+
+                ArrayList<String> a = myDBMS.getBaconNumber(nameField1.getText(),nameField2.getText());
+                ArrayList<String> b = new ArrayList<>();
+                for (String st : a) {
+                    b.add(DBMS.underscoreToSpace(st));
+                }
+                String s = String.join(", ", b.subList(0, b.size() - 1));
+                Label resultText = new Label(s);
                 //Set the above constructor to the call for Query 1. Ensure that the function returns a string
                 //If the text goes out of the window uncomment below code
                 resultText.setWrapText(true);
