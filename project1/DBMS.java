@@ -536,8 +536,11 @@ public class DBMS {
         if(costars.toString().equals("[]")){
             return "no costars meet conditions";
         }
-        String result = underscoreToSpace(costars.toString());
-        return result;
+        ArrayList<String> b = new ArrayList<>();
+        for (String st : costars) {
+            b.add(DBMS.underscoreToSpace(st));
+        }
+        return String.join(", ", b);
     }
 
     private static String sanitizeString(String s){
